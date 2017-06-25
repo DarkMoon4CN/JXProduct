@@ -1,0 +1,133 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class OrderUseService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string deduct = "orderUse/deduteMoney";
+        private static string useCoupon = "orderUse/useCoupon";
+        private static string notUseCoupon = "orderUse/notUseCoupon";
+        private static string couponChose="orderUse/couponChose";
+        private static string choseAll="orderUse/choseAllCoupon";
+        private static string orderUseValidate = "orderUse/orderUsevalidateCoupon";
+        private static string webCardMoney = "orderUse/webCardMoney";
+
+        public static OrderUseService Instance
+        {
+            get { return new OrderUseService(); }
+        }
+
+        /// <summary>
+        /// 购物卡支付和退款(取消金额传负数)
+        /// </summary>
+        /// <param name="request">请求参数</param>
+        /// <returns></returns>
+        public bool Deduct(DeductMoneyRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = client.Execute(request, deduct, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 优惠券支付提交订单 
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public bool UseCoupon(UseCouponRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = null;
+            response = client.Execute(request, useCoupon, postData);
+            if (response != null)
+            {
+                return response.success;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 优惠券支付取消订单
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public bool NotUseCoupon(UseCouponRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = null;
+            response = client.Execute(request, notUseCoupon, postData);
+            if (response != null)
+            {
+                return response.success;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 退还购物卡金额
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public bool WebCardMoney(WebCardMoneyRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = null;
+            response = client.Execute(request, webCardMoney, postData);
+            if (response != null)
+            {
+                return response.success;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 订单页面优惠券可用列表和数量
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public CouponChoseListResponse CouponChose(CouponChoseListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponChoseListResponse response = null;
+            response = client.Execute(request, couponChose, postData);
+            return response;
+        }
+
+        /// <summary>
+        /// 订单页面优惠券不可用列表和数量（包含过期已经使用不满足此订单的）
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public CouponChoseListResponse ChoseAll(CouponChoseListRequest request) 
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponChoseListResponse response = null;
+            response = client.Execute(request, choseAll, postData);
+            return response;
+        }
+
+        /// <summary>
+        /// 使用优惠券时候验证
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns>error_response 包含验证失败信息</returns>
+        public CouponValidateResponse OrderUseValidate(CouponValidateRequest request) 
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponValidateResponse response = null;
+            response = client.Execute(request, orderUseValidate, postData);
+            return response;
+        }
+
+    }
+}

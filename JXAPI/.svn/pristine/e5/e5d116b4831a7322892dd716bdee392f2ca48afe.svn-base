@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Response;
+
+namespace JXAPI.JXSdk.Request
+{
+    /// <summary>
+    /// 商品评论列表
+    /// </summary>
+    public class ProductEvaluationListRequest : Venus.IVenusRequest<ProductEvaluationListResponse>
+    {
+        #region 参数
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int? status { get; set; }
+
+        /// <summary>
+        /// 来源
+        /// </summary>
+        public int? source { get; set; }
+
+        /// <summary>
+        /// 时间下限
+        /// </summary>
+        public long? floorTime { get; set; }
+
+        /// <summary>
+        /// 时间上线
+        /// </summary>
+        public long? ceilTime { get; set; }
+
+        /// <summary>
+        /// 商品名称
+        /// </summary>
+        public string productName { get; set; }
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        public PageFormInfo pageForm { get; set; }
+        #endregion
+
+        #region ITopRequest Members
+        public string GetApiName()
+        {
+            return string.Empty;
+        }
+
+        public IDictionary<string, string> GetParameters()
+        {
+            return null;
+        }
+
+        public void Validate()
+        {
+
+        }
+        #endregion
+    }
+}

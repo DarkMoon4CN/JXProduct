@@ -1,0 +1,54 @@
+﻿using JXProduct.Component.DataAccess;
+using JXProduct.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class ProductClassificationDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        public List<ProductClassificationInfo> ProductClassification_GetList(int productid)
+        {
+            var sql = "SELECT * FROM ProductClassification WHERE productid=" + productid + " order by ID ASc";
+            var cmd = dbr.GetSqlStringCommand(sql);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                List<ProductClassificationInfo> list = new List<ProductClassificationInfo>();
+                while (read.Read())
+                {
+                    list.Add(new ProductClassificationInfo()
+                    {
+                        ID = int.Parse(read["ID"].ToString()),
+                        ProductID = int.Parse(read["ProductID"].ToString()),
+                        CFID = int.Parse(read["CFID"].ToString()),
+                        CFPath = read["CFPath"].ToString()
+                    });
+                }
+                return list;
+            }
+        }
+        public bool ProductClassification_Insert(int productid, List<int> cflist)
+        {
+            var sql = new StringBuilder();
+            sql.AppendFormat("DELETE FROM ProductClassification  WHERE productid ={0};", productid);
+            if (cflist != null && cflist.Count > 0)
+            {
+                foreach (var cf in cflist)
+                {
+                    sql.AppendFormat("INSERT INTO ProductClassification (productid,cfid,cfpath) SELECT {0},c.CFID,c.[Path] FROM Classification AS c WHERE c.keywordID>0 AND c.CFID={1};", productid, cf);
+                }
+                sql.AppendFormat(@"INSERT INTO KeywordProduct(KeywordID,ProductID,Sort) SELECT c.keywordID,{0},1 FROM ProductClassification AS pc INNER JOIN Classification AS c ON pc.CFID = c.CFID WHERE pc.ProductID ={0} AND pc.CFID IN ({1}) AND NOT EXISTS (SELECT * FROM KeywordProduct AS kp WHERE kp.ProductID = {0} AND kp.KeywordID =c.keywordID);", productid, string.Join(",", cflist));
+            }
+            var cmd = dbw.GetSqlStringCommand(sql.ToString());
+            sql.Clear();
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+    }
+}

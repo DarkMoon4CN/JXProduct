@@ -1,0 +1,55 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class ProductOutBookSqlBLL : IOrdersRelatedMySqlBLL
+    {
+        #region 变量
+
+        private static ProductOutBookSqlBLL _instance;
+        private static readonly ProductOutBookSqlDAL dal = new ProductOutBookSqlDAL();
+        private static readonly object _object = new object();
+
+        #endregion
+
+        private ProductOutBookSqlBLL() { }
+
+        public static ProductOutBookSqlBLL Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock(_object)
+                    {
+                        if(_instance == null)
+                        {
+                            _instance = new ProductOutBookSqlBLL();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        public int GetMaxID()
+        {
+            return dal.GetMaxProductOutBookID();
+        }
+
+        public bool Update(System.Data.DataTable table, out int errorCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Add(System.Data.DataTable table, out int errorCount)
+        {
+            return dal.AddProductOutBook(table, out errorCount);
+        }
+    }
+}

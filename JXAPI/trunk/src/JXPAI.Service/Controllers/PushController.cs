@@ -1,0 +1,38 @@
+﻿using JXAPI.Common.Utils;
+using JXPAI.Service.Controllers.Push;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+
+namespace JXPAI.Service.Controllers
+{
+    public class PushController : ApiController
+    {
+        public JsonResultObject Post() 
+        {
+            var result = new JsonResultObject();
+            string jsonStr = string.Empty;
+            string method = HttpContext.Current.Request["method"];
+            PushService pushServer = new PushService();
+            if (string.IsNullOrEmpty(method))
+            {
+                result.msg = "推送请求失败,缺少必填项：method！";
+            }
+            else
+            {
+                switch (method)
+                {
+                    case "jxdyf.push.pushmessage.post":
+                        result = pushServer.PushMessage();
+                        break;
+                }
+            }
+            HttpContext.Current.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            return result;
+        }
+    }
+}

@@ -1,0 +1,131 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Model;
+@using JXProduct.Component.Enums;
+@{
+    var activitylist = ViewBag.ActivityList as List<ProductActivityInfo>;
+    var pagedlist = ViewBag.PagedList as PagedList<ProductInfo>;
+    var giftlist = ViewBag.GiftList as List<ProductGiftInfo>;
+    var auditlist = ViewBag.AuditList as List<ProductAuditInfo>;
+}
+<table class='table'>
+    <tr>
+        <th>商品名称</th>
+        <th>金象码</th>
+        <th>审核状态</th>
+        <th>金象价</th>
+        <th>会员价</th>
+        <th>成本价</th>
+        <th>库存</th>
+        <th>单品活动</th>
+        <th>操作</th>
+    </tr>
+    @foreach (var p in pagedlist)
+    {
+        var gift = giftlist.FirstOrDefault(t => t.ProductID == p.ProductID) ?? new ProductGiftInfo();
+        var act = activitylist.FirstOrDefault(t => t.ProductID == p.ProductID) ?? new ProductActivityInfo();
+        var audit = auditlist.Where(t => t.ProductID == p.ProductID);
+        var auditbase = audit.FirstOrDefault(t => t.Type == (short)Product.AuditType.商品信息) ?? new ProductAuditInfo();
+
+        <tr class='blank-bg'><td colspan='9'></td></tr>
+        <tr class='other-attr'>
+            <td colspan='9'>
+                @Html.Raw(Product.Audit[auditbase.Status])
+                <label class='fl'><input class='fl' type="checkbox">商品ID：@(p.ProductID)</label>
+                <span class='fl'>最新上架时间：@(p.SellingTime.Year < 2000 ? "无" : p.SellingTime.ToString("yyyy-MM-dd HH:mm:ss"))</span>
+                <span>所属类目:@p.CFPath</span>
+            </td>
+        </tr>
+        <tr class='detai-wrap' productid="@p.ProductID">
+            <td>
+                <span class="quan"></span>
+                <span class='comm-group'>@p.TypeName</span>
+                <div class="detai-top clear">
+                    <div class="detai-top-left active">
+                        <img src="@JXUtil.ImageHelper.GetDefaultImage(p.Images)" alt="">
+                    </div>
+                    <div class="detai-top-right">
+                        <a href="javascript:;">@p.BrandName @p.ChineseName</a>
+                        <p>规格：@p.Specifications</p>
+                    </div>
+                </div>
+                <div class="detai-bottom">
+                    商品ID：@p.ProductID   金象码：@p.ProductCode
+                </div>
+            </td>
+            <td>@p.ProductCode</td>
+            <td>@(JXUtil.EnumHelper.GetText<JXProduct.Component.Enums.Product.ProductStatus>(p.Status))</td>
+            <td>¥@p.MarketPrice<a href="#" name="price">编辑</a></td>
+            <td>¥@p.TradePrice<a href="#" name="price">编辑</a></td>
+            <td>¥@p.CostPrice</td>
+            <td>0</td>
+            <td class='mz'>@Html.Raw(JXProduct.Component.BLL.ProductActivityBLL.Instance.ProductActivity_Get(act))</td>
+            <td class='cz'>
+                <a href="/product/edit?productid=@p.ProductID">编辑商品</a>
+                <a href="javascript:;" name="audit">资质审核</a>
+                <a href="javascript:;" name="activty">编辑活动</a>
+                @if (p.Type == 0) { 
+                    <a href="javascript:;" name="related">套餐/包装</a>
+                }
+                <a href="javascript:;" name="eval">添加评论</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='9' class='table-conm-set'>
+                <div class="dateil-ico">
+                    @{
+                        var a1 = audit.FirstOrDefault(t => t.Type == (short)JXProduct.Component.Enums.Product.AuditType.商品资质) ?? new ProductAuditInfo();
+                        var a2 = audit.FirstOrDefault(t => t.Type == (short)JXProduct.Component.Enums.Product.AuditType.商品信息) ?? new ProductAuditInfo();
+                        var a3 = audit.FirstOrDefault(t => t.Type == (short)JXProduct.Component.Enums.Product.AuditType.详情图片) ?? new ProductAuditInfo();
+                    }
+                    <span>商品资质审核</span><i class="c@(a1.Status)"></i>
+                    <span>基本信息审核</span><i class="c@(a2.Status)"></i>
+                    <span>详情图片审核</span><i class="c@(a3.Status)"></i>
+                </div>
+                <div class="spInputWrap">
+                    <span>赠品ID：</span>
+                    @if (gift != null && gift.ProductID > 0)
+                    {
+                        <input type="text" name="giftid" class="giftid" value="@gift.ProductGiftID">
+                        <div class="aotu-info">自动读取：@gift.ProductGiftName</div>
+                    }
+                    else
+                    {
+                        <input type="text" name="giftid" class="giftid">
+                    }
+                </div>
+                <div class="setNumber">
+                    <span class="jian disActive">-</span>
+                    <input type="text" value="@gift.Quantity" name="giftcount">
+                    <span class="jia">+</span>
+                </div>
+                <div class="label-wrap">
+                    <label class="fl"><input name="freeship" class="fl" type="checkbox" value="1" @(act.IsFreeShip == 1 ? "checked='checked'" : string.Empty)>包邮</label>
+                    <label class="fl"><input name="top" class="fl" type="checkbox" value="1" @(p.IsTop == 1 ? "checked='checked'" : string.Empty)>置顶</label>
+                    <label class="fl"><input name="recommend" class="fl" type="checkbox" value="1" @(p.IsRecommend == 1 ? "checked='checked'" : string.Empty)>推荐</label>
+                </div>
+                <div class="select-block">
+                    <span>上架状态：</span>
+                    <select name="selling">
+                        @Html.Raw(JXProduct.Component.BLL.ProductBLL.Instance.Product_GetSellingHtml(p.Selling))
+                    </select>
+                </div>
+                <div class="select-block">
+                    <span>运营标示：</span>
+                    <select name="actions">
+                        @Html.Raw(JXProduct.Component.BLL.ProductBLL.Instance.Product_GetActionsHtml(p.Actions))
+                    </select>
+                </div>
+                <div class="qz">
+                    <span>权重：</span>
+                    <input type="text" name="sort" value="@(p.Sort>0 ? p.Sort.ToString() : string.Empty)">
+                </div>
+                <a href="javascript:;" class="addBtn fl save" productid="@p.ProductID">保存</a>
+            </td>
+        </tr>
+    }
+</table>
+<div class="general-pagin">
+    @Ajax.Pager(pagedlist, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = false },
+        new MvcAjaxOptions { UpdateTargetId = "tablelist", DataFormId = "form1", Url = "/product/list",OnBegin = "product.gotop" ,OnComplete ="product.pagechange" }
+    )
+</div>

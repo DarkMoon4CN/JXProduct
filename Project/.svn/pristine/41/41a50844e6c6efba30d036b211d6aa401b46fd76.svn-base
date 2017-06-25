@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+.right{  height:auto; background:#fff; padding-bottom:100px;}
+.person{ padding:65px 0px 43px 0px; width:100%; height:65px;}
+.person img{ float:left; width:66px; height:65px; margin-left:46px; }
+.person span{ float:left; padding-left:15px; color:#4274c5;  height:65px; line-height:65px;}
+.message{ margin:43px 28px 120px 28px; }
+.message .m_tab{ width:100%;  border-bottom:1px solid #dbe9ff; }
+.message .m_tab li{ display:inline-block; margin-left:46px;   cursor:pointer;}
+.message .m_tab li a {position:relative; display:block; padding:0px 10px 8px 10px; text-decoration:none; font-size:14px; font-weight:bold; } 
+.message .m_tab li a span {display:inline-block; font-weight:bold; color:#4274c5; text-align:center; }
+.message .m_tab li a em {display:none;} 
+.message .m_tab .hoverli a { border-style:solid;border-width:0px 2px 2px 0px; border-color:#fff #fff #06a #fff;}
+.message .m_tab .hoverli a em {display:block; overflow:hidden; border:4px solid #06a; border-color:#06a #fff; border-width:0px 4px 4px 4px; position:absolute; left:50%; top:100%;margin-left:-6px; margin-top:-4px;}
+.message .m_tab li .count{ display:block; border-radius:4px; overflow:hidden; position:absolute; right:-16px; top:0%;margin-left:-6px; margin-top:-6px; background-color:#ff6600; width:20px; height:20px; line-height:20px;  color:#fff;}
+.message_detail{ width:100%; height:auto;}
+.message_detail .detail_mk{ margin-top:22px; width:100%; height:auto;}
+.message_detail .detail_mk p .span_r{ font-size:14px; line-height:30px; color:#3675d9;}
+.message_detail .detail_mk p .span_r a{ font-size:14px; line-height:30px; color:#3675d9; cursor:pointer;}
+.message_detail .detail_mk p .span_bj{ cursor:pointer; padding-left:30px; color:#ff6600;}
+.message_detail .detail_mk p .span_ycl{ padding-left:30px; color:#aaa;}
+.message_detail .detail_mk p .shenghe{ color:#444;  line-height:16px; }
+.message_detail .detail_mk .shren{padding-top:6px; color:#888888;  line-height:16px;}
+.message_detail .detail_mk .shdate{ padding-bottom:15px; border-bottom:1px dotted #e5e5e5; color:#888888;}  
+
+/* right 商品明细展示--弹出框 */
+.alert_message{ width:270px; height:140px; border:3px solid #d0d0d0; border-radius:6px; background:#fff;}
+.alert_message .closep{ text-align:right; color:#cfcfcf;  padding: 10px 10px 20px 0px; cursor:pointer;} 
+.alert_message .messagep{  text-align:center;}
+.close_button{ margin-left:100px; border:1px solid #5e8fde; color:#5e8fde; padding:0px 18px; margin-top:26px; cursor:pointer;}

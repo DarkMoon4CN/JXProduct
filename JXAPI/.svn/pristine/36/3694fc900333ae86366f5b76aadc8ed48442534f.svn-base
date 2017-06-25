@@ -1,0 +1,106 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
+
+using JXAPI.Common.Config;
+using JXAPI.Common.Utils;
+using JXAPI.Component.Model;
+using Venus;
+
+namespace JXPAI.Service.Controllers.Logistics
+{
+    public class ListService : Venus.VenusServiceResponse
+    {
+        public string ApiName
+        {
+            get
+            {
+                return "jxdyf.logistics.list.get";
+            }
+        }
+
+        public override string ResultGet()
+        {
+            LogisticsInfo info = new LogisticsInfo();
+            IList<LogisticsDetailInfo> list = new List<LogisticsDetailInfo>();
+            try
+            {
+                int expressId = 0;
+                string code = string.Empty;
+                if (HttpContext.Current.Request["expressId"] != null)
+                {
+                    int.TryParse(HttpContext.Current.Request["expressId"], out expressId);
+                }
+                if (HttpContext.Current.Request["code"] != null)
+                {
+                    code = HttpContext.Current.Request["code"];
+                }
+                switch (expressId)
+                {
+                    case 1:
+                        #region 中通
+                        ztoAPI.WebService zto = new ztoAPI.WebService();
+                        DataTable dTable = zto.Search(LogisticsConfig.Instance.ZTOLogistics.UserName, LogisticsConfig.Instance.ZTOLogistics.Password, code);
+                        if (dTable != null && dTable.Rows.Count > 0)
+                        {
+                            //  解析数据
+                            dTable.DefaultView.Sort = "cdate,ctime";
+                            foreach (DataRow item in dTable.Rows)
+                            {
+                                list.Add(new LogisticsDetailInfo()
+                                {
+                                    cdate = string.Format("{0} {1}", item["cdate"].ToString(), item["ctime"].ToString()),
+                                    process = item["process"].ToString()
+                                });
+                            }
+                        }
+                        info.expressId = 1;
+                        info.expressName = "中通快递";
+                        info.expressCode = code;
+                        info.list = list;
+                        #endregion
+                        break;
+                    case 5:
+                        #region 京东
+                        string url = string.Format(LogisticsConfig.Instance.JDLogistics.URL, code);
+                        string strJson = CommUtil.SendGetWebRequest(url, "UTF-8");
+
+                        //  解析数据
+                        Regex regex = new Regex("(?s)\"ope_name\":\"(?<ope_name>[^\"]+)\",\"ope_remark\":\"(?<ope_remark>[^\"]+)\",\"ope_time\":\"(?<ope_time>[^\"]+)\",\"ope_title\":\"(?<ope_title>[^\"]+)\"", RegexOptions.IgnoreCase);
+                        MatchCollection colldd = regex.Matches(strJson);
+                        if (colldd != null || colldd.Count > 0)
+                        {
+                            foreach (Match dd in colldd)
+                            {
+                                list.Add(new LogisticsDetailInfo()
+                                {
+                                    cdate = dd.Groups["ope_time"].ToString(),
+                                    process = string.Format("{0} {1}", dd.Groups["ope_remark"].ToString(), dd.Groups["ope_title"].ToString())
+                                });
+                            }
+                        }
+                        info.expressId = 1;
+                        info.expressName = "京东快递";
+                        info.expressCode = code;
+                        info.list = list;
+                        #endregion
+                        break;
+                }
+            }
+            catch
+            {
+
+            }
+            return ResultResponse(info, "info");
+        }
+
+        public override void Validate()
+        {
+
+        }
+    }
+}

@@ -1,0 +1,75 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Model;
+@{
+    ViewBag.Title = "推广员管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+
+@section js{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/Content/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/jx.om.js"></script>  
+   <script type="text/javascript">
+       $(function () {
+           om.promotionInit();
+    });
+</script>
+}
+<div id="l-content-right" class='commodity-wrap '>
+    <div class="comm-admin row" style="margin:20px 0px 10px 0px;">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="brandName">推广员姓名</label>
+                <input type="text" class="form-control" id="trueName" name="trueName" value="" placeholder="推广员姓名">
+            </div>
+            <a href="javascript:void(0);" class="btn btn-default" id="addlinkbtn" >添加推广员</a>
+        </div>
+        </div>
+    <div class="container-fluid">
+        <div class="table-responsive" id="tablelist">
+            <table class='table table-bordered'>
+                <thead>
+                    <tr style="">
+                        <th style="width: 15%; text-align: center;">推广编号</th>
+                        <th style="width: 30%; text-align: center;">推广名称</th>
+                        <th style="width: 25%; text-align: center;">创建时间</th>
+                        <th style="width: 25%; text-align: center;">状态</th>
+                    </tr>
+                    @foreach (var p in ViewBag.Promotion)
+                    {
+                        JXProduct.Component.Model.BelowLinePromotionInfo pInfo = (JXProduct.Component.Model.BelowLinePromotionInfo)p;
+                        <tr style="vertical-align: middle; text-align: center;">
+                            <td>@pInfo.InvitationCode</td>
+                            <td>@pInfo.TrueName</td>
+                            <td>@pInfo.CreateTime</td>
+
+                            @if (pInfo.Status == 0)
+                            {
+                                <td> 可用 </td>
+                            }
+                            else
+                            {
+                                <td> 不可用 </td>
+                            }
+
+                        </tr>
+                    }
+               </thead>
+
+            </table>
+            
+
+        </div>
+    </div>
+    <div class="general-pagin">
+        @Html.Pager((PagedList<BelowLinePromotionInfo>)ViewBag.PageList, new PagerOptions()
+                   {
+                       PageIndexParameterName = "pageIndex"
+                       ,
+                       ShowPageIndexBox = true
+                       ,
+                       PageIndexBoxType = PageIndexBoxType.DropDownList
+                   }
+                       , new { })
+    </div>
+</div>

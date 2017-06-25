@@ -1,0 +1,239 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Model
+{
+    public class ProductInstructionsInfo
+    {
+        /// <summary>
+        /// 商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        ///商品名称
+        /// </summary>
+        public string TradeName { get; set; }
+
+        /// <summary>
+        ///药品通用名称
+        /// </summary>
+        public string CADN { get; set; }
+
+        /// <summary>
+        ///英文名称
+        /// </summary>
+        public string EnglishName { get; set; }
+
+        /// <summary>
+        ///拼音名称
+        /// </summary>
+        public string PinyinName { get; set; }
+
+        /// <summary>
+        ///成分/原料
+        /// </summary>
+        public string Element { get; set; }
+
+        /// <summary>
+        ///性状
+        /// </summary>
+        public string Character { get; set; }
+
+        /// <summary>
+        ///功能主治
+        /// </summary>
+        public string Efficacy { get; set; }
+
+        /// <summary>
+        ///规格
+        /// </summary>
+        public string Specifications { get; set; }
+
+        /// <summary>
+        ///用法用量
+        /// </summary>
+        public string Dosage { get; set; }
+
+        /// <summary>
+        ///不良反应
+        /// </summary>
+        public string UntowardEffect { get; set; }
+
+        /// <summary>
+        ///禁忌
+        /// </summary>
+        public string Taboo { get; set; }
+
+        /// <summary>
+        ///注意事项
+        /// </summary>
+        public string Attention { get; set; }
+
+        /// <summary>
+        ///孕妇,哺乳期用药
+        /// </summary>
+        public string Gravida { get; set; }
+
+        /// <summary>
+        ///儿童用药
+        /// </summary>
+        public string Children { get; set; }
+
+        /// <summary>
+        ///老年用药
+        /// </summary>
+        public string Old { get; set; }
+
+        /// <summary>
+        ///药物相互作用
+        /// </summary>
+        public string DDIs { get; set; }
+
+        /// <summary>
+        ///药物过量
+        /// </summary>
+        public string OverDose { get; set; }
+
+        /// <summary>
+        ///药理毒理
+        /// </summary>
+        public string Pharmacology { get; set; }
+
+        /// <summary>
+        ///药代动力学
+        /// </summary>
+        public string DMPK { get; set; }
+
+        /// <summary>
+        ///贮存
+        /// </summary>
+        public string StorageMothod { get; set; }
+
+        /// <summary>
+        ///包装
+        /// </summary>
+        public string Package { get; set; }
+
+        /// <summary>
+        ///重量
+        /// </summary>
+        public string Weight { get; set; }
+
+        /// <summary>
+        ///有效期
+        /// </summary>
+        public string Validity { get; set; }
+
+        /// <summary>
+        ///执行标准
+        /// </summary>
+        public string CarriedStard { get; set; }
+
+        /// <summary>
+        ///批准文号
+        /// </summary>
+        public string ApprovalNumber { get; set; }
+
+        /// <summary>
+        ///核准日期
+        /// </summary>
+        public string ApprovedDate { get; set; }
+
+        /// <summary>
+        ///修订日期
+        /// </summary>
+        public string RevisionDate { get; set; }
+
+        /// <summary>
+        ///生产厂家
+        /// </summary>
+        public string Manufacturer { get; set; }
+
+        /// <summary>
+        ///生产厂家
+        /// </summary>
+        public string ManufacturerAddress { get; set; }
+
+
+        public override string ToString()
+        {
+            string split = "||";
+            var s = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(this.Element))
+                s.Append("成分/原料:" + this.Element + split);
+            if (!string.IsNullOrWhiteSpace(this.Character))
+                s.Append("性状:" + this.Character + split);
+            if (!string.IsNullOrWhiteSpace(this.Efficacy))
+                s.Append("功能主治:" + this.Efficacy + split);
+            if (!string.IsNullOrWhiteSpace(this.Specifications))
+                s.Append("规格:" + this.Specifications + split);
+            if (!string.IsNullOrWhiteSpace(this.Dosage))
+                s.Append("用法用量:" + this.Dosage + split);
+            if (!string.IsNullOrWhiteSpace(this.UntowardEffect))
+                s.Append("不良反应:" + this.UntowardEffect + split);
+            if (!string.IsNullOrWhiteSpace(this.Taboo))
+                s.Append("禁忌:" + this.Taboo + split);
+            if (!string.IsNullOrWhiteSpace(this.Attention))
+                s.Append("注意事项:" + this.Attention + split);
+            if (!string.IsNullOrWhiteSpace(this.Gravida))
+                s.Append("孕妇,哺乳期用药:" + this.Gravida + split);
+            if (!string.IsNullOrWhiteSpace(this.Children))
+                s.Append("儿童用药:" + this.Children + split);
+            if (!string.IsNullOrWhiteSpace(this.Old))
+                s.Append("老年用药:" + this.Old + split);
+            if (!string.IsNullOrWhiteSpace(this.DDIs))
+                s.Append("药物相互作用:" + this.DDIs + split);
+            if (!string.IsNullOrWhiteSpace(this.OverDose))
+                s.Append("药物过量:" + this.OverDose + split);
+            if (!string.IsNullOrWhiteSpace(this.Pharmacology))
+                s.Append("药理毒理:" + this.Pharmacology + split);
+            if (!string.IsNullOrWhiteSpace(this.DMPK))
+                s.Append("药代动力学:" + this.DMPK + split);
+            if (!string.IsNullOrWhiteSpace(this.StorageMothod))
+                s.Append("贮存:" + this.StorageMothod + split);
+            if (!string.IsNullOrWhiteSpace(this.Package))
+                s.Append("包装:" + this.Package + split);
+            if (!string.IsNullOrWhiteSpace(this.Weight))
+                s.Append("重量:" + this.Weight + split);
+            if (!string.IsNullOrWhiteSpace(this.Validity))
+                s.Append("有效期:" + this.Validity + split);
+            if (!string.IsNullOrWhiteSpace(this.CarriedStard))
+                s.Append("执行标准:" + this.CarriedStard + split);
+            if (!string.IsNullOrWhiteSpace(this.ApprovalNumber))
+                s.Append("批准文号:" + this.ApprovalNumber + split);
+            if (!string.IsNullOrWhiteSpace(this.ApprovedDate))
+                s.Append("核准日期:" + this.ApprovedDate + split);
+            if (!string.IsNullOrWhiteSpace(this.RevisionDate))
+                s.Append("修订日期:" + this.RevisionDate + split);
+
+            if (s.Length > 0)
+                s.Length = s.Length - split.Length;
+            return s.ToString();
+        }
+        public string ToProductParameter(ProductInfo p)
+        {
+            string split = "||";
+            var s = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(this.TradeName))
+                s.Append("商品名:" + this.TradeName + split);
+            if (!string.IsNullOrWhiteSpace(this.CADN))
+                s.Append("通用名:" + p.CADN + split);
+            //if (!string.IsNullOrWhiteSpace(p.BrandName))
+            //    s.Append("品牌名:" + p.BrandName + split);
+            if (!string.IsNullOrWhiteSpace(this.Specifications))
+                s.Append("规格:" + this.Specifications + split);
+            if (!string.IsNullOrWhiteSpace(this.Weight))
+                s.Append("重量:" + this.Weight + split);
+            if (!string.IsNullOrWhiteSpace(this.Manufacturer))
+                s.Append("生产企业:" + this.Manufacturer + split);
+            if (!string.IsNullOrWhiteSpace(this.ApprovalNumber))
+                s.Append("批准文号:" + this.ApprovalNumber + split);
+
+            return s.ToString();
+        }
+    }
+}

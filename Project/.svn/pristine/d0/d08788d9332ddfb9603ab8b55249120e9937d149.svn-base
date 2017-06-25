@@ -1,0 +1,138 @@
+﻿using JXProduct.Component.BLL;
+using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+
+namespace JXProduct.AdminUI.Models.Product
+{
+    public class PendingListModel : JXUtil.RequestPagedBase
+    {
+        public PendingListModel()
+        {
+            this.pagesize = 12;
+        }
+        /// <summary>
+        /// 1:待维护产品基础信息
+        /// 2:待维护商品资质信息
+        /// 3:待审核商品
+        /// 4:待设置商品价格
+        /// </summary>
+        public int PendingType { get; set; }
+        public string ActionName
+        {
+            get
+            {
+                switch (this.PendingType)
+                {
+                    case 1:
+                        return "PendingInfo";
+                    case 2:
+                        return "PendingQualification";
+                    case 3:
+                        return "PendingAudit";
+                    case 4:
+                        return "PendingEditPrice";
+                }
+                return string.Empty;
+            }
+        }
+
+
+        /// <summary>
+        /// 是否有图
+        /// </summary>
+        public int HasImage { get; set; }
+
+
+        // 搜索的商品信息
+        public int HasOldInfo { get; set; }
+        public int ProductID { get; set; }
+        public string ProductCode { get; set; }
+        public string ChineseName { get; set; }
+
+        public Webdiyer.WebControls.Mvc.PagedList<ProductInfo> _pagedList;
+        public Webdiyer.WebControls.Mvc.PagedList<ProductInfo> PagedList
+        {
+            get
+            {
+                if (_pagedList == null)
+                {
+                    int recordCount = 0;
+                    var list = ProductBLL.Instance.Product_GetList(this.pageindex, this.pagesize, "p.UpdateTime ASC", this.ToWhere(), out recordCount);
+                    _pagedList = new Webdiyer.WebControls.Mvc.PagedList<ProductInfo>(list, this.pageindex, this.pagesize, recordCount);
+                }
+                return _pagedList;
+            }
+        }
+        public string ToWhere()
+        {
+            var str = new StringBuilder("1=1");
+            if (this.ProductID > 0)
+            {
+                str.AppendFormat(" AND p.ProductID = {0} ", this.ProductID);
+            }
+            if (!string.IsNullOrWhiteSpace(this.ProductCode))
+            {
+                str.AppendFormat(" AND p.ProductCode='{0}' ", this.ProductCode);
+            }
+            if (!string.IsNullOrWhiteSpace(this.ChineseName))
+            {
+                str.AppendFormat(" AND p.TradeName LIKE '%{0}%' OR p.CADN like '%{0}%' ", this.ChineseName);
+            }
+            if (this.HasOldInfo == 0)
+            {
+                str.AppendFormat(" AND p.CreateTime>'2015-08-01' ");
+            }
+
+            switch (this.HasImage)
+            {
+                case 1:
+                    str.AppendFormat(" AND Len(ISNULL(p.Images,''))=0 ");
+                    break;
+                case 2:
+                    str.AppendFormat(" AND p.Images>'' ");
+                    break;
+            }
+            switch (this.PendingType)
+            {
+                case 1:
+                    {
+                        //待维护信息基础商品
+                        //str.AppendFormat("AND p.Status=3 ");
+                        str.AppendFormat(" AND p.Type=0 AND EXISTS(SELECT * FROM ProductProcess pp WHERE pp.ProductID=p.ProductID and pp.Process1=0 )");
+                    }
+                    break;
+                case 2:
+                    {
+                        //待维护商品资质
+                        //str.AppendFormat(" AND p.Type=0 AND p.Status=3 AND EXISTS(SELECT 1 FROM ProductAudit AS pa WHERE pa.ProductID = p.ProductID AND pa.[Type] =1)");
+                        str.AppendFormat(" AND p.Type=0 AND EXISTS(SELECT * FROM ProductProcess pp WHERE pp.ProductID=p.ProductID and pp.Process2=0 )");
+                    }
+                    break;
+                case 3:
+                    {
+                        //待审核
+                        //已经提交数据
+                        str.AppendFormat(" AND p.Status=3 ");
+                        str.Append(" AND (");
+                        str.Append(" (EXISTS (SELECT 1 FROM ProductQualification AS pq  WHERE pq.ProductID = p.ProductID OR pq.ManufacturerID =P.ManufacturerID)) ");
+                        str.Append(" OR ");
+                        str.Append(" (EXISTS (SELECT 1 FROM ProductProcess AS pp WHERE pp.Process3 = 0 AND (pp.Process1>0 OR pp.Process2 >0  and pp.ProductID =p.ProductID)))");
+                        str.Append(" )");
+                    }
+                    break;
+                case 4:
+                    {
+                        //待设置商品价格
+                        str.AppendFormat(" AND p.Type=0 AND p.Status=0 AND( EXISTS( SELECT 1 FROM JXProductStock.dbo.ProductStock AS ps WHERE ps.ProductCode = p.ProductCode AND ps.UsableStock>0)");
+                        str.AppendFormat(" or EXISTS(SELECT * FROM ProductProcess pp WHERE pp.ProductID=p.ProductID and pp.Process3=1 and pp.Process4=0 ))");
+                    }
+                    break;
+            }
+            return str.ToString();
+        }
+    }
+}

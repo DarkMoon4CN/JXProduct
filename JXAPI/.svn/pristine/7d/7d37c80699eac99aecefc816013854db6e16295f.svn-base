@@ -1,0 +1,183 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrderLogisticsMySqlDAL
+    {
+        private static Database dbw = JXOrderMySqlData.Writer;
+        private static Database dbr = JXOrderMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrderLogisticsMySqlDAL));
+
+        /// <summary>
+        /// 查询订单物流最大ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxOrderLogisticsID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from orderlogistics order by LogisticsID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxOrderLogisticsID 获取订单物流最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        /// <summary>
+        /// 更新订单物流
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateOrderLogistics(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into orderlogistics ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    if (dr["OrderID"].ToString().IndexOf('-') >= 0)
+                    {
+                        dr["OrderID"] = dr["OrderID"].ToString().Substring(dr["OrderID"].ToString().IndexOf('-') + 1);
+                    }
+                    var Placeholder = string.Format(@"('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}')",
+                                     dr["LogisticsID"].ToInt(), Convert.ToInt64(dr["OrderID"]), dr["HouseID"].ToInt(), dr["ExpressID"].ToInt(), dr["LogisticsCompany"].ToString().Replace("\'", "\""), dr["LogisticsNum"].ToString().Replace("\'", "\"")
+                                     , dr["CreateTime"].ToDateTime().ToString(), dr["UID"].ToInt(), dr["Creator"].ToString().Replace("\'", "\""), dr["Weight"].ToDecimal(), dr["Packaging"].ToString().Replace("\'", "\""), dr["Operator"].ToString().Replace("\'", "\""), dr["OperateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        if (result != productTable.Rows.Count)
+                        {
+                            errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0; ;
+                            flag = false;
+                        }
+                        else
+                        {
+                            errorCount = 0;
+                            flag = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateOrderLogistics 更新订单物流表失败,订单物流ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["LogisticsID"], productTable.Rows[productTable.Rows.Count - 1]["LogisticsID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 添加订单物流
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool AddOrderLogistics(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into orderlogistics ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    if (dr["OrderID"].ToString().IndexOf('-') >= 0)
+                    {
+                        dr["OrderID"] = dr["OrderID"].ToString().Substring(dr["OrderID"].ToString().IndexOf('-') + 1);
+                    }
+                    var Placeholder = string.Format(@"('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}')",
+                                     dr["LogisticsID"].ToInt(), Convert.ToInt64(dr["OrderID"]), dr["HouseID"].ToInt(), dr["ExpressID"].ToInt(), dr["LogisticsCompany"].ToString().Replace("\'", "\""), dr["LogisticsNum"].ToString().Replace("\'", "\"")
+                                     , dr["CreateTime"].ToDateTime().ToString(), dr["UID"].ToInt(), dr["Creator"].ToString().Replace("\'", "\""), dr["Weight"].ToDecimal(), dr["Packaging"].ToString().Replace("\'", "\""), dr["Operator"].ToString().Replace("\'", "\""), dr["OperateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        if (result != productTable.Rows.Count)
+                        {
+                            errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0; ;
+                            flag = false;
+                        }
+                        else
+                        {
+                            errorCount = 0;
+                            flag = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddOrderLogistics 添加订单物流失败,订单物流ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["LogisticsID"], productTable.Rows[productTable.Rows.Count - 1]["LogisticsID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        private string parmsKey = string.Format(@"LogisticsID,OrderID,HouseID, ExpressID,LogisticsCompany,LogisticsNum,CreateTime,UID,Creator
+                                                  ,Weight,Packaging,Operator,OperateTime");
+    }
+}

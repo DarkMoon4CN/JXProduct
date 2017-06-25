@@ -1,0 +1,159 @@
+﻿using JXAPI.Common;
+using JXAPI.Component.BLL;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace JXAPI.ConsoleProduct
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            log4net.Config.XmlConfigurator.Configure();
+
+            #region 防止应用程序在配置时间内不退出，这里加上强制退出,一般此程序不会执行
+            string timeSpanStr = GetAppSettingsValue("TimeSpan");
+            double timeSpan = 0;
+            if (!Double.TryParse(timeSpanStr, out timeSpan))
+            {
+                Console.WriteLine("配置文件中商品更新时间间隔配置错误，请重新配置");
+                Console.WriteLine("请按任意键结束");
+                Console.ReadKey(true);
+                return;
+            }
+            System.Timers.Timer timer = new System.Timers.Timer(1000 * 60 * (timeSpan - 2));
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(CloseApplication);
+            //到达时间的时候执行事件；   
+            timer.AutoReset = true;
+            //设置是执行一次（false）还是一直执行(true)；   
+            timer.Enabled = true;
+            //是否执行System.Timers.Timer.Elapsed事件； 
+            #endregion
+
+            InitTableList();
+            for (int i = 0; i < productPlanTableList.Count; i++)
+            {
+                OnStartUpdateMySqlProductPlanTables(productPlanTableList[i]);
+            }
+            //更新商品表中的评论数，好评率字段
+            MySqlProductPlanManager.UpdateEvaluationField();
+            //更新JXHealth库中的Activity表中的LikeUserID，LikeFavor字段
+            MySqlProductPlanManager.UpdateHealthActivityField();
+
+            //当更新数据完成之后，需要情况mysql相应库的数据
+            MySqlProductPlanManager.ProductPlanDelete();
+
+            Environment.Exit(0);
+            Console.Read();
+        }
+
+        //由于在同步mysql时需要向不同库的相同表中同步更新数据，而在sqlserver中对应的是同一张表；
+        //因此在修改sqlserver的同步标记时，要等到mysql多张表更新完成之后才能去更新；
+        private static void OnStartUpdateMySqlProductPlanTables(string tableName)
+        {
+            switch (tableName)
+            {
+                //mysql商品库的数据更新
+                case "Product":
+                case "ProductRelated":
+                    MySqlProductPlanManager.JXProductUpdate(tableName, false);
+                    break;
+                case "ProductClassification":
+                case "ProductCombo":
+                case "ProductParameterPrice":
+                case "Manufacter":
+                case "ProducteValuation":
+                case "Classification":
+                case "Keyword":
+                case "KeywordProduct":
+                case "KeywordRelation":
+                    MySqlProductPlanManager.JXProductUpdate(tableName, true);
+                    break;
+                //mysql活动库的数据更新
+                case "ProductActivity":
+                case "ProductStock":
+                case "Activity":
+                case "ActivityRule":
+                case "Sale":
+                case "Promotion":
+                    MySqlProductPlanManager.JXActivityUpdate(tableName, true);
+                    break;
+                //mysql订单库的数据更新
+                case "JXOrderProduct":
+                case "JXOrderProductrelated":
+                    MySqlProductPlanManager.JXOrderUpdate(tableName, true);
+                    break;
+                //mysql营销库的数据更新
+                case "ProductAll":
+                case "ExpressNews":
+                case "SearchKeyword":
+                case "JXYXProduct":
+                    MySqlProductPlanManager.JXYXUpdate(tableName, true);
+                    break;
+                //sql数据库的商品赠品表需要同时向mysql库中的商品库和订单库更新数据
+                case "ProductGift":
+                    MySqlProductPlanManager.JXProductUpdate(tableName,false);
+                    MySqlProductPlanManager.JXOrderUpdate(tableName,true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public static string GetAppSettingsValue(string key)
+        {
+            return ConfigurationManager.AppSettings[key] ?? string.Empty;
+        }
+
+        //关闭应用程序
+        private static void CloseApplication(object source, System.Timers.ElapsedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        /// <summary>
+        /// 初始加载MySql中产品关联需要更新数据的表
+        /// </summary>
+        private static void InitTableList()
+        {
+            if (productPlanTableList != null)
+            {
+                productPlanTableList.Add("Product");                //  商品表
+                productPlanTableList.Add("ProductActivity");        //  单品活动信息表
+                productPlanTableList.Add("ProductClassification");  //  产品分类表
+                productPlanTableList.Add("ProductCombo");           //  套餐商品表
+                productPlanTableList.Add("ProductGift");            //  商品赠品表
+                productPlanTableList.Add("ProductParameterPrice");  //  商品属性报价表
+                productPlanTableList.Add("ProductRelated");         //  商品关联信息表
+                productPlanTableList.Add("ProductStock");           //  商品库存表
+                productPlanTableList.Add("JXOrderProduct");
+                productPlanTableList.Add("JXOrderProductrelated");
+
+                productPlanTableList.Add("Manufacter");
+                productPlanTableList.Add("ProducteValuation");
+                productPlanTableList.Add("Classification");    //  分类表             
+                productPlanTableList.Add("Keyword");           //  关键词表            
+                productPlanTableList.Add("KeywordProduct");    //  关键词关联商品表    
+                productPlanTableList.Add("KeywordRelation");   //  关键词关联表
+                productPlanTableList.Add("Activity");          //  活动表
+                productPlanTableList.Add("ActivityRule");      //  活动规则表 
+                productPlanTableList.Add("Sale");              //  促销商品表
+                productPlanTableList.Add("ProductAll");        //  全站推荐表
+
+                productPlanTableList.Add("Promotion");         //  展位资源表
+                productPlanTableList.Add("ExpressNews");       //  新闻快讯、公告
+                productPlanTableList.Add("SearchKeyword");
+                productPlanTableList.Add("JXYXProduct");
+            }
+        }
+
+        public static readonly IList<string> productPlanTableList = new List<string>();
+        private static ILog myLog = log4net.LogManager.GetLogger(typeof(Program));
+    }
+}

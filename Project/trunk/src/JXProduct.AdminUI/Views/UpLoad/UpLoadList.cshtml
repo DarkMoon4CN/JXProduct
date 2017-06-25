@@ -1,0 +1,149 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Enums;
+@using JXProduct.Component.Model;
+@{
+    ViewBag.Title = "图片上传测试！";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+    <script src="~/js/uploadify3.2.1/jquery.uploadify.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            om.feedBackInit();
+            //图片字符流
+            var data = { "pushType": "app","isAlias":"1","targetList":"123,456", "sourceType": "android", "section": "11/1101", "method": "jxdyf.push.pushmessage.post", "content": "test:您收到了一份优惠券满100送5千！","template":"1","Url":"http://www.jxdyf.com/+33.jpg" };
+            var orderData = {
+                "method": "jxdyf.orders.keede.orderStatus",
+                "appid": "keede",
+                "sign": "fgI+vebXg6W/c9SLrS7x1Q==",
+                "jsonData": "[{\"OrderID\":\"1\",\"Express_Sn\":\"2\",\"Express_Id\":\"3\",\"express_Name\":\"demo\",\"Sender\":\"demo\",\"Shipped_Time\":11111}]"
+            };
+
+            var orderData2 = {
+                "method": "jxdyf.orders.keede.list",
+                "appid": "keede",
+                "sign": "/e/30iojKuVW2kVomMyIvQ==",
+                "jsonData": "{\"Page\":1,\"Size\":2,\"StartTime\":1442724391535,\"EndTime\":1446180391536}"
+            };
+            alert(orderData);
+            $.ajax({
+                url: "http://192.168.21.212/Partner/Post",
+                 type: "POST",
+                 data: orderData,
+                 dataType: "application/json; charset=UTF-8",
+                 success: function (data) {
+                     alert(data);
+                 }
+             });
+        });
+    </script>
+}
+@section css {
+    <link href="~/js/uploadify3.2.1/uploadify.css" rel="stylesheet" />
+    <link href="~/css/fenbu.css" rel="stylesheet" />
+    <style type="text/css">
+        .Notice1 {
+            position: absolute;
+        }
+
+        .cent_feedBack {
+            height: 40px;
+            padding-top: 20px;
+        }
+
+        .btn_feedBack {
+            width: 64px;
+            height: 30px;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            margin-left: 5px;
+            margin-top: 5px;
+            background: #FFF none repeat scroll 0% 0%;
+        }
+
+        .thun_feedBack {
+            width: 90px;
+            line-height: 28px;
+            height: 28px;
+            border: 1px solid #E7E7EB;
+            border-radius: 3px;
+            padding-left: 10px;
+            margin-left: 10px;
+            outline: medium none;
+            border: 1px solid #E7E7EB;
+        }
+
+        #eTimeDiv {
+            width: 130px;
+        }
+
+        #sTimeDiv {
+            width: 130px;
+        }
+
+        #tboy {
+            margin-left: -15px;
+        }
+
+        #Content_feedBack {
+            width: 464px;
+            height: 200px;
+            background: #FFF;
+            resize: none;
+            overflow: auto;
+            border: 1px solid #E7E7EB;
+            line-height: 24px;
+        }
+
+        .tboy_feedBack {
+            margin-left: 60px;
+            margin-top: 20px;
+        }
+
+        .tboy21_feedBack {
+            width: 107px;
+            height: 33px;
+            background: #0BAF34 none repeat scroll 0% 0%;
+            border: 1px solid #CCC;
+            border-radius: 4px;
+            margin-left: 20px;
+            margin-top: 20px;
+            color: #FFF;
+        }
+    </style>
+
+}
+<form name="form1" id="form1" method="post" action="">
+<div class="footer">
+    <div class="header">
+        <div class="right1">
+            <div class="tp_1">
+                <p><span>意见反馈管理</span></p>
+            </div>
+
+
+            <div class="selecWrap cf1">
+                <span class='fl'>文件：</span>
+                <div>
+                    <input type="file" id="uploadify" name="uploadify" class="thun_feedBack"  />
+                </div>
+            </div>
+
+            <div class="cent_feedBack">
+                @*<button  class="btn_feedBack">确定</button>*@
+                <a id="btn_feedBack" href="javaScript:void(0);">确定</a>
+            </div>
+
+            
+            <div class="sid_top6">
+                <div class="pageW">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</form>

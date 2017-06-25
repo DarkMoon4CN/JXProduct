@@ -1,0 +1,39 @@
+﻿@model JXProduct.AdminUI.Models.Classification.JXClassificationModel
+@{
+    if (Model.JXCFID > 0)
+    {
+        foreach (var t in Model.ParaList)
+        {
+            <div class="spInputWrap clear">
+                <span class="titleName">* @t.ParaName：</span>
+                @switch (t.ParaType)
+                {
+                    case 0:
+                        {
+                            <input type="text" class="inpBtn" name="jxcfpara@(t.JXParaID)" value="@t.ParaValue">
+                        }
+                        break;
+                    case 1:
+                        {
+                            var arr = t.ParaValueList.Split('#');
+                            <label><input type="radio" name="jxcfpara@(t.JXParaID)" value="" />空</label>
+                            foreach (var a in arr)
+                            {
+                                <label><input type="radio" name="jxcfpara@(t.JXParaID)" value="@a" @(t.ParaValue == a ? "checked='checked'" : "") />@a</label>
+                            }
+                        }
+                        break;
+                    case 2:
+                        {
+                            var arr = t.ParaValueList.Split('#');
+                            foreach (var a in arr)
+                            {
+                                <label><input type="checkbox" name="jxcfpara@(t.JXParaID)" value="@a" @(t.ParaValue.Contains(a) ? "checked='checked'" : "") />@a</label>
+                            }
+                        }
+                        break;
+                }
+            </div>
+        }
+    }
+}

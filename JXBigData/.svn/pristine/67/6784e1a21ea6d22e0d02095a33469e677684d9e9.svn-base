@@ -1,0 +1,86 @@
+﻿using JXBigData.Component.BLL;
+using JXBigData.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class AnalyseController : Controller
+    {
+        //
+        // GET: /Analyse/ 搜索分析与 人群分析
+
+        /// <summary>
+        ///  SearchList 页面载体
+        /// </summary>
+        /// <param name="typeID">类型： 0：当天 1：昨天 2：7天 3:30天 4：自定义时间</param>
+        /// <param name="sourceID">来源</param>
+        /// <param name="orderType">0:热门,1:相同搜索</param>
+        /// <param name="startTime">起始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <returns></returns>
+        public ActionResult SearchList(int typeID = 0, int sourceID = 0, int orderType = 0, string startTime = null, string endTime = null)
+        {
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+
+            if (orderType == 0) //查询某一Source 下的查询总量
+            {
+                OperationResult<IList<SearchKeywordDailyInfo>> skInfo =
+                      SearchKeywordDailyBLL.Instance.SearchKeywordDaily_DefaultGet(sourceID,sTime,eTime);
+                ViewBag.SKInfoList = skInfo.AppendData;
+            }
+            else //if(orderType==1) 查询所有总集合总量
+            {
+                OperationResult<IList<SearchKeywordCountInfo>> skcInfo =
+                        SearchKeywordDailyBLL.Instance.SearchKeywordDaily_AllGet(sTime, eTime);
+                ViewBag.SKCInfoList = skcInfo.AppendData;
+            }
+            ViewBag.OrderType = orderType;
+            ViewBag.TypeID = typeID;
+            ViewBag.SourceID = sourceID;
+            ViewBag.StartTime = startTime;
+            ViewBag.EndTime = endTime;
+            return View();
+        }
+
+        private void GetTime(string startTime, string endTime, int typeID, ref DateTime sTime, ref DateTime eTime)
+        {
+            //设定当前时间和结束时间
+            switch (typeID)
+            {
+                case 0:
+                    sTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 1:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-1).ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 2:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-7).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 3:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-30).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 4:
+                    sTime = DateTime.Parse(startTime + " 00:00:00");
+                    eTime = DateTime.Parse(endTime + " 23:59:59");
+                    break;
+                case 5:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-90).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+            }
+        }
+    }
+}
+
+

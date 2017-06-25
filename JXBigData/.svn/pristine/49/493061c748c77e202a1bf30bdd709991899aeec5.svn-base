@@ -1,0 +1,107 @@
+﻿using JXBigData.Component.BLL;
+using JXBigData.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Webdiyer.WebControls.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class ProductTradeController : Controller
+    {
+        //
+        // GET: /ProductTrade/
+
+        public ActionResult List(int pageIndex = 1, int cfid = 0, int sourceID = 0, int orderType = 0, int typeID = 0, string startTime = null, string endTime = null)
+        {
+            //orderType  0综合排序 1商品类别排序  2平台排序
+            int pageSize=40;//单页大小
+            int count = 0;//返回数据结果总数
+            string strWhere = string.Empty;
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            if (orderType == 1 && cfid==0) 
+            {
+                cfid = 1;
+                sourceID = 0;
+            }
+            if (orderType == 1 && cfid > 0)
+            {
+
+                //推算出一级分类
+                strWhere += " AND SUBSTRING(c.Path,1,"+cfid.ToString().Length+") = '"+cfid+"'";
+                sourceID = 0;
+                orderType = 1;
+            }
+            else if (orderType == 2)
+            {
+                strWhere += " AND d.Source = " + sourceID + " ";
+                cfid = 0;
+                orderType = 2;
+            }
+            if (!string.IsNullOrEmpty(startTime) && !string.IsNullOrEmpty(endTime))
+            {
+                strWhere += " AND d.CreateDate >= '" + sTime.ToString()+ "' AND d.CreateDate <='"+eTime.ToString()+"' ";
+            }
+            OperationResult<IList<OrderProductDailyInfo>>  opResult=
+                              OrderProductDailyBLL.Instance.OrderProductDaily_GetList(pageIndex,pageSize,"",strWhere,out count);
+            ViewBag.OrderProductList = opResult.AppendData;
+            ViewBag.PageList = new PagedList<OrderProductDailyInfo>(opResult.AppendData, pageIndex, pageSize, count);
+            ViewBag.OrderType = orderType;
+            ViewBag.TypeID = typeID;
+            ViewBag.CFID = cfid.ToString();
+            ViewBag.SourceID = sourceID.ToString();
+            ViewBag.StartTime = startTime;
+            ViewBag.EndTime = endTime;
+            if (cfid != 0)
+            {
+                ViewBag.CF_GetList = CF_GetList();
+            }
+            return View();
+        }
+
+
+        public IList<JXProduct.Component.Model.ClassificationInfo> CF_GetList() 
+        {
+            //用户获取分类一级列表
+            int count=0;
+            return JXProduct.Component.BLL.ClassificationBLL.Instance.Classification_GetList(1, int.MaxValue, " cfid asc ", " parentid=0", out count);
+        }
+
+        private void GetTime(string startTime, string endTime, int typeID, ref DateTime sTime, ref DateTime eTime)
+        {
+            //设定当前时间和结束时间
+            switch (typeID)
+            {
+                case 0:
+                    sTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 1:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-1).ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 2:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-7).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 3:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-30).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 4:
+                    sTime = DateTime.Parse(startTime + " 00:00:00");
+                    eTime = DateTime.Parse(endTime + " 23:59:59");
+                    break;
+                case 5:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-90).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "brandList";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section js{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/Content/js/jquery.unobtrusive-ajax.min.js"></script>
+}
+@model JXProduct.AdminUI.Models.Brand.BrandSearchModel
+<div id="l-content-right" class='commodity-wrap '>
+    <div class="comm-admin row" style="margin:20px 0px 10px 0px;">
+        @{ Ajax.BeginForm("brandlist", "brand", new { pageindex = 1 }, new AjaxOptions { UpdateTargetId = "tablelist", HttpMethod = "post", InsertionMode = InsertionMode.Replace }, new { id = "form1", @class = "form-inline" });}
+        <div class="form-group">
+            <label for="brandName">品牌名称</label>
+            <input type="text" class="form-control" id="brandName" name="BrandName" value="@Model.BrandName" placeholder="品牌名称">
+        </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+        <a href="/brand/edit" class="btn btn-default">添加品牌</a>
+        @{ Html.EndForm();}
+    </div>
+    <div class="container-fluid">
+        <div class="table-responsive" id="tablelist">
+            @{ Html.RenderPartial("_PartialList"); }
+        </div>
+    </div>
+</div>

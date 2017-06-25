@@ -1,0 +1,113 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Enums
+{
+    public class Product
+    {
+        /// <summary>
+        /// 商品类别
+        /// </summary>
+        public enum ProductType
+        {
+            单轨,
+            药品,
+            非药品,
+            双轨
+        }
+
+        /// <summary>
+        /// 药品类型
+        /// </summary>
+        public enum DrugType
+        {
+            处方药 = 1,
+            甲类非处方药,
+            乙类非处方药
+        }
+
+        /// <summary>
+        /// 产地
+        /// </summary>
+        public enum Origin
+        {
+            国产 = 1,
+            进口 = 2
+        }
+
+        /// <summary>
+        /// 药品分类
+        /// </summary>
+        public enum DrugClassification
+        {
+            中成药 = 1,
+            西药 = 2
+        }
+        /// <summary>
+        /// 正常:0
+        /// 冻结:1
+        /// 删除:2
+        /// 待审核:3
+        /// 审核未通过:4
+        /// </summary>
+        public enum ProductStatus
+        {
+            正常,
+            冻结,
+            删除,
+            待审核,
+            审核未通过
+        }
+
+        /// <summary>
+        /// 贮藏条件
+        /// </summary>
+        public enum Storage
+        {
+            冷藏 = 1,
+            阴凉,
+            常温
+        }
+
+        /// <summary>
+        /// 使用方式
+        /// </summary>
+        public enum Usage
+        {
+            内服 = 1,
+            外用
+        }
+
+        public enum PropType
+        {
+            颜色 = 1,
+            尺寸 = 2,
+            度数 = 3
+        }
+        public enum AuditType
+        {
+            商品资质 = 1,
+            商品信息 = 2,
+            详情图片 = 3
+        }
+        public enum AuditStatus
+        {
+            未审核 = 0,
+            通过审核,
+            未通过审核
+        }
+        public static Dictionary<int, string> Audit
+        {
+            get
+            {
+                return new Dictionary<int, string> { 
+                    {1,"<div class=\"examine-state-y\"></div>"},
+                    {0,"<div class=\"examine-state-d\"></div>"},
+                    {2,"<div class=\"examine-state-w\"></div>"}
+                };
+            }
+        }
+    }
+}

@@ -1,0 +1,345 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using JXSearch.Engine.Product;
+using JXSearch.Engine.Keywords;
+
+namespace JXSearch.Engine
+{
+    public class JXSearchProviderCreator
+    {
+        public static JXSearchProvider CreateProvider(JXSearchType t)
+        {
+            JXSearchProvider provider = null;
+            switch (t)
+            {
+                case JXSearchType.Product:
+                    provider = new ProductSearchProvider();
+                    break;
+                default:
+                    provider = new KeywordSearchProvider();
+                    break;
+            }
+            return provider;
+        }
+    }
+
+    public enum JXSearchType
+    {
+        Product = 1,
+        Keywords = 2,
+    }
+
+    /// <summary>
+    /// 搜索结果返回实体
+    /// </summary>
+    public class JXSearchEntityResult
+    {
+        /// <summary>
+        /// 关键词列表
+        /// </summary>
+        public IList<JXSearchEntity> listKeyword { get; set; }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int total { get; set; }
+
+        /// <summary>
+        /// 页数
+        /// </summary>
+        public int totalPage { get; set; }
+
+        /// <summary>
+        /// 标记 Fail/SUCCEED
+        /// </summary>
+        public string resultCode { get; set; }
+
+        /// <summary>
+        /// 提示
+        /// </summary>
+        public string resultMsg { get; set; }
+    }
+
+    /// <summary>
+    /// 商品搜索结果
+    /// </summary>
+    public class JXSearchProductResult
+    {
+        /// <summary>
+        /// 商品列表
+        /// </summary>
+        public IList<ProductSimpleInfo> listProductList { get; set; }
+
+        /// <summary>
+        /// 商品分类列表
+        /// </summary>
+        public IList<JXSearchEntity> listClassification { get; set; }
+
+        /// <summary>
+        /// 品牌列表
+        /// </summary>
+        public IList<JXSearchEntity> listBrand { get; set; }
+
+        /// <summary>
+        /// 记录数
+        /// </summary>
+        public int total { get; set; }
+
+        /// <summary>
+        /// 页数
+        /// </summary>
+        public int totalPage { get; set; }
+
+        /// <summary>
+        /// 标记 Fail/SUCCEED
+        /// </summary>
+        public string resultCode { get; set; }
+
+        /// <summary>
+        /// 提示
+        /// </summary>
+        public string resultMsg { get; set; }
+    }
+
+    #region 搜索实体
+    /// <summary>
+    /// 搜索结果实体
+    /// </summary>
+    public class JXSearchEntity
+    {
+        /// <summary>
+        /// 结果ID
+        /// </summary>
+        public int id { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string chineseName { get; set; }
+
+        /// <summary>
+        /// 类型  0=关键词 1=疾病 2=分类 5=品牌
+        /// </summary>
+        public int typeID { get; set; }
+
+        /// <summary>
+        /// 上一级
+        /// </summary>
+        public int parentID { get; set; }
+
+        /// <summary>
+        /// 商品数
+        /// </summary>
+        public int productCount { get; set; }
+
+        /// <summary>
+        /// 子类目
+        /// </summary>
+        public IList<JXSearchEntity> listSubClassification { get; set; }
+    }
+
+    /// <summary>
+    /// 商品搜索结果实体
+    /// </summary>
+    public class ProductSimpleInfo
+    {
+        /// <summary>
+        /// 金象ID
+        /// </summary>
+        public int productID { get; set; }
+
+        /// <summary>
+        /// 金象码
+        /// </summary>
+        public string productCode { get; set; }
+
+        /// <summary>
+        /// 中文名称
+        /// </summary>
+        public string chineseName { get; set; }
+
+        /// <summary>
+        ///药品通用名称
+        /// </summary>
+        public string cadn { get; set; }
+
+        /// <summary>
+        ///长名称，可以填写功效或者活动信息
+        /// </summary>
+        public string longName { get; set; }
+
+        /// <summary>
+        /// 短名称
+        /// </summary>
+        public string briefName { get; set; }
+
+        /// <summary>
+        /// 英文名称
+        /// </summary>
+        public string pinyinName { get; set; }
+        
+        /// <summary>
+        /// 市场价
+        /// </summary>
+        public Decimal marketPrice { get; set; }
+
+        /// <summary>
+        /// 成交价
+        /// </summary>
+        public Decimal tradePrice { get; set; }
+
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string images { get; set; }
+
+        /// <summary>
+        ///活动 （0=无、1=新品、2=限时、3=热卖、4=热销、5=特价、6=赠品、7=员工商品）
+        /// </summary>
+        public short actions { get; set; }
+
+        /// <summary>
+        /// 上架状态
+        /// </summary>
+        public int selling { get; set; }
+
+        /// <summary>
+        /// 卖出数量
+        /// </summary>
+        public int sellCount { get; set; }
+
+        /// <summary>
+        /// 收藏数量
+        /// </summary>
+        public int favorCount { get; set; }
+
+        /// <summary>
+        /// 评价数量
+        /// </summary>
+        public int comments { get; set; }
+
+        /// <summary>
+        /// 规格
+        /// </summary>
+        public string specifications { get; set; }
+
+        /// <summary>
+        ///库存
+        /// </summary>
+        public int stock { get; set; }
+
+        /// <summary>
+        ///生产厂家
+        /// </summary>
+        public string manufacturer { get; set; }
+
+        /// <summary>
+        /// 限购数量
+        /// </summary>
+        public int buyLimint { get; set; }
+
+        /// <summary>
+        ///商品类型 0：单轨 1：非处方药 2：非药品 3：双轨
+        /// </summary>
+        public int productType { get; set; }
+
+        /// <summary>
+        ///缩写 rx=处方药 otc=非处方药 qx=器械 qt=其它
+        /// </summary>
+        public string abbreviation { get; set; }
+
+        /// <summary>
+        /// 搜索关键词分数
+        /// </summary>
+        public float score { get; set; }
+
+        /// <summary>
+        /// 排序等级
+        /// </summary>
+        public float level { get; set; }
+
+        /// <summary>
+        /// 好评率
+        /// </summary>
+        public float goodEvaluateRate { get; set; }
+
+        /// <summary>
+        /// 上架时间
+        /// </summary>
+        public DateTime? sellingTime { get; set; }
+    }
+    
+    /// <summary>
+    /// 请求Form
+    /// </summary>
+    public class RequestForm
+    {
+        /// <summary>
+        /// 查询参数
+        /// </summary>
+        public QueryForm queryForm { get; set; }
+
+        /// <summary>
+        /// 查询分页
+        /// </summary>
+        public PageForm pageForm { get; set; }
+    }
+
+    /// <summary>
+    /// 查询参数
+    /// </summary>
+    public class QueryForm
+    {
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public int cfid { get; set; }
+
+        public IList<int> brandIds { get; set; }
+
+        /// <summary>
+        /// 关键词
+        /// </summary>
+        public string keyword { get; set; }
+
+        /// <summary>
+        /// 价格区间
+        /// </summary>
+        public string pricelimit { get; set; }
+
+        /// <summary>
+        /// 是否有库存
+        /// </summary>
+        public int store { get; set; }
+
+        /// <summary>
+        /// 是否有库存 >1=是
+        /// </summary>
+        public int stock { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int order { get; set; }
+    }
+
+    /// <summary>
+    /// 查询分页
+    /// </summary>
+    public class PageForm
+    {
+        /// <summary>
+        /// 当前页
+        /// </summary>
+        public int page { get; set; }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int size { get; set; }
+    }
+    #endregion
+}

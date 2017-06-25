@@ -1,0 +1,352 @@
+using JXProduct.Component.Enums;
+using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+namespace JXProduct.Component.BLL
+{
+    public class ProductBLL
+    {
+        private ProductBLL() { }
+        private static ProductBLL _instance;
+        private static readonly JXProduct.Component.SQLServerDAL.ProductDAL dal = new JXProduct.Component.SQLServerDAL.ProductDAL();
+
+        public static ProductBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ProductBLL());
+            }
+        }
+
+        #region CURD
+
+        ///// <summary>
+        ///// Product_Insert Method
+        ///// </summary>
+        ///// <param name="ProductInfo">Product object</param>
+        ///// <returns>The new ID : int </returns>
+        //public int Product_Insert(ProductInfo productinfo)
+        //{
+        //    return dal.Product_Insert(productinfo);
+        //}
+
+        public int Product_AddNew(ProductInfo productInfo)
+        {
+            return dal.Product_AddNew(productInfo);
+        }
+
+        /// <summary>
+        /// Product_Update Method		
+        /// </summary>
+        /// <param name="ProductInfo">Product object</param>
+        /// <returns>true:成功 false:失败</returns>
+        public bool Product_Update(ProductInfo productinfo)
+        {
+            if (productinfo.ProductID == 0)
+            {
+                //return this.Product_Insert(productinfo) > 0;
+                return this.Product_AddNew(productinfo) > 0;
+            }
+            return dal.Product_Update(productinfo);
+        }
+
+
+        /// <summary>
+        /// Product_Get Method
+        /// </summary>
+        public ProductInfo Product_Get(Int32 productid)
+        {
+            return dal.Product_Get(productid);
+        }
+
+        /// <summary>
+        /// Product_Delete Method
+        /// </summary>
+        /// <returns>true:成功 false:失败</returns>	
+        public bool Product_Delete(Int32 productid)
+        {
+            return dal.Product_Delete(productid);
+        }
+
+        /// <summary>
+        /// Product_GetList Method
+        /// </summary>
+        /// <param name="pageIndex">起始页码</param>
+        /// <param name="pageSize">每页数据数</param>
+        /// <param name="orderType">设置排序，'':没有排序要求 0：主键升序 1：主键降序 字符串：用户自定义排序规则 如：‘SubmitTime DESC , ID DESC’</param>
+        /// <param name="strWhere">查询条件(注意: 不要加 WHERE)</param>
+        /// <param name="recordCount">总记录数</param>
+        /// <returns>A Generic List of ProductInfo</returns>
+        public IList<ProductInfo> Product_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            return dal.Product_GetList(pageIndex, pageSize, orderType, strWhere, out recordCount);
+        }
+
+        public IList<ProductInfo> Product_GetList(List<int> productlist)
+        {
+
+            if (productlist != null && productlist.Count > 0)
+            {
+                int recordCount = 0;
+                return this.Product_GetList(1, 0, string.Empty, "ProductID in (" + string.Join(",", productlist) + ")", out recordCount);
+            }
+            return new List<ProductInfo>();
+        }
+
+        #endregion
+
+        #region 快速编辑
+
+        public bool Product_QuickEdit(QuickEditModel model)
+        {
+            if (model.ProductGiftCount > 0 && model.ProductGiftID == 0)
+                model.ProductGiftCount = 0;
+            return dal.Product_QuickEdit(model);
+        }
+
+        #endregion
+
+        #region 编辑 价格
+
+        public bool Product_PriceEdit(int productid, decimal marketprice, decimal tradeprice, decimal mobileprice, string updater)
+        {
+            return dal.Product_PriceEdit(productid, marketprice, tradeprice, mobileprice, updater);
+        }
+
+        #endregion
+
+        #region 上下架 html  活动标识
+
+        public string Product_GetSellingHtml(int selling)
+        {
+            var dic = JXUtil.EnumHelper.GetList<Selling>();
+            var str = new StringBuilder();
+            foreach (var d in dic)
+            {
+                str.AppendFormat("<option value='{0}' {2}>{1}</option>", d.Key, d.Value, d.Key == selling ? "selected='selected'" : "");
+            }
+            return str.ToString();
+        }
+
+        public string Product_GetActionsHtml(int actions)
+        {
+            var dic = JXUtil.EnumHelper.GetList<ProductActions>();
+            var str = new StringBuilder();
+            str.AppendFormat("<option value='{0}'>{1}</option>", "0", "暂无");
+            foreach (var d in dic)
+            {
+                str.AppendFormat("<option value='{0}' {2}>{1}</option>", d.Key, d.Value, d.Key == actions ? "selected='selected'" : "");
+            }
+            return str.ToString();
+        }
+        #endregion
+
+        #region 药剂类型数据
+
+        public List<string> Product_GetDosage
+        {
+            get
+            {
+                return new List<string>() {
+                  "汤剂",
+                  "丸剂",
+                  "散剂",
+                  "膏剂",
+                  "片剂",
+                  "糖浆",
+                  "胶囊",
+                  "滴丸",
+                    "喷雾剂",
+                    "气雾剂",
+                    "粉雾剂",
+                    "栓剂",
+                    "贴剂",
+                    "冲剂",
+                    "洗剂",
+                    "搽剂",
+                    "注射剂",
+                    "药酒"
+                };
+            }
+        }
+
+        #endregion
+
+        #region 说明书
+
+        public bool Product_SaveInstructions(ProductInstructionsInfo info)
+        {
+            return dal.Product_SaveInstructions(info);
+        }
+
+        public ProductInstructionsInfo Product_GetInstructions(int productid)
+        {
+            ProductInstructionsInfo info = null;
+            if (productid > 0)
+                info = dal.Product_GetInstructions(productid);
+            return info ?? new ProductInstructionsInfo();
+        }
+
+        #endregion
+
+        #region 商品图片
+
+        public string Product_UpdateImage(string images, int index, string path)
+        {
+            var list = images.Split('|').ToList();
+            var dic = new Dictionary<int, string>();
+            foreach (var l in list)
+            {
+                if (!string.IsNullOrWhiteSpace(l))
+                {
+                    var i = l.LastIndexOf('.');
+                    i = int.Parse(l.Substring(i - 1, 1));
+                    dic.Add(i, l);
+                }
+            }
+            if (dic.ContainsKey(index))
+                dic[index] = path;
+            else
+                dic.Add(index, path);
+            return string.Join("|", dic.OrderBy(t => t.Key).Select(t => t.Value));
+        }
+
+
+        public Dictionary<int, string> GetImages(string images)
+        {
+            var list = images.Split('|').ToList();
+            var dic = new Dictionary<int, string>();
+            for (int i = 0; i < 5; i++)
+            {
+                var path = list.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t) && t.Contains("_S" + (i + 1)));
+                if (path == null)
+                    dic.Add(i, "");
+                else
+                    dic.Add(i, path);
+            }
+            return dic;
+        }
+        public Dictionary<int, string> GetDescImages(string desc)
+        {
+            var list = desc.Split('|').ToList();
+            var dic = new Dictionary<int, string>();
+            foreach (var img in list)
+            {
+                if (string.IsNullOrWhiteSpace(img))
+                    continue;
+                var s = img.Substring(img.IndexOf("_L") + "_L".Length);
+                var index = int.Parse(s.Substring(0, s.IndexOf('.')));
+                dic.Add(index, img);
+            }
+            var max = dic.Count > 0 ? dic.Max(t => t.Key) : 5;
+            max = max > 5 ? max : 5;
+            for (var i = 1; i <= max; i++)
+            {
+                if (!dic.ContainsKey(i))
+                {
+                    dic.Add(i, "");
+                }
+            }
+            return dic.OrderBy(t => t.Key).ToDictionary(t => t.Key, t => t.Value);
+        }
+
+        #endregion
+
+        #region 审核
+
+        public List<ProductAuditInfo> ProductAudit_Get(params int[] productid)
+        {
+            var productids = string.Join(",", productid);
+            return dal.ProductAudit_Get(productids);
+        }
+        public bool ProductAudit_Save(ProductAuditInfo info)
+        {
+            if (info.Type == (short)JXProduct.Component.Enums.Product.AuditType.商品信息)
+            {
+                int recordCount = 0;
+                var products = this.Product_GetList(1, 0, "", string.Format(" p.ProductID in(SELECT pb.productid FROM Product AS pa INNER JOIN product pb ON pa.ProductCode = pb.ProductCode WHERE pa.ProductID = {0})", info.ProductID), out recordCount);
+                if (recordCount == 1)
+                {
+                    return dal.ProductAudit_Save(info);
+                }
+                else
+                {
+                    foreach (var p in products)
+                    {
+                        info.ProductID = p.ProductID;
+                        dal.ProductAudit_Save(info);
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                return dal.ProductAudit_Save(info);
+            }
+        }
+
+        /// <summary>
+        /// 审核HTML  为
+        /// </summary>
+        public Dictionary<int, string> Audit
+        {
+            get
+            {
+                return new Dictionary<int, string> { 
+                    {1,"<div class=\"examine-state-y\"></div>"},
+                    {2,"<div class=\"examine-state-d\"></div>"},
+                    {2,"<div class=\"examine-state-w\"></div>"}
+                };
+            }
+        }
+
+        #endregion
+
+        #region 获取关联商品简单信息
+
+        public List<ProductSimpleInfo> Product_Relateds(int productid, int BrandID, string ChineseName)
+        {
+            var products = dal.Product_Relateds(BrandID, ChineseName);
+            if (products.Count > 0)
+            {
+                var props = ProductParameterPriceBLL.Instance.ProductPropValue_GetList(products.Select(t => t.ProductID).ToArray());
+                foreach (var p in products)
+                {
+                    p.Prop = props.Where(t => t.ProductID == p.ProductID).FirstOrDefault() ?? new ProductPropValueInfo();
+                }
+            }
+            return products;
+        }
+
+        #endregion
+
+        #region 供应商
+
+        public Dictionary<int, string> Product_GetSupplier()
+        {
+            return dal.Product_GetSupplier();
+        }
+
+        #endregion
+
+        #region 检查金象码
+
+        public bool CheckProductCode(string productcode)
+        {
+            return dal.CheckProductCode(productcode);
+        }
+
+        #endregion
+
+        #region 商品的供应商
+
+        public bool Product_SaveSupplier(int productid, int supplierID, string supplierName)
+        {
+            return dal.Product_SaveSupplier(productid, supplierID, supplierName);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,188 @@
+﻿@model JXProduct.AdminUI.Models.Audit.AuditEditPartialModel
+@if (Model.Type == 0 || Model.Type == 1)
+{
+    var index = 0;
+    if (Model.Type == 1)
+    {
+        <div class="enter-two-nav" id="childnav">
+            <ul class="clear">
+                @foreach (var l in Model.ManufacturerItems)
+                {
+                    index++;
+                    <li class="@(index==1?"active":"")"><a href="#">@l.QualificationName</a></li>
+                }
+            </ul>
+        </div>
+                index = 0;
+    }
+    <div class="every-one-info">
+        @foreach (var m in Model.ManufacturerItems)
+        {
+            var isexpire = m.EndDate < JXProduct.Component.BLL.QualificationBLL.Instance.ExpireMonth;
+            index++;
+            <div class="operAdverW clear @(index==1 ?"" : "hide") @(isexpire ? "expire":"") ">
+                <form id="form@(m.QualificationID)">
+                    <div class="light"></div>
+                    <input type="hidden" name="pqid" value="@m.PQID" />
+                    <input type="hidden" name="mid" value="@Model.MID" />
+                    <input type="hidden" name="pid" value="0" />
+                    <input type="hidden" name="qid" value="@m.QualificationID" />
+                    <input type="hidden" name="type" value="@Model.Type" />
+                    <div class="InformaUpload clear">证件名称：@m.QualificationName</div>
+                    @if (Model.IsEdit)
+                    {
+                        <div class="InformaUpload clear">
+                            <span class="fl">证件图片：</span>
+                            <div class="resetUpBtn fl"><span id="upload@(m.QualificationID)"></span></div>
+                            <input type="hidden" name="imgpath" value="@m.Image" />
+                        </div>
+                        if (!string.IsNullOrWhiteSpace(m.Image))
+                        {
+                            <div class="informa-imgWrap" id="upload1content">
+                                <a href="javascript:;" class="closeBtn">X</a>
+                                <img src="http://img.jxdyf.com/other/@(m.Image)" alt="">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="informa-imgWrap hide" id="upload@(m.QualificationID)content"></div>
+                        }
+                        <div class="spInputWrap">
+                            <span>证件号码：</span>
+                            <input class="sf7" type="text" name="number" value="@m.Number">
+                        </div>
+                        <div class="fl inputTitme">
+                            <span class="fl">证件有效期：</span>
+                            <div class="timeBg fl">
+                                <input type="text" name="startdate" value="@(m.StartDate.Year<2000 ?"": m.StartDate.ToString("yyyy-MM-dd"))">
+                                <span></span>
+                            </div>
+                            <div class="timeBg fl">
+                                <input type="text" name="enddate" value="@(m.EndDate.Year < 2000 ? "" : m.EndDate.ToString("yyyy-MM-dd"))">
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="btnsubmit"><a href="#" class="addBtn save">保存</a></div>
+                    }
+                    else
+                    {
+                        <div class="InformaUpload clear">
+                            <span class="fl">证件图片：</span>
+                        </div>
+                        if (!string.IsNullOrWhiteSpace(m.Image))
+                        {
+                            <div class="informa-imgWrap" id="upload1content">
+                                <a href="javascript:;" class="closeBtn">X</a>
+                                <img src="http://img.jxdyf.com/other/@(m.Image)" alt="">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="informa-imgWrap hide" id="upload@(m.QualificationID)content"></div>
+                        }
+                        <div class="spInputWrap">
+                            <span>证件号码：</span>
+                            <input class="sf7" type="text" name="number" value="@m.Number" disabled="disabled">
+                        </div>
+                        <div class="fl inputTitme">
+                            <span class="fl">证件有效期：</span>
+                            <div class="timeBg fl">
+                                <input type="text" name="startdate" value="@(m.StartDate.Year<2000 ?"": m.StartDate.ToString("yyyy-MM-dd"))" disabled="disabled">
+                                <span></span>
+                            </div>
+                            <div class="timeBg fl">
+                                <input type="text" name="enddate" value="@(m.EndDate.Year < 2000 ? "" : m.EndDate.ToString("yyyy-MM-dd"))" disabled="disabled">
+                                <span></span>
+                            </div>
+                        </div>
+                    }
+                </form>
+            </div>
+        }
+    </div>
+}
+else if (Model.Type == 2)
+{
+    <form id="form2">
+        @foreach (var p in Model.ProductItems)
+        {
+            <div class="every-one-info">
+                <input type="hidden" name="mid" value="0" />
+                <input type="hidden" name="pid" value="@Model.PID" />
+                <input type="hidden" name="qid" value="@p.QualificationID" />
+                <input type="hidden" name="type" value="@Model.Type" />
+                <div class="sec-right-title">@p.QualificationName</div>
+                <div class="sec-right-info">温馨提示：如有有效期的一定要填写有效期</div>
+                @if (Model.IsEdit)
+                {
+                    <div class="operAdverW clear">
+                        <div class="InformaUpload clear">
+                            <span class="fl">证件图片：</span>
+                        </div>
+                        if (!string.IsNullOrWhiteSpace(p.Image))
+                        {
+                        <div class="informa-imgWrap" id="upload2content">
+                            <a href="javascript:;" class="closeBtn">X</a>
+                            <img src="http://img.jxdyf.com/other/@p.Image" alt="" alt="">
+                        </div>
+                        }
+                        else
+                        {
+                        <div class="informa-imgWrap hide" id="upload2content">
+                        </div>
+                        }
+                        <div class="spInputWrap">
+                            <span>证件号码：</span>
+                            <input class="sf" type="text" name="number" value="@p.Number" disabled="disabled">
+                        </div>
+                        <div class="fl inputTitme">
+                            <span class="fl">证件有效期：</span>
+                            <div class="timeBg fl">
+                                <input type="text" name="startdate" value="@(p.StartDate.Year<2000 ?"": p.StartDate.ToString("yyyy-MM-dd"))" disabled="disabled" />
+                            </div>
+                            <div class="timeBg fl">
+                                <input type="text" name="enddate" value="@(p.EndDate.Year < 2000 ? "" : p.EndDate.ToString("yyyy-MM-dd"))" disabled="disabled" />
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="InformaUpload clear">
+                        <span class="fl">证件图片：</span>
+                        <div class="resetUpBtn fl"><span id="upload2"></span></div>
+                        <input type="hidden" name="imgpath" />
+                    </div>
+                    if (!string.IsNullOrWhiteSpace(p.Image))
+                    {
+                        <div class="informa-imgWrap" id="upload2content">
+                            <a href="javascript:;" class="closeBtn">X</a>
+                            <img src="http://img.jxdyf.com/other/@p.Image" alt="" alt="">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="informa-imgWrap hide" id="upload2content"></div>
+                    }
+                    <div class="spInputWrap">
+                        <span>证件号码：</span>
+                        <input class="sf" type="text" name="number" value="@p.Number">
+                    </div>
+                    <div class="fl inputTitme">
+                        <span class="fl">证件有效期：</span>
+                        <div class="timeBg fl">
+                            <input type="text" name="startdate" value="@(p.StartDate.Year<2000 ?"": p.StartDate.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="timeBg fl">
+                            <input type="text" name="enddate" value="@(p.EndDate.Year < 2000 ? "" : p.EndDate.ToString("yyyy-MM-dd"))" />
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        @if (Model.IsEdit)
+        {
+            <div class="save-btn"><a href="#" class="addBtn save">保存</a></div>
+        }
+    </form>
+}

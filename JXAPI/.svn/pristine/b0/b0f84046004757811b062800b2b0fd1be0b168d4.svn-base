@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+using JXAPI.Component.Model;
+namespace JXAPI.Component.BLL
+{
+    public class ProductBLL
+    {
+        private ProductBLL() { }
+        private static ProductBLL _instance;
+        private static readonly JXAPI.Component.SQLServerDAL.ProductDAL dal = new JXAPI.Component.SQLServerDAL.ProductDAL();
+
+        public static ProductBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ProductBLL());
+            }
+        }
+
+        #region CURD
+
+        public List<ProductInfo> Product_Page(int startRow,int endRow)
+        {
+            
+            return dal.Product_Page(startRow, endRow);
+        }
+        public int Product_Count()
+        {
+            return dal.Product_Count();
+        }
+        #endregion    
+    }
+}

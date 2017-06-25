@@ -1,0 +1,142 @@
+using System;
+using System.Collections.Generic;
+using JXProduct.Component.Model;
+using System.Text;
+using System.Linq;
+namespace JXProduct.Component.BLL
+{
+    public class ClassificationBLL
+    {
+        private ClassificationBLL() { }
+        private static ClassificationBLL _instance;
+        private static readonly JXProduct.Component.SQLServerDAL.ClassificationDAL dal = new JXProduct.Component.SQLServerDAL.ClassificationDAL();
+        public static ClassificationBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ClassificationBLL());
+            }
+        }
+
+        #region CURD
+
+        /// <summary>
+        /// 添加分类 
+        /// 0 : 添加失败
+        /// >0: 添加成功
+        /// </summary>
+        /// <param name="ClassificationInfo">Classification object</param>
+        /// <returns>The new ID : int </returns>
+        public int Classification_Insert(ClassificationInfo cfinfoinfo)
+        {
+            return dal.Classification_Insert(cfinfoinfo);
+        }
+
+        /// <summary>
+        /// Classification_Update Method		
+        /// </summary>
+        /// <param name="ClassificationInfo">Classification object</param>
+        /// <returns>true:成功 false:失败</returns>
+        public int Classification_Update(ClassificationInfo cfinfoinfo)
+        {
+            return dal.Classification_Update(cfinfoinfo);
+        }
+
+
+        /// <summary>
+        /// Classification_Get Method
+        /// </summary>
+        public ClassificationInfo Classification_Get(Int32 cfid)
+        {
+            return dal.Classification_Get(cfid);
+        }
+
+        /// <summary>
+        /// Classification_Delete Method
+        /// </summary>
+        /// <returns>true:成功 false:失败</returns>	
+        public bool Classification_Delete(Int32 cfid)
+        {
+            return dal.Classification_Delete(cfid);
+        }
+
+        /// <summary>
+        /// Classification_GetList Method
+        /// </summary>
+        /// <param name="pageIndex">起始页码</param>
+        /// <param name="pageSize">每页数据数</param>
+        /// <param name="orderType">设置排序，'':没有排序要求 0：主键升序 1：主键降序 字符串：用户自定义排序规则 如：‘SubmitTime DESC , ID DESC’</param>
+        /// <param name="strWhere">查询条件(注意: 不要加 WHERE)</param>
+        /// <param name="recordCount">总记录数</param>
+        /// <returns>A Generic List of ClassificationInfo</returns>
+        public IList<ClassificationInfo> Classification_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            return dal.Classification_GetList(pageIndex, pageSize, orderType, strWhere, out recordCount);
+        }
+
+        public IList<ClassificationInfo> Classification_GetList(int parentid = -1)
+        {
+            int count = 0;
+            if (parentid >= 0)
+            {
+                return dal.Classification_GetList(1, 0, "cfid asc", "status=0 and parentid=" + parentid, out count);
+            }
+            else
+            {
+                return dal.Classification_GetList(1, 0, "0", "status=0", out count);
+            }
+        }
+
+        public List<ClassificationInfo> Classification_GetPathList(int cfid)
+        {
+            return dal.Classification_GetPathList(cfid);
+        }
+
+        #endregion
+
+
+        #region 报价属性
+
+        public List<ClassificationParameterToPriceInfo> ClassificationParameterToPrice_Get(int cfid)
+        {
+            return dal.ClassificationParameterToPrice_Get(cfid);
+        }
+
+        #endregion
+
+        public string ToSelect(IList<ClassificationInfo> list, string path)
+        {
+            var str = new StringBuilder();
+            if (string.IsNullOrEmpty(path))
+            {
+                str.Append("<select name='cf1'><option value='0'>请选择</option>");
+                foreach (var s in list.Where(t => t.ParentID == 0).OrderBy(t => t.CFID))
+                {
+                    str.AppendFormat("<option value='{1}' >{0}</option>", s.ChineseName, s.CFID);
+                }
+                str.Append("</select>");
+                str.Append("<select name='cf2'><option value='0'>请选择</option></select>");
+                str.Append("<select name='cf3'><option value='0'>请选择</option></select>");
+            }
+            else
+            {
+                var patharr = path.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                int parentid = 0;
+                int index = 0;
+                foreach (var p in patharr)
+                {
+                    index++;
+                    var select = list.Where(t => t.ParentID == parentid).OrderBy(t => t.CFID).ToList();
+                    parentid = int.Parse(p);
+                    str.Append("<select name='cf" + index + "'><option value='0'>请选择</option>");
+                    foreach (var s in select)
+                    {
+                        str.AppendFormat("<option value='{1}' {2}>{0}</option>", s.ChineseName, s.CFID, s.CFID == parentid ? "selected='selected'" : "");
+                    }
+                    str.Append("</select>");
+                }
+            }
+            return str.ToString();
+        }
+    }
+}

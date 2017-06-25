@@ -1,0 +1,105 @@
+﻿@using JXProduct.Component.Model
+@using JXProduct.Component.BLL
+@using JXProduct.Component.Enums
+@model JXProduct.AdminUI.Models.Product.RelatedModel
+@{
+    int productid = Model.ProductID;
+    int index;
+    int type = Model.RelatedType;
+    if (type == (int)RelatedType.大包装)
+    {
+        var list1 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.大包装);
+        index = 0;
+        <table class="table">
+            <tr class='bg'>
+                <th>序号</th>
+                <th class='tabWidth'>商品选择名称</th>
+                <th>大包装商品ID</th>
+                <th>大包装金象码</th>
+                <th>数量</th>
+                <th>大包装价格</th>
+                <th>大包装规格</th>
+                <th>大包装库存</th>
+                <th>操作</th>
+            </tr>
+            @foreach (var l in list1)
+            {
+                <tr >
+                    <td>@(++index)</td>
+                    <td class='colBlue'><a href="http://www.jxdyf.com/product/@(l.ChildProductID).html" target="_blank">@l.Name</a></td>
+                    <td>@l.product.ProductID</td>
+                    <td>@l.product.ProductCode</td>
+                    <td>@l.product.LargePacking</td>
+                    <td class='cloRed'>￥<span>@l.product.TradePrice</span></td>
+                    <td>@l.product.Specifications</td>
+                    <td>@Math.Floor(l.product.ProductStock/l.product.LargePacking*1.0).ToString("0")</td>
+                    <td class='cz' index="index" relatedid="@l.RelatedID" chinesename="@l.product.ChineseName" longname="@l.product.LongName">
+                        <a href="#" name="edit">编辑</a>
+                        <a href="#" name="del">删除</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else if (type == (int)RelatedType.不同规格)
+    {
+        index = 0;
+        var list2 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.不同规格).OrderByDescending(t => { return t.ProductID == t.ChildProductID; }); ;
+        <table class="table">
+            <tr class='bg'>
+                <td></td>
+                <th>商品ID</th>
+                <th class='tabWidth'>商品名称</th>
+                <th>规格</th>
+                <th>前台商品销售名称</th>
+                <th>价格</th>
+                <th>操作</th>
+            </tr>
+            @foreach (var l in list2)
+            {
+                <tr>
+                    <td>@(index == 0 ? "主商品" : "子商品" + index)</td>
+                    <td>@l.ChildProductID</td>
+                    <td>@l.ChildName</td>
+                    <td>@l.Specifications</td>
+                    <td>@l.Name</td>
+                    <td>@l.ChildPrice</td>
+                    <td class='cz' relatedid="@l.RelatedID">
+                        <a href="#" name="del">删除</a>
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+    }
+    else if (type == (int)RelatedType.最佳推荐)
+    {
+        var list3 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.最佳推荐).OrderByDescending(t => { return t.ProductID == t.ChildProductID; }); ;
+        index = 0;
+        <table class="taoCanZH table">
+            <thead>
+                <tr class='bg'>
+                    <th style="width:80px;"></th>
+                    <th>商品ID</th>
+                    <th class='tabWidth'>商品名称</th>
+                    <th>商品价格</th>
+                    <th> 操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var l in list3)
+                {
+                    <tr>
+                        <td>关联推荐@(++index)</td>
+                        <td>@l.ChildProductID</td>
+                        <td class='colBlue'>@l.ChildName</td>
+                        <td class='cloRed'>@l.ChildPrice</td>
+                        <td class='cz'>
+                            <a href="#" name="del" relatedid="@l.RelatedID">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

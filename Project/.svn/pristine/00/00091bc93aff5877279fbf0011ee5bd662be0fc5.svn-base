@@ -1,0 +1,252 @@
+﻿@using JXProduct.Component.Model
+@using Webdiyer.WebControls.Mvc
+@{
+    ViewBag.Title = "报价属性";
+}
+@section css{
+    <style>
+        body { font-size: 12px; }
+        .commAttr .commColorRight, .commAttr .commBoxRight, .commAttr .commColorLeft { margin-bottom: 0px; padding-bottom: 0px; }
+        .commAttr .commColorLeft { width: 120px; }
+        .commAttr .commColorRight { width: 600px; }
+        .attrInput { padding-left: 0px; }
+    </style>
+}
+@section script{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () {
+            var $msg = $('#msg');
+            var $input = $('input:radio');
+            var $productid = $('#productid');
+            var $childproduct = $('input[name=childproduct]');
+            var $parapriceid = $('#hidden_parapriceid');
+            var hasMain = $('#parapricelist table>tbody>tr').length > 0;
+            $childproduct.on("keyup change blur", function () { $(this).next().addClass("hide"); });
+            $input.on("click", function () { clearItem(); getViewName(); });
+            $('a[name=add]').on("click", function () {
+                var $this = $(this);
+                //循环prop
+                var noChecked = false;
+                var prop1 = '', prop2 = '', prop3 = '';
+                var childproductid = 0;
+
+                $('.prop').each(function (i, item) {
+                    var $item = $(item);
+                    var $checked = $item.find(':checked');
+                    noChecked = $checked.length == 0;
+                    if (noChecked) {
+                        return false;
+                    }
+                    var prop = $item.find(".commColorRight").attr("prop");
+                    switch (prop) {
+                        case "prop1": prop1 = $checked.val(); break;
+                        case "prop2": prop2 = $checked.val(); break;
+                        case "prop3": prop3 = $checked.val(); break;
+                    }
+                });
+                if (noChecked) {
+                    jx.alert("每个属性都必须选择!");
+                    return false;
+                }
+
+                if (!/^\d+$/.test($childproduct.val())) {
+                    $childproduct.next().removeClass("hide");
+                    return false;
+                }
+                var parapriceid = parseInt($parapriceid.val());
+                var productid = $productid.val();
+                if (isNaN(parapriceid) || parapriceid == 0) {
+                    $.post("/product/paraprice", { mainproductid: productid, childproductid: $childproduct.val(), prop1: prop1, prop2: prop2, prop3: prop3 }, function (data) {
+                        if (data.status) {
+                            $('input:checked').prop("checked", false);
+                            clearItem();
+                            jx.alert("添加成功!");
+                            $('#parapricelist').load("/product/partialparaprice?productid=" + productid);
+                        } else {
+                            jx.error("失败了!" + data.msg);
+                        }
+                    });
+                }
+                else {
+                    $.post("/product/paraprice_update", { parapriceid: parapriceid, childproductid: $childproduct.val() }, function (data) {
+                        if (data.status) {
+                            $('input:checked').prop("checked", false);
+                            clearItem();
+                            jx.alert("编辑成功!");
+                            $('#parapricelist').load("/product/partialparaprice?productid=" + productid);
+                        } else {
+                            jx.error("失败了!" + data.msg);
+                        }
+                    });
+                }
+
+            });
+            $('#parapricelist').on("click", "a[name=del]", function () {
+                var $this = $(this);
+                var parapriceid = $this.parent().attr("parapriceid");
+                jx.del(function () {
+                    $.post('/product/parapricedel', { parapriceid: parapriceid }, function (data) {
+                        if (data.status) {
+                            jx.alert("删除成功!");
+                            $this.parent().parent().remove();
+                        }
+                        else {
+                            jx.error("删除失败!");
+                        }
+                    });
+                });
+            });
+            $('#parapricelist').on("click", "a[name=update]", function () {
+                clearItem();
+                $('input:checked').prop("checked", false);
+                var $tds = $(this).parent().parent().children();
+                var prop1 = $('input[name=prop1]');
+                var prop2 = $('input[name=prop2]');
+                var prop3 = $('input[name=prop3]');
+                var p1value = $tds.eq(3).text() || '0';
+                var p2value = $tds.eq(4).text() || '0';
+                var p3value = $tds.eq(5).text() || '0';
+                $("input:radio[name='prop1'][value='" + p1value + "']").prop("checked", true);
+                $("input:radio[name='prop2'][value='" + p2value + "']").prop("checked", true);
+                $("input:radio[name='prop3'][value='" + p3value + "']").prop("checked", true);
+                $childproduct.val($tds.eq(0).text());
+                $childproduct.next().text($tds.eq(2).text()).removeClass("hide");
+                var arr = [];
+                $("input:checked").each(function (i, item) {
+                    var $this = $(item);
+                    arr.push($this.parent().text());
+                });
+                $msg.text(arr.join(','));
+                $msg.prev().text("已选择：");
+                $parapriceid.val($(this).parent().attr("parapriceid"));
+            });
+            $('a[name=clear]').on("click", function () {
+                $('input:checked').prop("checked", false); clearItem();
+            });
+
+            if (!hasMain) {
+                $childproduct.val($productid.val());
+            }
+            function getViewName() {
+                var arr = [];
+                $("input:checked").each(function (i, item) {
+                    var $this = $(item);
+                    arr.push($this.parent().text());
+                });
+                $msg.text(arr.join(','));
+                $msg.prev().text("已选择：");
+
+                //循环prop 获取数据
+                var noChecked = false;
+                var prop1 = '', prop2 = '', prop3 = '';
+                $('.prop').each(function (i, item) {
+                    var $item = $(item);
+                    var $checked = $item.find(':checked');
+                    noChecked = $checked.length == 0;
+                    if (noChecked) {
+                        return false;
+                    }
+                    var prop = $item.find(".commColorRight").attr("prop");
+                    switch (prop) {
+                        case "prop1": prop1 = $checked.val(); break;
+                        case "prop2": prop2 = $checked.val(); break;
+                        case "prop3": prop3 = $checked.val(); break;
+                    }
+                });
+                if (noChecked) {
+                    return false;
+                }
+                $.post('/product/paraprice_get', { mainproductid: $productid.val(), prop1: prop1, prop2: prop2, prop3: prop3 }, function (data) {
+                    if (data.status && data.data) {
+                        var item = data.data;
+                        $childproduct.val(item.ChildProductID);
+                        $childproduct.next().text(item.ChildName).removeClass("hide");
+                        $parapriceid.val(item.ParaPriceID)
+                    }
+                });
+
+            }
+            function clearItem() {
+                $childproduct.val('').next().text("请输入商品ID").addClass("hide");
+                $parapriceid.val('0');
+                $msg.text('');
+            }
+        });
+    </script>
+}
+@{
+    ProductInfo product = ViewBag.ProductInfo;
+    List<ClassificationInfo> pathlist = ViewBag.PathList;
+    List<ClassificationParameterToPriceInfo> para = ViewBag.ParaList;
+}
+<div class="operateHeader w">
+    <div class='fl w'>
+        <span class='active'>商品报价属性</span>
+    </div>
+</div>
+@Html.Hidden("productid", product.ProductID)
+<div class="commAttr w">
+    <div class="commAttrConter">
+        <div class="commColor clear">
+            <div class="commColorLeft">商品ID：</div>
+            <div class="commColorRight">@product.ProductID</div>
+        </div>
+        <div class="commColor clear">
+            <div class="commColorLeft">商品名：</div>
+            <div class="commColorRight">@product.ChineseName</div>
+        </div>
+        <div class="commColor clear">
+            <div class="commColorLeft">主分类：</div>
+            <div class="commColorRight">@(string.Join("->", pathlist.Select(t => t.ChineseName)))</div>
+        </div>
+        @{
+            if (para != null && para.Count > 0)
+            {
+                foreach (var p in para)
+                {
+                    <div class="commColor clear prop">
+                        <div class="commColorLeft">@p.CFParaPriceName：</div>
+                        <div class="commColorRight" prop="@p.CFParaPriceProp">
+                            <ul class='clear'>
+                                @foreach (var prop in p.PropList)
+                                {
+                                    <li><label><input type="radio" name="@p.CFParaPriceProp" value="@prop">@prop</label></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+                <div class="commColor clear">
+                    <div class="commColorLeft">&nbsp;</div>
+                    <div class="commColorRight attrInput" id="msg"></div>
+                </div>
+                <div class="commColor clear">
+                    <div class="commColorLeft">金象编号：</div>
+                    <div class="commColorRight attrInput">
+                        <input type="text" name="childproduct"><i class="hide">请输入商品ID</i>
+                        <input type="hidden" name="hidden_parapriceid" id="hidden_parapriceid" />
+                    </div>
+                </div>
+                <div class="commColor clear">
+                    <div class="commColorLeft">&nbsp;</div>
+                    <div class="commColorRight attrOtherBtn">
+                        <a href="javascript:void(0);" name="add">新增</a>
+                        <a href="javascript:void(0);" name="clear">清空</a>
+                        <a href="http://www.jxdyf.com/product/@(product.ProductID).html" target="_blank">查看</a>
+                    </div>
+                </div>
+                <div id="parapricelist" class="attrTableWrap">
+                    @{Html.RenderPartial("_PartialParaPrice");}
+                </div>
+            }
+            else
+            {
+                <div class="commColor clear">
+                    @("该商品没有报价属性")
+                </div>
+            }
+        }
+    </div>
+</div>

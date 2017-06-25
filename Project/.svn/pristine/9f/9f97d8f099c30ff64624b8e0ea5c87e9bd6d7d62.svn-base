@@ -1,0 +1,92 @@
+﻿using JXProduct.Component.Enums;
+using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.BLL
+{
+    public class QualificationBLL
+    {
+        private QualificationBLL() { }
+        private static QualificationBLL _instance;
+        public static QualificationBLL Instance { get { return _instance ?? (_instance = new QualificationBLL()); } }
+        private static readonly SQLServerDAL.QualificationDAL dal = new SQLServerDAL.QualificationDAL();
+
+
+        /// <summary>
+        /// 企业信息
+        /// </summary>
+        /// <param name="mid"></param>
+        /// <returns></returns>
+        public QualificationInfo Qualification_GetByMid(int mid)
+        {
+            return dal.Qualification_GetByMid(mid);
+        }
+        public List<QualificationInfo> Qualification_GetByParaTypeID(int parentid, int qid, int mid = 0)
+        {
+            return dal.Qualification_GetByParaType(parentid, qid, mid);
+        }
+        public List<QualificationInfo> Qualification_GetByProductID(int productid, int qid)
+        {
+            return dal.Qualification_GetByProductID(productid, qid);
+        }
+        public QualificationInfo Qualification_Get(int qid, int mid = 0, int productid = 0)
+        {
+            return dal.Qualification_Get(qid, mid, productid);
+        }
+
+        #region 商品数据信息
+
+        public int ProductQualification_Insert(ProductQualificationInfo pqinfo)
+        {
+            if (pqinfo.Type == (short)Enums.QualificationType.商品资质)
+            {
+                pqinfo.ManufacturerID = 0;
+            }
+            else
+            {
+                pqinfo.ProductID = 0;
+            }
+            return dal.ProductQualification_Insert(pqinfo);
+        }
+
+
+        /// <summary>
+        /// ProductQualification_Update Method
+        /// </summary>
+        /// <param name="ProductQualificationInfo">ProductQualification object</param>
+        /// <returns>true:成功 false:失败</returns>
+        public bool ProductQualification_Update(ProductQualificationInfo pqinfo)
+        {
+            return dal.ProductQualification_Update(pqinfo);
+        }
+
+        #endregion
+
+        #region 检索出所有的分类审核
+
+        public List<QualificationInfo> Qualification_GetAllParatype(int mid)
+        {
+            return dal.Qualification_GetAllParatype(mid);
+        }
+
+        #endregion
+
+        #region 获取商品是否存在即将过期的审核
+
+        public Dictionary<int, int> Qualification_GetExpire(List<int> productids)
+        {
+            if (productids == null || productids.Count > 0)
+            {
+                var ids = string.Join(",", productids);
+                return dal.Qualification_GetExpire(ids);
+            }
+            return new Dictionary<int, int>();
+
+        }
+
+        #endregion
+    }
+}

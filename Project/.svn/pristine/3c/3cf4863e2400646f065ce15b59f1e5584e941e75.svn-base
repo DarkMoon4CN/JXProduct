@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Model
+{
+    public class ProductAuditInfo
+    {
+        public ProductAuditInfo()
+        {
+            this.CreateTime = DateTime.Now;
+        }
+        /// <summary>
+        /// 商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        /// AuditType
+        /// </summary>
+        public short Type { get; set; }
+        public string Remarks { get; set; }
+        public short Status { get; set; }
+        public string Creator { get; set; }
+        public DateTime CreateTime { get; set; }
+    }
+}

@@ -1,0 +1,205 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ExpressNewsMySqlDAL
+    {
+        private static Database dbw = JXYXMySqlData.Writer;
+        private static Database dbr = JXYXMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(ExpressNewsMySqlDAL));
+
+        #region MySql新闻快讯、公告相关操作
+
+        public int GetMaxExpressNewsID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from ExpressNews order by NewsID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxExpressNewsID 获取新闻快讯、公告最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool UpdateExpressNewsEx(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into ExpressNews ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}',{12})",
+                                     dr["NewsID"].ToInt(), dr["Author"].ToString().Replace("\'", "\""), dr["Type"].ToString().Replace("\'", "\""), dr["Source"].ToString().Replace("\'", "\"")
+                                     , dr["Link"].ToString().Replace("\'", "\""), dr["Title"].ToString().Replace("\'", "\""), dr["Keywords"].ToString().Replace("\'", "\""), dr["Abstract"].ToString().Replace("\'", "\"")
+                                     , dr["Content"].ToString().Replace("\'", "\""), dr["Creator"].ToString().Replace("\'", "\""), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString()
+                                     , dr["IsStick"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateExpressNews 更新新闻快讯、公告表失败,新闻快讯、公告ID：{0}-{1},异常信息:{2}", table.Rows[0]["NewsID"], table.Rows[table.Rows.Count - 1]["NewsID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        public bool UpdateExpressNews(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                var dr = table.Rows[i];
+                try
+                {
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("update ExpressNews set ");
+                    var Placeholder = string.Format(@"Author = '{0}',Type = '{1}', Source = '{2}',Link = '{3}',Title = '{4}',Keywords = '{5}',Abstract = '{6}',Content = '{7}',Creator = '{8}',
+                                                Updater = '{9}',UpdateTime = '{10}',IsStick = '{11}'",
+                                        dr["Author"].ToString().Replace("\'", "\""), dr["Type"].ToString().Replace("\'", "\""), dr["Source"].ToString().Replace("\'", "\"")
+                                        , dr["Link"].ToString().Replace("\'", "\""), dr["Title"].ToString().Replace("\'", "\""), dr["Keywords"].ToString().Replace("\'", "\""), dr["Abstract"].ToString().Replace("\'", "\"")
+                                        , dr["Content"].ToString().Replace("\'", "\""), dr["Creator"].ToString().Replace("\'", "\""), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString()
+                                        , dr["IsStick"].ToShort());
+                    sqlCommand.Append(Placeholder);
+                    sqlCommand.AppendFormat(@" where NewsID = {0}", dr["NewsID"]);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'", "null").Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("UpdateExpressNews 更新新闻快讯、公告表失败,新闻快讯、公告ID：{0},受影响行为0", dr["NewsID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("UpdateExpressNews 更新新闻快讯、公告表失败,新闻快讯、公告ID：{0},异常信息:{1}", dr["NewsID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        public bool AddExpressNews(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into ExpressNews ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}',{12})",
+                                     dr["NewsID"].ToInt(), dr["Author"].ToString().Replace("\'", "\""), dr["Type"].ToString().Replace("\'", "\""), dr["Source"].ToString().Replace("\'", "\"")
+                                     , dr["Link"].ToString().Replace("\'", "\""), dr["Title"].ToString().Replace("\'", "\""), dr["Keywords"].ToString().Replace("\'", "\""), dr["Abstract"].ToString().Replace("\'", "\"")
+                                     , dr["Content"].ToString().Replace("\'", "\""), dr["Creator"].ToString().Replace("\'", "\""), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString()
+                                     , dr["IsStick"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddExpressNews 添加新闻快讯、公告失败,新闻快讯、公告ID：{0}-{1},异常信息:{2}", table.Rows[0]["NewsID"], table.Rows[table.Rows.Count - 1]["NewsID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        private string parmsKey = string.Format(@"NewsID,Author,Type, Source,Link,Title,Keywords,Abstract,Content,Creator,
+                                                Updater,UpdateTime,IsStick");
+
+        #endregion
+    }
+}

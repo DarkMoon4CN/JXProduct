@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.IBLL
+{
+    public interface IOrdersRelatedBLL
+    {
+        DataTable GetAddList(long ID, string updateTime, int pageSize, string tableName);
+
+        DataTable GetUpdateList(long MaxID, long NowID, string updateTime, int pageSize, string tableName);
+    }
+}

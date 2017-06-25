@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using JXUtil;
+using System.Text;
+namespace JXProduct.AdminUI.Models.Activity
+{
+    public class SearchModel : RequestPagedBase
+    {
+        public SearchModel()
+        {
+            this.StartDate = DateTime.Now.AddMonths(-1);
+            this.EndDate = DateTime.Now.AddMonths(1);
+        }
+        /// <summary>
+        /// 活动类型
+        /// </summary>
+        public int Type { get; set; }
+
+        /// <summary>
+        /// 活动类别 ： 1 数量 2金额
+        /// </summary>
+        public int Limit { get; set; }
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// 结束世界
+        /// </summary>
+        public DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// 状态  来自 Enums.ActivityStatus
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 用户类型
+        /// </summary>
+        public int UserType { get; set; }
+
+        /// <summary>
+        /// 期限状态
+        /// </summary>
+        public int Expire { get; set; }
+
+        public Dictionary<string, string> ExpireList
+        {
+            get
+            {
+                return new Dictionary<string, String>(){
+                     {"1","未到期"},
+                     {"2","未上线"},
+                     {"3","已上线"},
+                     {"4","已过期"}
+                };
+            }
+        }
+        public string ToWhere()
+        {
+            var str = new StringBuilder(" 1=1 ");
+            if (this.Type > 0)
+            {
+                str.AppendFormat(" AND Type={0} ", this.Type);
+            }
+            if (this.Limit > 0)
+            {
+                str.AppendFormat(" AND Limit={0} ", this.Limit);
+            }
+            if (this.Expire > 0)
+            {
+                //未到期 = 1,未上线 = 2,已上线 = 3,到期 = 4
+                switch (this.Expire)
+                {
+                    case 1:
+                        {
+                            str.Append(" AND GETDATE() < StartTime");
+                        } break;
+                    case 2:
+                        {
+                            str.Append(" AND Status=1 AND (getdate() between starttime and endtime) ");
+                        } break;
+                    case 3:
+                        {
+                            str.Append(" AND Status=0 AND (getdate() between starttime and endtime)  ");
+                        } break;
+                    case 4:
+                        {
+                            str.Append(" AND GETDATE() > EndTime");
+                        } break;
+                }
+            }
+
+            if (this.StartDate.Year > 2000)
+            {
+                str.AppendFormat(" AND '{0}'<StartTime", this.StartDate.ToString("yyyy-MM-dd"));
+            }
+            if (this.EndDate.Year > 2000)
+            {
+                str.AppendFormat(" AND '{0}'>StartTime", this.EndDate.ToString("yyyy-MM-dd 23:59:59"));
+            }
+            return str.ToString();
+        }
+    }
+}

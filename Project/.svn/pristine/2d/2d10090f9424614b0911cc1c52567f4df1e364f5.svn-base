@@ -1,0 +1,34 @@
+﻿using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXProduct.AdminUI.Models.Product
+{
+    public class ProductEditModel
+    {
+        public ProductInfo Product { get; set; }
+        public List<KeywordInfo> keywords { get; set; }
+        public ProductInstructionsInfo Instructions { get; set; }
+        public IEnumerable<SelectListItem> Brands { get; set; }
+
+        public List<ProductAuditInfo> Audit { get; set; }
+        public List<ProductSimpleInfo> relateds { get; set; }
+
+        public List<SelectListItem> UnitList
+        {
+            get
+            {
+                string[] arr = "袋,盒,包,瓶,条,个,套,支,台,克,罐,把,片,辆,张,付,块,件,双,辆,只".Split(',');
+                var list = new List<SelectListItem>();
+                foreach (var a in arr)
+                {
+                    list.Add(new SelectListItem() { Text = a, Value = a });
+                }
+                return list;
+            }
+        }
+    }
+}

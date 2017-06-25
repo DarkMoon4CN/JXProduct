@@ -1,0 +1,458 @@
+﻿using JXAPI.Component.BLL;
+using JXAPI.Component.Enums;
+using JXAPI.Component.IBLL;
+using JXAPI.Component.Model;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Xml;
+
+namespace JXAPI.ConsoleAppPush
+{
+
+    public class ImportPushData
+    {
+        private static ILog myLog = log4net.LogManager.GetLogger(typeof(ImportPushData));
+        public CouponMySqlBLL couponMysqlBLL = CouponMySqlBLL.Instance;
+        public OrdersMySqlBLL ordersMysqlBLL = OrdersMySqlBLL.Instance;
+        public ProductMySqlBLL productMysqlBLL = ProductMySqlBLL.Instance;
+        public ProductStockMySqlBLL productStockMysqlBLL = ProductStockMySqlBLL.Instance;
+
+        public MobilePushBLL mobilePushBLL = MobilePushBLL.Instance;
+        public void Init() 
+        {
+            OrdersTimeout();
+            CouponExpired();
+            ProductReduce();
+            ProductArrival();
+        }
+
+        #region 提供功能模块
+
+        /// <summary>
+        ///  优惠券快过期推送数据聚合
+        /// </summary>
+        public void CouponExpired() 
+        {
+            //优惠券到期时间和收到优惠券通知 属于早8点以后才能发送
+            int level1 = 0;
+            int level2 = 0;
+            GetLevel(SectionSecondType.优惠券将要到期通知, ref level1, ref level2);
+            bool isUse = IsUseToTime(level2);
+            if (isUse)//是否允许发送优惠券
+            {
+                TimesConfigInfo timeConfig = GetImageConfigInfo("coupon");
+                IList<CouponMySqlInfo> couponInfoList = null;
+                for (int i = 0; i < timeConfig.ChildConfigInfoList.Count; i++)
+                {
+                    //优惠券过期配置文件
+                    if (timeConfig.ChildConfigInfoList[i].Key.Contains("expired"))
+                    {
+                        int hour = timeConfig.ChildConfigInfoList[i].NumberHour;
+                        try
+                        {
+                            couponInfoList = couponMysqlBLL.CouponMySql_GetAll(hour);
+                            PushLog("Coupon到期数据已获取,共{0}条（未匹配推送表）!", couponInfoList.Count);
+                        }
+                        catch (Exception e)
+                        {
+                            PushLog("Coupon到期数据获取异常：{0}" + e.Message);
+                        }
+                    }
+                }
+                if (couponInfoList != null)
+                {
+                    for (int j = 0; j < couponInfoList.Count; j++)
+                    {
+                        CouponMySqlInfo couponInfo = couponInfoList[j];
+                        //验证此优惠是否已推送过
+                        bool state = mobilePushBLL.MobilePush_IsExist(couponInfo.UID, level1, level2, couponInfo.CouponCode);
+                        if (state)//已推送过
+                        {
+                            continue;
+                        }
+                        else//if(state==false)
+                        {
+                           try
+                           {
+                               PushMessageInfo pushMessageInfo=new PushMessageInfo();
+                               pushMessageInfo.ChannelID=0;
+                               pushMessageInfo.Contents = GetContentsByLevel2(level2,couponInfo.CouponCode,null);
+                               pushMessageInfo.CreateTime = DateTime.Now;
+                               pushMessageInfo.DataID = couponInfo.CouponCode;
+                               pushMessageInfo.TypeID = level1;
+                               pushMessageInfo.Section = level2;
+                               pushMessageInfo.PushType = "single";
+                               pushMessageInfo.Status = 0;
+                               pushMessageInfo.TargetList = couponInfo.UID.ToString();
+                               pushMessageInfo.Creator = "后台推送程序";
+                               pushMessageInfo.PushCount = 0;
+                               pushMessageInfo.Template = 1;
+                               pushMessageInfo.Updater = "后台推送程序";
+                               pushMessageInfo.UpdateTime = DateTime.Now;
+                               mobilePushBLL.InsertMobilePush(pushMessageInfo);
+                           }
+                           catch(Exception e)
+                           {
+                               PushLog("Coupon到期数据插入异常：{0}" + e.Message);
+                           }
+                          
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 订单未支付
+        /// </summary>
+        public void OrdersTimeout() 
+        {
+            int level1 = 0;
+            int level2 = 0;
+            GetLevel(SectionSecondType.订单未支付提醒, ref level1, ref level2);
+            bool isUse = IsUseToTime(level2);//是否属于8点以后发送的
+            if (isUse) 
+            {
+                TimesConfigInfo timeConfig = GetImageConfigInfo("orders");
+                IList<OrdersInfo> ordersInfoList = null;
+                for (int i = 0; i < timeConfig.ChildConfigInfoList.Count; i++)
+                {
+                    //优惠券过期配置文件
+                    if (timeConfig.ChildConfigInfoList[i].Key.Contains("expired"))
+                    {
+                        int hour = timeConfig.ChildConfigInfoList[i].NumberHour;
+                        try
+                        {
+                            ordersInfoList = ordersMysqlBLL.OrdersMySql_GetAll(hour);
+                            PushLog("Orders订单未支付数据已获取,共{0}条（未匹配推送表）!", ordersInfoList.Count);
+                        }
+                        catch (Exception e)
+                        {
+                            PushLog("Orders订单未支付数据获取异常：{0}" + e.Message);
+                        }
+                    }
+                }
+
+                if (ordersInfoList != null)
+                {
+                    for (int j = 0; j < ordersInfoList.Count; j++)
+                    {
+                        OrdersInfo orderInfo = ordersInfoList[j];
+                        //验证此优惠是否已推送过
+                        bool state = mobilePushBLL.MobilePush_IsExist(orderInfo.UID, level1, level2, orderInfo.OrderID);
+                        if (state)//已推送过
+                        {
+                            continue;
+                        }
+                        else//if(state==false)
+                        {
+                            try
+                            {
+                                PushMessageInfo pushMessageInfo = new PushMessageInfo();
+                                pushMessageInfo.ChannelID = 0;
+                                pushMessageInfo.Contents = GetContentsByLevel2(level2, orderInfo.OrderID, null);
+                                pushMessageInfo.CreateTime = DateTime.Now;
+                                pushMessageInfo.DataID = orderInfo.OrderID;
+                                pushMessageInfo.TypeID = level1;
+                                pushMessageInfo.Section = level2;
+                                pushMessageInfo.PushType = "single";
+                                pushMessageInfo.Status = 0;
+                                pushMessageInfo.TargetList = orderInfo.UID.ToString();
+                                pushMessageInfo.Creator = "后台推送程序";
+                                pushMessageInfo.PushCount = 0;
+                                pushMessageInfo.Template = 1;
+                                pushMessageInfo.Updater = "后台推送程序";
+                                pushMessageInfo.UpdateTime = DateTime.Now;
+                                mobilePushBLL.InsertMobilePush(pushMessageInfo);
+                            }
+                            catch (Exception e)
+                            {
+                                PushLog("Orders未支付数据插入异常：{0}" + e.Message);
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// 收藏商品降价
+        /// </summary>
+        public void ProductReduce() 
+        {
+            int level1 = 0;
+            int level2 = 0;
+            GetLevel(SectionSecondType.商品降价通知, ref level1, ref level2);
+            bool isUse = IsUseToTime(level2);//是否属于8点以后发送的
+            if (isUse)
+            {
+                IList<ProductFavoriteMySqlInfo> productInfoList = null;
+                try
+                {
+                    productInfoList = productMysqlBLL.ProductMySql_GetAll();
+                    PushLog("ProductFavorite收藏商品降价数据已获取,共{0}条（未匹配推送表）!", productInfoList.Count);
+                }
+                catch (Exception e)
+                {
+                    PushLog("ProductFavorite收藏商品降价信息获取异常：{0}" + e.Message);
+                }
+                if (productInfoList != null)
+                {
+                    for (int j = 0; j < productInfoList.Count; j++)
+                    {
+                        ProductFavoriteMySqlInfo productInfo = productInfoList[j];
+                        //验证此优惠是否已推送过
+                        bool state = mobilePushBLL.MobilePush_IsExist(productInfo.UserID, level1, level2,productInfo.ProductID.ToString());
+                        if (state)//已推送
+                        {
+                            continue;
+                        }
+                        else//if(state==false)//未推送
+                        {
+                            try
+                            {
+                                PushMessageInfo pushMessageInfo = new PushMessageInfo();
+                                pushMessageInfo.ChannelID = 0;
+                                pushMessageInfo.Contents = GetContentsByLevel2(level2, productInfo.ProductName, null);
+                                pushMessageInfo.CreateTime = DateTime.Now;
+                                pushMessageInfo.DataID =productInfo.ProductID.ToString();
+                                pushMessageInfo.TypeID = level1;
+                                pushMessageInfo.Section = level2;
+                                pushMessageInfo.PushType = "single";
+                                pushMessageInfo.Status = 0;
+                                pushMessageInfo.TargetList = productInfo.UserID.ToString();
+                                pushMessageInfo.Creator = "后台推送程序";
+                                pushMessageInfo.PushCount = 0;
+                                pushMessageInfo.Template = 1;
+                                pushMessageInfo.Updater = "后台推送程序";
+                                pushMessageInfo.UpdateTime = DateTime.Now;
+                                mobilePushBLL.InsertMobilePush(pushMessageInfo);
+                            }
+                            catch (Exception e)
+                            {
+                                PushLog("ProductFavorite收藏商品降价数据插入异常：{0}" + e.Message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 商品到货
+        /// </summary>
+        public void ProductArrival() 
+        {
+            int level1 = 0;
+            int level2 = 0;
+            GetLevel(SectionSecondType.到货提醒, ref level1, ref level2);
+            bool isUse = IsUseToTime(level2);//是否属于8点以后发送的
+            if (isUse)
+            {
+                IList<ProductOutBookMySqlInfo> productOutBookInfoList = null;
+                try
+                {
+                    productOutBookInfoList = productStockMysqlBLL.ProductOutBookMySql_GetAll();
+                    PushLog("product商品到货数据已获取,共{0}条（未匹配推送表）!", productOutBookInfoList.Count);
+                }
+                catch (Exception e)
+                {
+                    PushLog("product商品到货信息获取异常：{0}" + e.Message);
+                }
+                if (productOutBookInfoList != null)
+                {
+                    for (int j = 0; j < productOutBookInfoList.Count; j++)
+                    {
+                        ProductOutBookMySqlInfo productInfo = productOutBookInfoList[j];
+                        //验证此优惠是否已推送过
+                        bool state = mobilePushBLL.MobilePush_IsExist(productInfo.UID, level1, level2, productInfo.ProductID.ToString());
+                        if (state)//已推送过
+                        {
+                            continue;
+                        }
+                        else//if(state==false)
+                        {
+                            try
+                            {
+                                PushMessageInfo pushMessageInfo = new PushMessageInfo();
+                                pushMessageInfo.ChannelID = 0;
+                                pushMessageInfo.Contents = GetContentsByLevel2(level2, productInfo.ProductName.ToString(), null);
+                                pushMessageInfo.CreateTime = DateTime.Now;
+                                pushMessageInfo.DataID = productInfo.ProductID.ToString();
+                                pushMessageInfo.TypeID = level1;
+                                pushMessageInfo.Section = level2;
+                                pushMessageInfo.PushType = "single";
+                                pushMessageInfo.Status = 0;
+                                pushMessageInfo.TargetList = productInfo.UID.ToString();
+                                pushMessageInfo.Creator = "后台推送程序";
+                                pushMessageInfo.PushCount = 0;
+                                pushMessageInfo.Template = 1;
+                                pushMessageInfo.Updater = "后台推送程序";
+                                pushMessageInfo.UpdateTime = DateTime.Now;
+                                mobilePushBLL.InsertMobilePush(pushMessageInfo);
+                            }
+                            catch (Exception e)
+                            {
+                                PushLog("ProductOutBook商品到货数据插入异常：{0}" + e.Message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region 提供针对于此类的 辅助方法
+        /// <summary>
+        ///  模块在时间某个时间段内是否可以发送推送
+        /// </summary>
+        /// <returns> true 允许推送  false 不允许推送</returns>
+        public bool IsUseToTime(int level2) 
+        {
+            bool state = false;
+            DateTime  nowTime=DateTime.Now;
+            switch (level2)
+            { 
+                case (102):
+                    if (nowTime.Hour >8 )
+                    {
+                        state = true;
+                    }
+                    break;
+                case (402):
+                    if (nowTime.Hour > 8)
+                    {
+                        state = true;
+                    }
+                    break;
+                case (403):
+                    if (nowTime.Hour > 8)
+                    {
+                        state = true;
+                    }
+                    break;
+                default: state = true; break;
+
+            }
+            return state;
+        }
+
+        /// <summary>
+        /// 根据枚举类型获取出 1级和2级的节点
+        /// </summary>
+        /// <param name="sencondtype">枚举参数</param>
+        /// <param name="level1">ref 1级节点</param>
+        /// <param name="level2">ref 2级节点</param>
+        public void GetLevel(SectionSecondType sencondtype, ref int level1, ref int level2)
+        {
+            level2 = Convert.ToInt32(sencondtype);
+            level1 =Convert.ToInt32(level2.ToString().Substring(0,1));
+        }
+
+        /// <summary>
+        /// 根据枚举 整理出 主体内容
+        /// </summary>
+        /// <returns></returns>
+        public string GetContentsByLevel2(int level2,string dataID,string endtime) 
+        {
+            string outMsg = string.Empty;
+            if(level2==Convert.ToInt32(SectionSecondType.优惠券将要到期通知))
+            {
+                outMsg = "您有一张优惠券:{0},即将过期,请尽快使用！";
+            }
+            else if (level2 == Convert.ToInt32(SectionSecondType.订单未支付提醒)) 
+            {
+                outMsg = "您的一个订单:{0}已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物";
+            }
+            else if (level2 == Convert.ToInt32(SectionSecondType.商品降价通知)) 
+            {
+                outMsg = "亲,您购物车的商品:{0},降价啦！快来看看吧！";
+            }
+            outMsg = string.Format(outMsg,dataID);
+            return outMsg;
+        }
+
+        private void PushLog(string format, params object[] args)
+        {
+            string message=string.Format(format,args);
+            myLog.InfoFormat(message);
+            Console.WriteLine(message);
+        }
+        #endregion
+
+        #region 获取WebConfig.times下的某个子节点
+        /// <summary>
+        ///  获取WebConfig.images下的某个子节点
+        /// </summary>
+        /// <param name="configName">节点名</param>
+        /// <returns></returns>
+        public TimesConfigInfo GetImageConfigInfo(string configName = "coupon")
+        {
+            try
+            {
+                var imagesSection = ConfigurationManager.GetSection("times") as XmlNode;
+                TimesConfigInfo timesConfigInfo = new TimesConfigInfo();
+                XmlNode gradesNode = imagesSection.SelectSingleNode(configName + "time");
+                for (int i = 0; i < gradesNode.Attributes.Count; i++)
+                {
+                    string name = gradesNode.Attributes[i].Name;
+                    string value = gradesNode.Attributes[name].Value;
+                    switch (name)
+                    {
+                        case "name":
+                            timesConfigInfo.Name = value; break;
+                    }
+                }
+                XmlNodeList childList = gradesNode.ChildNodes;
+                List<ChildConfigInfo> childConfigInfoList = new List<ChildConfigInfo>();
+                for (int i = 0; i < childList.Count;  i++)
+                {
+                    ChildConfigInfo childConfigInfo = new ChildConfigInfo();
+                    childConfigInfo.Key = childList[i].Attributes["key"].Value;
+                    childConfigInfo.NumberHour = int.Parse(childList[i].Attributes["numberHour"].Value);
+                    childConfigInfoList.Add(childConfigInfo);
+                }
+                timesConfigInfo.ChildConfigInfoList = childConfigInfoList;
+                return timesConfigInfo;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region 配置文件
+       public class TimesConfigInfo 
+        {
+            /// <summary>
+            /// 配置名
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// 配置参数
+            /// </summary>
+            public List<ChildConfigInfo> ChildConfigInfoList { get; set; }
+        }
+       public class ChildConfigInfo
+        {
+            /// <summary>
+            ///  功能块  use ： 允许时间： 8+use   expired: 失效滞后时间
+            ///  单位：小时
+            /// </summary>
+            public string Key { get; set; }
+            /// <summary>
+            ///  触发时间
+            /// </summary>
+            public int NumberHour { get; set; }
+        }
+       #endregion
+    }
+}

@@ -1,0 +1,223 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ActivityMySqlDAL
+    {
+        private static Database dbw = JXActivityMySqlData.Writer;
+        private static Database dbr = JXActivityMySqlData.Reader;
+        private static Database dbw_Health = JXHealthActivityMySqlData.Writer;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(ActivityMySqlDAL));
+
+        #region MySql活动表相关操作
+
+        public int GetMaxActivityID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from Activity order by ActID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxActivityID 获取活动信息最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool UpdateActivity(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into Activity ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}','{4}',{5},{6},{7},{8},'{9}','{10}','{11}','{12}','{13}','{14}',{15},{16})",
+                                    dr["ActID"].ToInt(), dr["BriefName"].ToString().Replace("\'", "\""), dr["Name"].ToString().Replace("\'", "\""), dr["Description"].ToString().Replace("\'", "\"")
+                                    , dr["URL"].ToString().Replace("\'", "\""), dr["Type"].ToShort(), dr["Limit"].ToShort(), dr["CountLimit"].ToInt()
+                                    , dr["UserLimit"].ToInt(), dr["StartTime"].ToDateTime().ToString(), dr["EndTime"].ToDateTime().ToString(), dr["CreateTime"].ToDateTime().ToString()
+                                    , dr["Creator"].ToString().Replace("\'", "\""), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString(), dr["Status"].ToShort()
+                                    , dr["UserType"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateActivity 更新活动信息表失败,活动信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["ActID"], table.Rows[table.Rows.Count - 1]["ActID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        public bool AddActivity(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into Activity ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}','{4}',{5},{6},{7},{8},'{9}','{10}','{11}','{12}','{13}','{14}',{15},{16})",
+                                     dr["ActID"].ToInt(), dr["BriefName"].ToString().Replace("\'", "\""), dr["Name"].ToString().Replace("\'", "\""), dr["Description"].ToString().Replace("\'", "\"")
+                                     , dr["URL"].ToString().Replace("\'", "\""), dr["Type"].ToShort(), dr["Limit"].ToShort(), dr["CountLimit"].ToInt()
+                                     , dr["UserLimit"].ToInt(), dr["StartTime"].ToDateTime().ToString(), dr["EndTime"].ToDateTime().ToString(), dr["CreateTime"].ToDateTime().ToString()
+                                     , dr["Creator"].ToString().Replace("\'", "\""), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString(), dr["Status"].ToShort()
+                                     , dr["UserType"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddCoupon 添加活动信息失败,活动信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["ActID"], table.Rows[table.Rows.Count - 1]["ActID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        private string parmsKey = string.Format(@"ActID,BriefName,Name, Description,URL,Type,Restrictive,CountLimit,UserLimit,StartTime,EndTime,CreateTime,Creator,
+                                                Updater,UpdateTime,Status,UserType");
+
+        #endregion
+
+        #region 更新JXHealth库中的Activity表中的LikeUserID，LikeFavor字段
+
+        public bool UpdateHealthActivity(string createTime)
+        {
+            var flag = true;
+            try
+            {
+                string time = string.Empty;
+                if (!string.IsNullOrEmpty(createTime))
+                {
+                    time = string.Format(@" where g.CreateTime >= '{0}'", createTime);
+                }
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder(@"update jxhealth.activity as g set g.LikeUserID = 
+                                        (select left(Group_concat(DISTINCT Convert(d.UID,char) ORDER BY d.CreateTime DESC),128) as LikeUserID from (select c.ActID,o.UID,o.CreateTime from 
+                                        jxhealth.activity as c 
+                                        INNER join jxhealth.activityproduct as a on c.ActID = a.ActID
+                                        INNER join jxorder.orderproduct as op on a.ProductID = op.ProductID
+                                        INNER join jxorder.orders as o on o.OrderID = op.OrderID 
+                                        where o.OrderStatus IN (6,9,10,17) and o.OrderSource NOT IN (6,7,9,11,12,13,14,15,16)
+                                        UNION
+                                        select c.ActID,f.UserID,f.CreateTime from
+                                        jxhealth.activity as c 
+                                        INNER join jxhealth.activityproduct as a on c.ActID = a.ActID
+                                        INNER join jxyx.favorite as f on a.ProductID = f.ProductID where a.ActID = c.ActID
+                                        ORDER BY ActID) as d where d.ActID = g.ActID),
+                                        g.LikeFavor = (
+                                        select sum(p.SellCount + p.FavorCount) as FavorCount from jxhealth.activityproduct as a
+                                        left join jxproduct.product as p on a.ProductID = p.ProductID where a.ActID = g.ActID
+                                        and g.Status = 0)");
+                sqlCommand.Append(time);
+                var cmd = dbw_Health.GetSqlStringCommand(sqlCommand.ToString());
+                cmd.CommandTimeout = 400;
+                var result = dbw_Health.ExecuteNonQuery(cmd);
+                if (result < 0)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateHealthActivity 更新JXHealth库中的Activity表中的LikeUserID，LikeFavor字段失败,异常信息:{0}", ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+    }
+}

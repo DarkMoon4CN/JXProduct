@@ -1,0 +1,62 @@
+﻿<div id="searchcf">
+    <select class="cflist1"><option value="0">请选择</option></select>
+    <select class="cflist2"><option value="0">请选择</option></select>
+    <select class="cflist3"><option value="0">请选择</option></select>
+</div>
+<script type="text/javascript">
+
+    var classification = {
+        init: function () {
+            var $select1 = $('select.cflist1');
+            classification.getcfinfo($select1, 0, true);
+        },
+        getcfinfo: function ($select, parentid, isfrist) {
+            if (!isfrist && parentid == 0) return;
+            $.ajax({
+                type: "post",
+                url: "/classification/getcfbyparentid",
+                data: { parentid: parentid },
+                dataType: "json",
+                success: function (result) {
+                    if (result.status) {
+                        var items = result.data;
+                        var result = classification.initcfoptions(items);
+                        $select.html(result);
+
+                        if (!$select.hasClass(".cflist3")) {
+                            classification.onchange($select);
+                        }
+                    }
+                }
+            });
+        },
+        onchange: function ($select) {
+            $select.change(function () {
+                var items = $select.nextAll();
+                for (i = 0; i < items.length; i++) {
+                    $(items[i]).children().slice(1).remove();
+                }
+                var $nextselect = $select.next();
+                var cfid = $select.children('option:selected').val();
+                classification.getcfinfo($nextselect, cfid, false);
+            });
+        },
+        initcfoptions: function (items) {
+            var arr = [];
+            arr.push("<option value='0'>请选择</option>");
+            for (var i = 0; i < items.length; i++) {
+                arr.push("<option value='" + items[i].CFID + "'>" + items[i].ChineseName + "</option>");
+            }
+            return arr.join('');
+        },
+        initkeywordoptions: function (items) {
+            var arr = [];
+            arr.push("<option value='0'>请选择</option>");
+            for (var i = 0; i < items.length; i++) {
+                arr.push("<option value='" + items[i].KeywordID + "'>" + items[i].ChineseName + "</option>");
+            }
+            return arr.join('');
+        }
+    }
+    $(function () { classification.init(); });
+</script>

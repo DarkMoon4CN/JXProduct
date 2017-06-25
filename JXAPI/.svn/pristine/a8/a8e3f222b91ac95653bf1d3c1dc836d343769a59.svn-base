@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Domain
+{
+    public class AccountInfo
+    {
+        public int uid{get;set;}
+        public string userName{get;set;}
+        public string mobile{get;set;}
+        public string email{get;set;}
+        public int loginCount{get;set;}
+        public int todayLoginCount{get;set;}
+        public int status{get;set;}
+        public long? createTime { get; set; }
+        public long? updateTime { get; set; }
+
+        public string nickName{get;set;}
+        public string avatar{get;set;}
+        public string trueName{get;set;}
+        public int sex{get;set;}
+        public long? birth{get;set;}
+        public string mobileShow{get;set;}
+        public int rank{get;set;}
+        public long? rankTime { get; set; }
+        public int score{get;set;}
+        public decimal consumeTotal{get;set;}
+        public decimal remaining{get;set;}
+        public int safeLevel{get;set;}
+        public decimal rebateFee{get;set;}
+        public int isClaim{get;set;}
+        public int employeeID{get;set;}
+        public long? claimTime { get; set; }
+        public int purchaseType{get;set;}
+        public int ageRange{get;set;}
+        public string creator{get;set;}
+        public string lastUpdater{get;set;}
+        public int isUpdateAvatar{get;set;}
+
+        public int? sourceID {  get; set; }
+
+    }
+}

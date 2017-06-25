@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using JXAPI.Common.Config;
+using JXCacheBase;
+
+namespace JXSearch.Engine.Cache
+{
+    public class SearchDictDirCacheProvider
+    {
+        private static readonly DictionaryCache<SearchDictDirCache> searchDictDirCache;
+        static SearchDictDirCacheProvider()
+        {
+            searchDictDirCache = new DictionaryCache<SearchDictDirCache>();
+        }
+
+        public static SearchDictDirCache Get(string key)
+        {
+            SearchDictDirCache info = searchDictDirCache.Get(key, GetByDictDir);
+            if (info == null)
+            {
+                return null;
+            }
+            if (info.cacheTime.AddHours(SearchEngineConfig.Instance.CacheTime) < DateTime.Now)
+            {
+                searchDictDirCache.Remove(key);
+                info = searchDictDirCache.Get(key, GetByDictDir);
+            }
+            return info;
+        }
+
+        public static void Set(string key)
+        {
+            if (!searchDictDirCache.HasKey(key))
+            {
+                searchDictDirCache.Add(key, GetByDictDir(key));
+            }
+        }
+
+        public static void Remove(string key)
+        {
+            searchDictDirCache.Remove(key);
+        }
+
+        protected static SearchDictDirCache GetByDictDir(string key)
+        {
+            SearchDictDirCache cache = new SearchDictDirCache();
+            cache.key = key;
+            cache.cacheTime = DateTime.Now;
+
+            //  获取
+            EnginesElement config = SearchEngineConfig.Instance.Engines[key];
+            System.IO.DirectoryInfo mydir = new System.IO.DirectoryInfo(config.IndexDir);
+            cache.dictDir = mydir.GetDirectories().LastOrDefault().FullName;
+
+            return cache;
+        }
+
+        public class SearchDictDirCache
+        {
+            public string key { get; set; }
+            public DateTime cacheTime { set; get; }
+            public string dictDir { get; set; }
+        }
+    }
+}

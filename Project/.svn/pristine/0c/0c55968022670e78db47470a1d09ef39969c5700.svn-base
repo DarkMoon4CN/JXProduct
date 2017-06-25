@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace JXProduct.AdminUI.Models.Classification
+{
+    public class JXClassificationModel
+    {
+
+        public int JXCFID { get; set; }
+        public int ProductID { get; set; }
+        public List<JXProduct.Component.Model.JXClassificationParameterInfo> ParaList { get; set; }
+    }
+}

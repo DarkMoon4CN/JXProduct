@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Enums
+{
+    /// <summary>
+    ///  角色类型
+    /// </summary>
+    public enum RoleType
+    {
+        采购编辑=34,
+        产品编辑=35,
+        质管编辑=36,
+        质管审核=37,
+        商品信息 = 38, //37_1
+        商品资质 = 39, //37_2
+        运营报价员=40,
+
+    }
+}

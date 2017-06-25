@@ -1,0 +1,57 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public partial class ProductStockMySqlDAL
+    {
+        private static Database hadbr = JXHealthActivityMySqlData.Reader;
+        /// <summary>
+        ///  商品到货通知 
+        /// </summary>
+        /// <returns></returns>
+        public IList<ProductOutBookMySqlInfo> ProductOutBookMySql_GetAll()
+        {
+            string startTime = DateTime.Now.ToString("yyyy-MM-dd");
+            string endTime = DateTime.Parse(startTime).AddDays(1).AddSeconds(-1).ToString();
+            IList<ProductOutBookMySqlInfo> productOutBookInfo = new List<ProductOutBookMySqlInfo>();
+            string sql = string.Empty;
+            sql += " SELECT b.UID,b.ProductID,b.ProductName FROM jxproduct.productoutbook b,jxactivity.productstock  s ";
+            sql += " WHERE  b.ProductCode=s.ProductCode ";
+            sql += " AND s.ChangeTime > '{0}'  ";
+            sql += " AND s.ChangeTime < '{1}'  ";
+            sql = string.Format(sql,startTime,endTime);
+            DbCommand cmd = hadbr.GetSqlStringCommand(sql);
+            using (IDataReader dataReader = hadbr.ExecuteReader(cmd))
+            {
+                while (dataReader.Read())
+                {
+                    productOutBookInfo.Add(RecoverModel(dataReader));
+                }
+            }
+            return productOutBookInfo;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复OrdersInfo对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        public ProductOutBookMySqlInfo RecoverModel(IDataReader dataReader)
+        {
+            ProductOutBookMySqlInfo productOutBookInfo = new ProductOutBookMySqlInfo();
+            productOutBookInfo.UID = dataReader["UID"].ToInt();
+            productOutBookInfo.ProductID = dataReader["ProductID"].ToInt();
+            productOutBookInfo.ProductName = dataReader["ProductName"].ToString();
+            return productOutBookInfo;
+        }
+
+    }
+}

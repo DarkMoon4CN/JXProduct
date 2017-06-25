@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Response;
+
+namespace JXAPI.JXSdk.Request
+{
+    public class CommonRequest : Venus.IVenusRequest<CommonResponse>
+    {
+        #region ITopRequest Members
+        public string GetApiName()
+        {
+            return string.Empty;
+        }
+
+        public IDictionary<string, string> GetParameters()
+        {
+            return null;
+        }
+
+        public void Validate()
+        {
+            
+        }
+        #endregion
+    }
+}

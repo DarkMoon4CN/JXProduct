@@ -1,0 +1,223 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ProductGiftMySqlDAL
+    {
+        private static Database dbw = JXProductMySqlData.Writer;
+        private static Database dbr = JXProductMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(ProductGiftMySqlDAL));
+
+        #region MySql 商品赠品表相关操作
+
+
+        /// <summary>
+        /// 查询商品赠品最大ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxProductGiftID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from productgift order by ID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxProductGiftID 获取商品赠品最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        /// <summary>
+        /// 更新单品活动
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateProductGift(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into productgift ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},{1},{2},{3},{4},'{5}','{6}','{7}','{8}')",
+                                     dr["ID"].ToInt(), dr["ProductID"].ToInt(), dr["ProductGiftID"].ToInt(), dr["Quantity"].ToInt(), dr["Status"].ToShort()
+                                     , dr["Creator"].ToString().Replace("\'", "\""), dr["CreateTime"].ToDateTime().ToString(), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateProductGift 更新商品赠品表失败,商品赠品ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["ProductID"], productTable.Rows[productTable.Rows.Count - 1]["ProductID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        /// <summary>
+        /// 更新单品活动
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateProductGiftEx(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < productTable.Rows.Count; i++)
+            {
+                var dr = productTable.Rows[i];
+                try
+                {
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("update productgift set ");
+                    var Placeholder = string.Format(@"ProductID = '{0}',ProductGiftID = '{1}',Quantity = '{2}', Status = '{3}',Creator = '{4}',CreateTime = '{5}',
+                                                      Updater = '{6}',UpdateTime = '{7}'",
+                                      dr["ProductID"].ToInt(), dr["ProductGiftID"].ToInt(), dr["Quantity"].ToInt(), dr["Status"].ToShort()
+                                     , dr["Creator"].ToString().Replace("\'", "\""), dr["CreateTime"].ToDateTime().ToString(), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString());
+                    sqlCommand.Append(Placeholder);
+                    sqlCommand.AppendFormat(@" where ID = {0}", dr["ID"].ToInt());
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'", "null").Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("UpdateProductGift 更新商品赠品表失败,商品赠品ID：{0},受影响行为0", dr["ID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("UpdateProductGift 更新商品赠品表失败,商品赠品ID：{0},异常信息:{1}", dr["ID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+
+            return flag;
+        }
+
+        /// <summary>
+        /// 添加单品活动
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool AddProductGift(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into productgift ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},{1},{2},{3},{4},'{5}','{6}','{7}','{8}')",
+                                     dr["ID"].ToInt(), dr["ProductID"].ToInt(), dr["ProductGiftID"].ToInt(), dr["Quantity"].ToInt(), dr["Status"].ToShort()
+                                     , dr["Creator"].ToString().Replace("\'", "\""), dr["CreateTime"].ToDateTime().ToString(), dr["Updater"].ToString().Replace("\'", "\""), dr["UpdateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddProductGift 添加商品赠品失败,商品赠品ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["ProductID"], productTable.Rows[productTable.Rows.Count - 1]["ProductID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+
+        private string parmsKey = string.Format(@"ID,ProductID,ProductGiftID,Quantity, Status,Creator,CreateTime,
+                                           Updater,UpdateTime");
+    }
+}

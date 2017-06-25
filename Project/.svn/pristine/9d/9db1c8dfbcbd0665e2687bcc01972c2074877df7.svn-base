@@ -1,0 +1,76 @@
+﻿@model JXProduct.AdminUI.Models.Activity.ActivityModel
+@{
+    ViewBag.Title = "单品活动编辑";
+}
+@section css{
+    <style type="text/css">
+        .addHdComm .kuangCenter .confirmBtn { padding-top: 10px; }
+        .inputBg { margin-top: 5px; }
+        .kuang .enddate { padding-top: 3px; }
+        .selecWrap { padding-top: 0px; }
+        .imitationSelect { z-index: auto; }
+        .inputTitme .timeBg .Wdate { width: 100px; }
+        textarea { width: 360px; padding-left: 10px; line-height: 28px; height: 28px; border: 1px solid #e7e7eb; border-radius: 3px; outline: none; float: left; }
+        .spInputWrap span { width: 70px; text-align: right; }
+    </style>
+}
+@section script{
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/jx.activity.js"></script>
+    <script>
+        $(function () { activity.edit(); });
+    </script>
+}
+<div class="kuang addHdComm" style="height:600px">
+    <div class="kuangHead"><span>单品活动</span></div>
+    @{ Ajax.BeginForm("edit", "activity", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "activity.editsuccess" }, new { id = "form1" }); }
+    @Html.HiddenFor(t => t.ActID)
+    <div class="kuangCenter clear">
+        <div class="spInputWrap fl ">
+            <span>* 活动名称：</span>
+            @Html.TextBoxFor(t => t.Name)
+        </div>
+        <div class="spInputWrap fl ">
+            <span>* 名称简写：</span>
+            @Html.TextBoxFor(t => t.BriefName)
+        </div>
+        <div class="spInputWrap fl ">
+            <span> 活动地址：</span>
+            @Html.TextBoxFor(t => t.URL)
+        </div>
+        @{
+            if (Model.ActID == 0) { 
+                var activity = JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.ProductActivity>().ToDictionary(t => t.Key.ToString(), t => t.Value);
+                @Html.Select1("活动类型", "Type", activity, Model.Type.ToString(), true);
+
+                var limit = new Dictionary<string, string>();
+                limit.Add("1", "金额");
+                limit.Add("2", "件数");
+                @Html.Select1("活动限制", "Limit", limit, Model.Limit.ToString(), true);
+            }
+            else
+            {
+                @Html.HiddenFor(t => t.Type);
+                @Html.HiddenFor(t => t.Limit);
+                
+            }
+        }
+        <div class="inputTitme fl ">
+            <p>活动有效时间：</p>
+            <div class="timeBg">
+                <b>@Html.TextBox("StartTime", Model.StartTime.ToString("yyyy-MM-dd"), new { @class = "Wdate" }) </b>
+                <b style="margin-left:10px;">@Html.TextBox("EndTime", Model.EndTime.ToString("yyyy-MM-dd"), new { @class = "Wdate" }) </b>
+            </div>
+        </div>
+        <div class="spInputWrap fl ">
+            <span style="width:auto;"> 活动描述：（展示使用）</span>
+            @Html.TextAreaFor(t => t.Description, new { style = "height:100px" })
+        </div>
+        <div class="confirmBtn clear">
+            <a class="q submit" href="#">确认</a>
+            <a class="x closewin" href="#">取消</a>
+        </div>
+    </div>
+    @{ Html.EndForm(); }
+</div>

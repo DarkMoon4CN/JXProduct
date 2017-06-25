@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C2BF4ACB-99B2-4131-A1B7-66FB49769C0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JXAPI.Component</RootNamespace>
+    <AssemblyName>JXAPI.Component</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\ComDLL\Bin\log4net__13\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\ActivityMySqlBLL.cs" />
+    <Compile Include="BLL\ActivityRuleMySqlBLL.cs" />
+    <Compile Include="BLL\MobilePushBLL.cs" />
+    <Compile Include="BLL\MySqlBLL\ActivityMySqlBLL.cs" />
+    <Compile Include="BLL\MySqlBLL\HealthActivityMySqlBLL.cs" />
+    <Compile Include="BLL\MySqlBLL\OrderMySqlBLL.cs" />
+    <Compile Include="BLL\MySqlBLL\ProductMySqlBLL.cs" />
+    <Compile Include="BLL\MySqlBLL\YXMySqlBLL.cs" />
+    <Compile Include="BLL\OrderLogisticsSqlBLL.cs" />
+    <Compile Include="BLL\ProductOutBookSqlBLL.cs" />
+    <Compile Include="BLL\BrandMySqlBLL.cs" />
+    <Compile Include="BLL\ClassificationMySqlBLL.cs" />
+    <Compile Include="BLL\ClassificationParameterToPriceMySqlBLL.cs" />
+    <Compile Include="BLL\CouponBatchMySqlBLL.cs" />
+    <Compile Include="BLL\CouponChannelMySqlBLL.cs" />
+    <Compile Include="BLL\CouponMySqlBLL.cs" />
+    <Compile Include="BLL\CouponShoppingCardDetailMySqlBLL.cs" />
+    <Compile Include="BLL\CouponShoppingCardMySqlBLL..cs" />
+    <Compile Include="BLL\CouponTypeMySqlBLL.cs" />
+    <Compile Include="BLL\ExpressNewsMySqlBLL.cs" />
+    <Compile Include="BLL\JxorderProductMySqlBLL.cs" />
+    <Compile Include="BLL\JxorderProductRelatedMySqlBLL.cs" />
+    <Compile Include="BLL\JXYXBrandMySqlBLL.cs" />
+    <Compile Include="BLL\JXYXProductMySqlBLL.cs" />
+    <Compile Include="BLL\KeywordMySqlBLL.cs" />
+    <Compile Include="BLL\KeywordProductMySqlBLL.cs" />
+    <Compile Include="BLL\KeywordRelationMySqlBLL.cs" />
+    <Compile Include="BLL\ManufacturerMySqlBLL.cs" />
+    <Compile Include="BLL\OrderLogisticsMySqlBLL.cs" />
+    <Compile Include="BLL\OrderOperateLogHistoryMySqlBLL.cs" />
+    <Compile Include="BLL\OrderOperateLogMySqlBLL.cs" />
+    <Compile Include="BLL\OrderOperateLogSqlBLL.cs" />
+    <Compile Include="BLL\OrderProductHistoryMySqlBLL.cs" />
+    <Compile Include="BLL\OrderProductMySqlBLL.cs" />
+    <Compile Include="BLL\OrderProductSqlBLL.cs" />
+    <Compile Include="BLL\OrdersBLL.cs" />
+    <Compile Include="BLL\OrdersHistoryMySqlBLL.cs" />
+    <Compile Include="BLL\OrdersMySqlBLL.cs" />
+    <Compile Include="BLL\OrdersSqlBLL.cs" />
+    <Compile Include="BLL\ProductActivityMySqlBLL.cs" />
+    <Compile Include="BLL\ProductAllMySqlBLL.cs" />
+    <Compile Include="BLL\ProductBLL.cs" />
+    <Compile Include="BLL\ProductClassificationMySqlBLL.cs" />
+    <Compile Include="BLL\ProductComboMySqlBLL.cs" />
+    <Compile Include="BLL\productevaluationMySqlBLL.cs" />
+    <Compile Include="BLL\ProductGiftMySqlBLL.cs" />
+    <Compile Include="BLL\ProductMySqlBLL.cs" />
+    <Compile Include="BLL\ProductParameterPriceMySqlBLL.cs" />
+    <Compile Include="BLL\ProductQuestionMySqlBLL.cs" />
+    <Compile Include="BLL\ProductRelatedMySqlBLL.cs" />
+    <Compile Include="BLL\ProductStockMySqlBLL.cs" />
+    <Compile Include="BLL\PromotionMySqlBLL.cs" />
+    <Compile Include="BLL\SaleMySqlBLL.cs" />
+    <Compile Include="BLL\SearchKeywordMySqlBLL.cs" />
+    <Compile Include="BLL\SpiderBLL.cs" />
+    <Compile Include="BLL\SqlBLL.cs" />
+    <Compile Include="BLL\SqlServerBLL\ProductBLL.cs" />
+    <Compile Include="BLL\SynPlanMySqlBLL.cs" />
+    <Compile Include="BLL\SynPlanSqlServerBLL.cs" />
+    <Compile Include="BLL\UsersAccountMySqlBLL.cs" />
+    <Compile Include="BLL\UsersBaseMySqlBLL.cs" />
+    <Compile Include="BLL\UsersBLL.cs" />
+    <Compile Include="BLL\UsersMySqlBLL.cs" />
+    <Compile Include="BLL\UsersReceiverMySqlBLL.cs" />
+    <Compile Include="BLL\UsersScoreMySqlBLL.cs" />
+    <Compile Include="DataAccess\JXActivityMySqlData.cs" />
+    <Compile Include="DataAccess\JXCouponBaseData.cs" />
+    <Compile Include="DataAccess\JXCouponBaseMySqlData.cs" />
+    <Compile Include="DataAccess\JXHealthActivityMySqlData.cs" />
+    <Compile Include="DataAccess\JXMarketingData.cs" />
+    <Compile Include="DataAccess\JXOrderData.cs" />
+    <Compile Include="DataAccess\JXOrderMySqlData.cs" />
+    <Compile Include="DataAccess\JXProductData.cs" />
+    <Compile Include="DataAccess\JXProductMySqlData.cs" />
+    <Compile Include="DataAccess\JXProductOthersData.cs" />
+    <Compile Include="DataAccess\JXProductStockData.cs" />
+    <Compile Include="DataAccess\JXThirdPartyData.cs" />
+    <Compile Include="DataAccess\JXUsersBaseData.cs" />
+    <Compile Include="DataAccess\JXUsersMySqlData.cs" />
+    <Compile Include="DataAccess\JXYXData.cs" />
+    <Compile Include="DataAccess\JXYXMySqlData.cs" />
+    <Compile Include="Enums\Error.cs" />
+    <Compile Include="Enums\ProductStatus.cs" />
+    <Compile Include="Enums\ProductType.cs" />
+    <Compile Include="Enums\ProudctEvaluation.cs" />
+    <Compile Include="Enums\PushType.cs" />
+    <Compile Include="IBLL\ICouponBLL.cs" />
+    <Compile Include="IBLL\ICouponMySqlBLL.cs" />
+    <Compile Include="IBLL\IMySqlBLL.cs" />
+    <Compile Include="IBLL\IMysqlBLL\IProductPlanMySqlBLL.cs" />
+    <Compile Include="IBLL\IOrdersRelatedBLL.cs" />
+    <Compile Include="IBLL\IOrdersRelatedMySqlBLL.cs" />
+    <Compile Include="IBLL\IProductPlanBLL.cs" />
+    <Compile Include="IBLL\IProductPlanMySqlBLL.cs" />
+    <Compile Include="IBLL\ISqlBLL.cs" />
+    <Compile Include="IBLL\ISqlServerBLL\IProductPlanBLL.cs" />
+    <Compile Include="IBLL\IUsersRelatedBLL.cs" />
+    <Compile Include="IBLL\IUsersRelatedMySqlBLL.cs" />
+    <Compile Include="Model\ActivityInfo.cs" />
+    <Compile Include="Model\ActivityRecordInfo.cs" />
+    <Compile Include="Model\ActivityRuleInfo.cs" />
+    <Compile Include="Model\BrandInfo.cs" />
+    <Compile Include="Model\ClassificationInfo.cs" />
+    <Compile Include="Model\CouponMySqlInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ExpressNewsInfo.cs" />
+    <Compile Include="Model\KeywordInfo.cs" />
+    <Compile Include="Model\KeywordProductInfo.cs" />
+    <Compile Include="Model\KeywordRelationInfo.cs" />
+    <Compile Include="Model\LogisticsInfo.cs" />
+    <Compile Include="Model\OrderLogisticsInfo.cs" />
+    <Compile Include="Model\OrderOperateLogInfo.cs" />
+    <Compile Include="Model\OrderProductInfo.cs" />
+    <Compile Include="Model\OrdersInfo.cs" />
+    <Compile Include="Model\ProductActivityInfo.cs" />
+    <Compile Include="Model\ProductAllInfo.cs" />
+    <Compile Include="Model\ProductClassificationInfo.cs" />
+    <Compile Include="Model\ProductComboInfo.cs" />
+    <Compile Include="Model\ProductFavoriteMySqlInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductGiftInfo.cs" />
+    <Compile Include="Model\ProductInfo.cs" />
+    <Compile Include="Model\ProductOutBookInfo.cs" />
+    <Compile Include="Model\ProductOutBookMySqlInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductParameterPriceInfo.cs" />
+    <Compile Include="Model\ProductReceiptMySqlInfo.cs" />
+    <Compile Include="Model\ProductRelatedInfo.cs" />
+    <Compile Include="Model\ProductStockInfo.cs" />
+    <Compile Include="Model\PromotionInfo.cs" />
+    <Compile Include="Model\PushMessageInfo.cs" />
+    <Compile Include="Model\SaleInfo.cs" />
+    <Compile Include="Model\UpLoadImageInfo.cs" />
+    <Compile Include="Model\UserInfo.cs" />
+    <Compile Include="Model\UsersAccountInfo.cs" />
+    <Compile Include="Model\UsersBaseInfo.cs" />
+    <Compile Include="Model\UsersReceiverInfo.cs" />
+    <Compile Include="Model\UsersScoreInfo.cs" />
+    <Compile Include="Model\SpiderProductInfo.cs" />
+    <Compile Include="MySqlDAL\SynPlanMySqlDAL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLServerDAL\ActivityMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ActivityRuleMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\BrandMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ClassificationMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ClassificationParameterToPriceMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponBatchMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponChannelMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponShoppingCardDetailMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponShoppingCardMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\CouponTypeMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ExpressNewsMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\JxorderProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\JxorderProductRelatedMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\JXYXBrandMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\JXYXProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\KeywordMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\KeywordProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\KeywordRelationMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ManufacturerMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MobilePushDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlDAL\JXActivityMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlDAL\JXHealthActivityMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlDAL\JXOrderMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlDAL\JXProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlDAL\JXYXMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\MySqlOrderDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderLogisticsMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderLogisticsSqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderOperateLogHistoryMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderOperateLogMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderOperateLogSqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderProductHistoryMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrderProductSqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrdersDAL.cs" />
+    <Compile Include="SQLServerDAL\OrdersHistoryMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrdersMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\OrdersSqlDAL.cs" />
+    <Compile Include="SQLServerDAL\PartialCouponMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\PartialOrdersMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\PartialProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\PartialProductStockMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductActivityMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductAllMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductClassificationMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductComboMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductDAL.cs" />
+    <Compile Include="SQLServerDAL\productevaluationMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductGiftMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductOutBookSqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductParameterPriceMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductQuestionMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductRelatedMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductStockMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\PromotionMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\SaleMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\SearchKeywordMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\SpiderDAL.cs" />
+    <Compile Include="SQLServerDAL\SqlDAL.cs" />
+    <Compile Include="SQLServerDAL\SqlServerDAL\JXProductDAL.cs" />
+    <Compile Include="SQLServerDAL\SynPlanSqlServerDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersAccountMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersBaseMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersReceiverMySqlDAL.cs" />
+    <Compile Include="SQLServerDAL\UsersScoreMySqlDAL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\JXAPI.Component.dll" />
+    <Content Include="bin\Debug\JXAPI.Component.pdb" />
+    <Content Include="bin\Release\JXAPI.Component.dll" />
+    <Content Include="bin\Release\JXAPI.Component.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JXAPI.Common\JXAPI.Common.csproj">
+      <Project>{3e09e319-f9a4-43e1-bb35-1f30e77f5499}</Project>
+      <Name>JXAPI.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

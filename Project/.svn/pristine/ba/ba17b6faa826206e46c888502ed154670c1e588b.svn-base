@@ -1,0 +1,73 @@
+﻿@using JXProduct.AdminUI.Image;
+@model JXProduct.AdminUI.Models.Product.ProductEditModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    var p = Model.Product;
+    var ins = Model.Instructions;
+}
+@section css{
+    <style>
+        .col-md-11 label { margin-right: 10px; }
+        .uploadify-button { background: url("/image/sprites/btnbg.png"); text-align: center; }
+        .informa-title .resetUpBtn { padding-top: 18px; }
+    </style>
+}
+@section js{
+    <script src="/js/uploadify3.2.1/jquery.uploadify.js"></script>
+    <script src="/content/js/jx.product.js"></script>
+    <script>
+        var productid = @(p.ProductID + ";")
+        $(function () {
+            productedit.upload();
+        });
+    </script>
+}
+
+<div id="l-content-right">
+    <div class="single-product-h">
+        <a href="/product/list"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="single-center authority-informa">
+        <div class="single-name">
+            <span>@p.BrandName @p.CADN @p.Specifications</span>
+        </div>
+        <form id="formproduct">
+            @Html.Hidden("ProductID", p.ProductID)
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">商品详情图片</div>
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品详情图片上传：
+                        <i class="addImg-btn">+</i>
+                    </div>
+                    <div class="every-one-info" id="descuploadimage">
+                        @{
+                            var descimages = JXProduct.Component.BLL.ProductBLL.Instance.GetDescImages(p.Description);
+                            foreach(var d in descimages)
+                            {
+                                <div class="operAdverW clear">
+                                    <div class="InformaUpload clear">
+                                        <span class="fl"><i class="xingRed">*</i> 详情图@(d.Key)：</span>
+                                        <div class="resetUpBtn fl"><span id="descimage@(d.Key)"><img src="/content/images/upImg.png" alt=""></span></div>
+                                        <span class="imgInfo fl">大小：60PX*90PX</span>
+                                    </div>
+                                    <div class="informa-imgWrap" id="descimagequeue@(d.Key)">
+                                        @if (!string.IsNullOrWhiteSpace(d.Value))
+                                        {
+                                            <div class="upImage">
+                                                <a href="#" class="closeBtn">X</a>
+                                                <img src="@d.Value" alt="">
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class KeywordRelationMySqlDAL
+    {
+        private static Database dbw = JXProductMySqlData.Writer;
+        private static Database dbr = JXProductMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(KeywordRelationMySqlDAL));
+
+        #region MySql关键词关联表相关操作
+
+        public int GetMaxKeywordRelationID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from KeywordRelation order by ID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxKeywordRelationID 获取品牌信息最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool UpdateKeywordRelation(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into KeywordRelation ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}')",
+                                     dr["ID"].ToInt(), dr["KeywordID"].ToInt(), dr["ChildKeywordID"].ToInt(), dr["Sort"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateKeywordRelation 更新品牌信息表失败,品牌信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["KeywordRelationID"], table.Rows[table.Rows.Count - 1]["KeywordRelationID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        public bool AddKeywordRelation(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into KeywordRelation ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}')",
+                                     dr["ID"].ToInt(), dr["KeywordID"].ToInt(), dr["ChildKeywordID"].ToInt(), dr["Sort"].ToShort());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddCoupon 添加品牌信息失败,品牌信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["KeywordRelationID"], table.Rows[table.Rows.Count - 1]["KeywordRelationID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        private string parmsKey = string.Format(@"ID,KeywordID,ChildKeywordID,Sort");
+
+        #endregion
+    }
+}

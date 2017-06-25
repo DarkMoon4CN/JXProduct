@@ -1,0 +1,88 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class CouponService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string list = "coupon/getList";
+        private static string add = "coupon/addCoupon";
+        private static string bind = "coupon/bindCoupon";
+        private static string notUse = "coupon/notUseCoupon";
+        private static string use = "coupon/useCoupon";
+        public static CouponService Instance
+        {
+            get { return new CouponService(); }
+        }
+
+        /// <summary>
+        /// 优惠券
+        /// </summary>
+        /// <param name="request">条件实体</param>
+        /// <returns></returns>
+        public CouponListResponse List(CouponListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponListResponse response = client.Execute(request, list, postData);
+            return response;
+        }
+
+        /// <summary>
+        /// 添加优惠券
+        /// </summary>
+        /// <param name="info">优惠券信息</param>
+        /// <returns></returns>
+        public bool Add(CouponInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+
+        /// <summary>
+        /// 用户绑定优惠券
+        /// </summary>
+        /// <param name="request">参数实体</param>
+        /// <returns></returns>
+        public bool Bind(CouponBindRequest request) 
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = client.Execute(request, bind, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 用户可用购物卡列表
+        /// </summary>
+        /// <param name="request">参数实体 isUse：1可用的，0：不可用</param>
+        /// <returns></returns>
+        public UseCouponListResponse UseList(UseCouponListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            UseCouponListResponse response = null;
+            if (request != null && request.isUse == 1)
+            {
+                response = client.Execute(request, notUse, postData);
+            }
+            else
+            {
+                response = client.Execute(request, use, postData);
+            }
+            return response;
+        }
+    }
+}

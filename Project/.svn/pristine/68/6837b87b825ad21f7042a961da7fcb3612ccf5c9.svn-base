@@ -1,0 +1,59 @@
+﻿using JXProduct.Component.DataAccess;
+using JXProduct.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    internal class AuditStuffEmailDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        internal List<AuditStuffEmailInfo> GetList()
+        {
+            string sql = "SELECT * FROM AuditStuffEmail";
+
+            var list = new List<AuditStuffEmailInfo>();
+            var cmd = dbr.GetSqlStringCommand(sql);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    list.Add(ConvertAuditStuffModel(read));
+                }
+            }
+            return list;
+        }
+        internal AuditStuffEmailInfo Insert(AuditStuffEmailInfo info)
+        {
+            var sql = "AuditStuffEmail_Insert";
+            var cmd = dbw.GetStoredProcCommand(sql);
+
+            dbw.AddInParameter(cmd, "Type", DbType.Int16, info.Type);
+            dbw.AddInParameter(cmd, "UserName", DbType.String, info.UserName);
+            dbw.AddInParameter(cmd, "UserEmail", DbType.String, info.UserEmail);
+            dbw.AddInParameter(cmd, "Creator", DbType.String, info.Creator);
+            dbw.AddInParameter(cmd, "CreateTime", DbType.DateTime, info.CreateTime);
+
+            info.EmailID = Convert.ToInt32(dbw.ExecuteScalar(cmd));
+            return info;
+        }
+        private AuditStuffEmailInfo ConvertAuditStuffModel(IDataReader read)
+        {
+            var info = new AuditStuffEmailInfo();
+            info.EmailID = read["EmailID"].ToInt();
+            info.Type = read["Type"].ToShort();
+            info.UserName = read["UserName"].ToString();
+            info.UserEmail = read["UserEmail"].ToString();
+            info.Creator = read["Creator"].ToString();
+            info.CreateTime = read["CreateTime"].ToDateTime();
+            return info;
+        }
+    }
+}

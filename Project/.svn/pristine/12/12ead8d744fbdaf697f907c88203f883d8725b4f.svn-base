@@ -1,0 +1,79 @@
+﻿using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Service;
+using JXAPI.JXSdk.Utils;
+using JXProduct.ConfigComponent;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.UI.HtmlControls;
+
+namespace JXProduct.AdminUI.Image
+{
+    public class ProductImage
+    {
+        private ProductImage() { }
+        private static ProductImage _instance;
+        public static ProductImage Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ProductImage());
+            }
+        }
+        public static ImagesConfig imagesSection = ImagesConfig.Instance;
+
+        /// <summary>
+        /// 上传图片
+        /// </summary>
+        /// <param name="type">product,special</param>
+        /// <param name="index">索引</param>
+        /// <param name="filename">文件名称</param>
+        /// <param name="filepath">文件路径</param>
+        /// <param name="s">数据流</param>
+        /// <returns></returns>
+        private JXAPI.JXSdk.Utils.JsonResultObject Upload(string type, int index, string filename, string filepath, Stream s)
+        {
+            JXAPI.JXSdk.Service.UpLoadService us = UpLoadService.Instance;
+            JXAPI.JXSdk.Request.UpLoadImageRequest req = new UpLoadImageRequest();
+            string imageByte = ImageConvertUtil.ConvertImageToBase64(s);
+            string method = "jxdyf.upload.uploadimage.post";
+            string extName = "jpg";
+            string sourceType = "web";
+            req.ImageByte = imageByte;
+            req.SourceType = sourceType;
+            req.Method = method;
+            req.FileName = filename;
+            req.ExtName = extName;
+            req.Type = type;
+            req.FilePath = filepath;
+            req.Index = index;
+            var result = us.UpLoadImage(req);
+            return result;
+        }
+
+        public JXAPI.JXSdk.Utils.JsonResultObject ProductUpload(int productid, int index, HttpPostedFileBase img)
+        {
+            var result = this.Upload(
+                "product"
+                , index
+                , productid.ToString()
+                , Path.GetDirectoryName(JXUtil.ImageHelper.GetProductImageSavePath(productid))
+                , img.InputStream);
+            return result;
+        }
+        public JXAPI.JXSdk.Utils.JsonResultObject OtherUpload(string filename, int index, HttpPostedFileBase img)
+        {
+            var result = this.Upload(
+                "other"
+                , index
+                , filename
+                , string.Empty
+                , img.InputStream);
+            return result;
+        }
+    }
+}

@@ -1,0 +1,60 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    Webdiyer.WebControls.Mvc.PagedList<JXProduct.Component.Model.ProductInfo> paged = ViewBag.ProductList;
+    int actid = ViewBag.ActID;
+}
+<table class='generalTable'>
+    <thead>
+        <tr>
+            <th style="width:80px;"><input type="checkbox" name="allchecked" value="1" />全选</th>
+            <th style="width:80px;">商品ID</th>
+            <th style="width:80px;">金象码</th>
+            <th>商品名称</th>
+            <th>厂家</th>
+            <th>规格</th>
+            <th style="width:80px;">金象价</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in paged)
+        {
+            <tr>
+                <td><input type="checkbox" value="@p.ProductID" /></td>
+                <td>@p.ProductID</td>
+                <td>@p.ProductCode</td>
+                <td>@p.ChineseName</td>
+                <td>@p.Manufacter</td>
+                <td>@p.Specifications</td>
+                <td>@p.TradePrice</td>
+            </tr>
+        }
+        @if (paged.Count == 0)
+        {
+            <tr><td colspan="9">暂无数据</td></tr>
+        }
+        else
+        {
+            <tr class="tl"><td colspan="9" class="tl" style="text-align:left;">&nbsp;<a href="#" name="cancel">取消</a></td></tr>
+        }
+    </tbody>
+</table>
+<div class="lPage">
+    <div class="lPageWrap">
+        @*@Ajax.Pager(
+            paged.TotalItemCount,
+            paged.PageSize,
+            paged.CurrentPageIndex,
+            "actProduct",
+            "activity",
+            null,
+            new PagerOptions { PageIndexParameterName = "index", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false },
+            null,
+            new MvcAjaxOptions { UpdateTargetId = "tablist", InsertionMode = InsertionMode.Replace },
+            new { style = "float:right" }
+        )*@
+        @Ajax.Pager(paged.TotalItemCount, paged.PageSize, paged.CurrentPageIndex, "actproduct", "activity", null, new PagerOptions { PageIndexParameterName = "pindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new { actid = actid },
+            new MvcAjaxOptions {  UpdateTargetId = "tablist", InsertionMode = InsertionMode.Replace },
+            new { style = "float:right" }
+        )
+    </div>
+</div>

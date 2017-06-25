@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "EmailEdit";
+    Layout = "~/Views/Shared/_DefaultWin.cshtml";
+}
+@section js{
+    <script src="~/Content/js/jquery.validate.js"></script>
+    <script src="~/Content/js/jx.audit.js"></script>
+    <script>
+        $(function () {
+            audit.emailedit();
+        })
+    </script>
+}
+<div class="popupGeneral bind-email-p">
+    <div class="popupGeneral-h">
+        <span>添加职务</span>
+        <a href="javascript:;">×</a>
+    </div>
+    <form id="form1">
+        <div class="every-one-info">
+            <div class="spInputWrap clear">
+                <span class='width-150'><i class="xingRed">* </i>选择职务：</span>
+                <select name="type" required data-msg-required="请选择职务">
+                    <option value="">请选择</option>
+                    <option value="1">质管部信息维护</option>
+                    <option value="2">产品部信息维护</option>
+                    <option value="3">质管部信息审核</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-one-info">
+            <div class="spInputWrap clear">
+                <span class='width-150'><i class="xingRed">* </i>姓      名：</span>
+                <input type="text" name="UserName" required data-msg-required="请输入名称" />
+            </div>
+        </div>
+        <div class="every-one-info">
+            <div class="spInputWrap clear">
+                <span class="width-150"><i class="xingRed">* </i> 绑定邮箱：</span>
+                <input type="text" name="UserEmail" required data-msg-required="请输入邮箱">
+            </div>
+        </div>
+        <div class="confirm-wrap">
+            <div class="confirm">
+                <a href="#" class="save">保存</a>
+                <a href="#" class="closewin_p">取消</a>
+            </div>
+        </div>
+    </form>
+</div>

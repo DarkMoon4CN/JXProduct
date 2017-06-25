@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "关键词管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css{
+    <style>
+        .active { background: #ebebeb; color: #000; font-weight: bold; }
+        .classification .class-wrap { width: 750px; }
+        .class-s-d { height: 341px; overflow-y: auto; }
+        .class-select-wrap:nth-child(2) .class-s-d,
+        .class-select-wrap:nth-child(3) .class-s-d { height: 308px; overflow-y: auto; }
+    </style>
+}
+@section js{
+    <script src="~/Content/js/jx.cf.js"></script>
+    <script>
+        $(function () {
+            cf.init();
+            section.init();
+        });
+    </script>
+}
+@model JXProduct.AdminUI.Models.Classification.ClassificationModel
+<div id="l-content-right">
+    <div class="header-comm-table">
+        <a href="javascript:;" class="active">疾病标签</a>
+        <a href="javascript:;">商品种类</a>
+    </div>
+    <div class="classification clear">
+        <div class="class-wrap clear" id="section">
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">一级科室</span>
+                        <a class="fr" href="javascript:;"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d">
+                        <ul>
+                            @foreach (var s in Model.SectionList)
+                            {
+                                <li><a href="#" sectionid="@s.SectionID">@s.SectionName</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">二级科室</span>
+                        <a class="fr" href="#"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d"><ul></ul></div>
+                    <div class="class-s-bottom">
+                        <ul class="fr">
+                            <li><a href="#" name="add"></a><span>新增</span></li>
+                            <li><a href="#" name="edit"></a><span>编辑</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">关键词</span>
+                        <a class="fr" href="javascript:;"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d">
+                        <ul></ul>
+                    </div>
+                    <div class="class-s-bottom">
+                        <ul class="fr">
+                            <li><a href="#" name="add"></a><span>新增</span></li>
+                            <li><a href="#" name="edit"></a><span>编辑</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="classification clear hide">
+        <div class="class-wrap clear" id="cf">
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">一级分类</span>
+                        <a class="fr" href="javascript:;"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d">
+                        <ul>
+                            @foreach (var cf in Model.CFList)
+                            {
+                                <li><a href="#" cfid="@cf.CFID">@cf.ChineseName</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">二级分类</span>
+                        <a class="fr" href="javascript:;"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d">
+                        <ul></ul>
+                    </div>
+                    <div class="class-s-bottom">
+                        <div class="class-s-bottom">
+                            <ul class="fr" index="2">
+                                <li><a href="#" name="add"></a><span>新增</span></li>
+                                <li><a href="#" name="edit"></a><span>编辑</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="class-select-wrap">
+                <div class="class-select-box">
+                    <div class="class-s-t">
+                        <span class="fl">三级分类</span>
+                        <a class="fr" href="javascript:;"><span class="fl"></span></a>
+                    </div>
+                    <div class="class-s-d">
+                        <ul></ul>
+                    </div>
+                    <div class="class-s-bottom">
+                        <ul class="fr" index="3">
+                            <li><a href="#" name="add"></a><span>新增</span></li>
+                            <li><a href="#" name="edit"></a><span>编辑</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

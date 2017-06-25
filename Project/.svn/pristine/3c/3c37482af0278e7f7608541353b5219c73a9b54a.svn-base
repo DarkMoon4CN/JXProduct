@@ -1,0 +1,45 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    PagedList<JXProduct.Component.Model.ProductParameterPriceInfo> paraprice = ViewBag.ParaPrice;
+}
+<table class='generalTable'>
+    <thead>
+        <tr>
+            <th>商品ID</th>
+            <th>金象码</th>
+            <th>商品名称</th>
+            <th>属性1</th>
+            <th>属性2</th>
+            <th>属性3</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var p in paraprice)
+            {
+                <tr>
+                    <td>@p.ChildProductID</td>
+                    <td>@p.ChildProductCode</td>
+                    <td>@p.ChildName</td>
+                    <td>@p.Prop1</td>
+                    <td>@p.Prop2</td>
+                    <td>@p.Prop3</td>
+                    <td class='cz' parapriceid="@p.ParaPriceID"><a href="javascript:void(0);" name="update">编辑</a><a href="javascript:void(0);" name="del">删除</a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div class="lPage">
+    <div class="lPageWrap">
+        @*@Ajax.Pager(paraprice,new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false },
+                         new MvcAjaxOptions { UpdateTargetId = "parapricelist", InsertionMode = InsertionMode.Replace},
+                new { style = "float:right" }
+            )*@
+        @Ajax.Pager(paraprice.TotalItemCount, paraprice.PageSize, paraprice.CurrentPageIndex, "PartialParaPrice", "Product", null, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new { productid = (int)ViewBag.ProductID },
+                    new MvcAjaxOptions { UpdateTargetId = "parapricelist", InsertionMode = InsertionMode.Replace },
+            new { style = "float:right" }
+        )
+    </div>
+</div>

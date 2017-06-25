@@ -1,0 +1,403 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Xml;
+using System.Data.SqlTypes;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrdersSqlDAL
+    {
+        private static Database dbr = JXThirdPartyData.Reader;
+        private static Database dbw = JXThirdPartyData.Writer;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrdersSqlDAL));
+
+        #region Sql订单信息表相关操作
+
+        /// <summary>
+        /// 获取订单信息最大的ID
+        /// </summary>
+        /// <returns>订单信息ID最大值</returns>
+        public int GetMaxOrdersId()
+        {
+            int maxId = -1;
+            try
+            {
+                var sql = @"SELECT MAX(CAST(ThirdOrderID as int)) FROM orders";
+                var cmd = dbr.GetSqlStringCommand(sql);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxOrdersId 获取订单信息ID最大值异常：{0}", ex.Message);
+            }
+            return maxId;
+        }
+
+        public bool UpdateOrders(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                var dr = table.Rows[i];
+                try
+                {
+                    string orderIDStr = GetOrderIDByThirdOrderID(dr["OrderID"].ToInt());
+                    if(!string.IsNullOrEmpty(orderIDStr))
+                    {
+                        var sql = "Orders_Dispose";
+                        var cmd = dbw.GetStoredProcCommand(sql);
+                        dbw.AddInParameter(cmd, "OrderID", DbType.String, orderIDStr);
+                        dbw.AddInParameter(cmd, "UID", DbType.Int32, dr["UID"]);
+                        dbw.AddInParameter(cmd, "UserType", DbType.Int32, dr["UserType"]);
+                        dbw.AddInParameter(cmd, "UserName", DbType.String, "系统");
+                        dbw.AddInParameter(cmd, "DisposeID", DbType.Int16, dr["OrderStatus"].ToShort());
+                        dbw.AddInParameter(cmd, "DisposeType", DbType.Int16, 2);
+                        dbw.AddInParameter(cmd, "Remarks", DbType.String, "订单等待审核");
+
+                        dbw.AddOutParameter(cmd, "Error", DbType.String, 100);
+                        dbw.ExecuteNonQuery(cmd);
+                        int result = int.Parse(dbw.GetParameterValue(cmd, "Error").ToString());
+                        if (result != 0)
+                        {
+                            errorCount++;
+                            flag = false;
+                            myLog.ErrorFormat("UpdateOrders 更新订单表失败,订单ID:{0}", dr["OrderID"].ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("UpdateOrders 更新订单表失败,订单ID:{0},异常信息:{1}", dr["OrderID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        public bool AddOrders(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                var dr = table.Rows[i];
+                try
+                {
+                    if (!IsExistOrderItem(dr["OrderID"].ToInt()))
+                    {
+                        string orderIDTimeStr = DateTime.Now.ToString("yyMMddHHmmssfff");
+                        //添加订单及订单商品信息
+                        string orderXmlStr = GetOrderXML(dr, orderIDTimeStr);
+                        if (!string.IsNullOrEmpty(orderXmlStr))
+                        {
+                            XmlTextReader rdr = new XmlTextReader(orderXmlStr, XmlNodeType.Document, null);
+                            SqlXml sqlXml = new SqlXml(rdr);
+                            var sql = "Orders_InsertByXML";
+                            var cmd = dbw.GetStoredProcCommand(sql);
+                            dbw.AddInParameter(cmd, "OrderXML", DbType.Xml, sqlXml);
+                            dbw.AddOutParameter(cmd, "Result", DbType.Int16, 4);
+                            dbw.ExecuteNonQuery(cmd);
+                            int result = int.Parse(dbw.GetParameterValue(cmd, "Result").ToString());
+                            if (result != 0)
+                            {
+                                errorCount++;
+                                flag = false;
+                                myLog.ErrorFormat("AddOrders 添加订单表失败,订单ID:{0}", dr["OrderID"].ToString());
+                            }
+                        }
+                        else
+                        {
+                            errorCount++;
+                            flag = false;
+                            myLog.ErrorFormat("AddOrders 添加订单表失败,订单ID:{0}", dr["OrderID"].ToString());
+                        }
+
+                        //添加订单操作日志
+                        if(!GetAndAddOrderOperateLog(dr["OrderID"].ToInt(), orderIDTimeStr))
+                        {
+                            flag = false;
+                            myLog.ErrorFormat("AddOrders 添加订单操作日志表失败，没有该订单操作日志项,订单ID:{0}", dr["OrderID"].ToString());
+                        }
+                    }
+                    else
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("AddOrders 添加订单表是该订单号已存在,订单ID:{0}", dr["OrderID"].ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("AddOrders 添加订单表失败,订单ID:{0},异常信息:{1}", dr["OrderID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        private bool IsExistOrderItem(int thirdOrderID)
+        {
+            bool flag = false;
+            try
+            {
+                var sql = string.Format(@"select count(*) from Orders where ThirdOrderID = '{0}'", thirdOrderID);
+                var cmd = dbr.GetSqlStringCommand(sql);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                     if(Convert.ToInt32(dbr.ExecuteScalar(cmd)) > 0)
+                     {
+                         flag = true;
+                         myLog.ErrorFormat("IsExistOrderItem 根据订单ThirdOrderID获取相应订单行信息大于0,订单ID:{0}", thirdOrderID.ToString());
+                     }
+                }
+                else
+                {
+                    myLog.ErrorFormat("IsExistOrderItem 根据订单ThirdOrderID获取相应订单行信息失败-订单数为空,订单ID:{0}", thirdOrderID.ToString());
+                    flag = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                flag = true;
+                myLog.ErrorFormat("IsExistOrderItem 根据订单ThirdOrderID获取相应订单行信息失败,订单ID:{0},异常信息:{1}", thirdOrderID.ToString(), ex.Message);
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 由于sql数据库的OrderID字段是插入是根据当前时间来的，而mysql数据库的OrderID对应sql的是ThirdOrderID
+        /// 在执行sql的Orders_Dispose存储时update是根据sql的OrderID来的
+        /// </summary>
+        /// <returns></returns>
+        private string GetOrderIDByThirdOrderID(int orderID)
+        {
+            string sqlOrderID = string.Empty;
+            try
+            {
+                var sql = string.Format(@"select OrderID from Orders where ThirdOrderID = '{0}'", orderID);
+                var cmd = dbr.GetSqlStringCommand(sql);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    sqlOrderID = dbr.ExecuteScalar(cmd).ToString();
+                }
+                else
+                {
+                    myLog.ErrorFormat("GetOrderIDByThirdOrderID 根据订单ThirdOrderID获取相应订单ID失败-值为空,订单ID:{0}", orderID.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetOrderIDByThirdOrderID 根据订单ThirdOrderID获取相应订单ID失败,订单ID:{0},异常信息:{1}", orderID.ToString(), ex.Message);
+            }
+            return sqlOrderID;
+        }
+
+        private string GetOrderXML(DataRow dr, string orderIDTimeStr)
+        {
+            StringBuilder orderXML = new StringBuilder();
+            string orderXmlStr = string.Empty;
+            try
+            {
+                orderXML.Append("<JXOrder>");
+                orderXML.Append("<BasicInfo>");
+                orderXML.Append(string.Format("<OrderID>{0}</OrderID>", orderIDTimeStr));
+                orderXML.Append(string.Format("<UID>{0}</UID>", dr["UID"].ToInt()));
+                orderXML.Append(string.Format("<UserName>{0}</UserName>", dr["UserName"].ToString()));
+                orderXML.Append(string.Format("<ProductFee>{0}</ProductFee>", dr["ProductFee"].ToDecimal()));
+                orderXML.Append(string.Format("<ShipFee>{0}</ShipFee>", dr["ShipFee"].ToDecimal()));
+                orderXML.Append(string.Format("<NewShipFee>{0}</NewShipFee>", dr["NewShipFee"].ToDecimal()));
+                orderXML.Append(string.Format("<IsFreeShip>{0}</IsFreeShip>", dr["IsFreeShip"].ToShort()));
+                orderXML.Append(string.Format("<FreeShipCardNo>{0}</FreeShipCardNo>", 0));                  //  包邮卡卡号
+                orderXML.Append(string.Format("<PaymentMethodID>{0}</PaymentMethodID>", dr["PaymentMethodID"].ToShort()));
+                orderXML.Append(string.Format("<ShipMethodID>{0}</ShipMethodID>", dr["ShipMethodID"].ToShort()));
+                orderXML.Append(string.Format("<Province>{0}</Province>", dr["Province"].ToString()));
+                orderXML.Append(string.Format("<City>{0}</City>", dr["City"].ToString()));
+                orderXML.Append(string.Format("<Country>{0}</Country>", dr["County"].ToString()));
+                orderXML.Append(string.Format("<Receiver>{0}</Receiver>", dr["Receiver"].ToString()));
+                orderXML.Append(string.Format("<Telephone>{0}</Telephone>", dr["Telephone"].ToString()));
+                orderXML.Append(string.Format("<Mobile>{0}</Mobile>", dr["Mobile"].ToString()));
+                orderXML.Append(string.Format("<Email>{0}</Email>", string.Empty));
+                orderXML.Append(string.Format("<Address>{0}</Address>", dr["Address"].ToString()));
+                orderXML.Append(string.Format("<PostalCode>{0}</PostalCode>", dr["PostalCode"].ToString()));
+                orderXML.Append(string.Format("<Invoice>{0}</Invoice>", dr["Invoice"].ToString()));
+                orderXML.Append(string.Format("<SendTimeInfo>{0}</SendTimeInfo>", dr["SendTimeInfo"].ToShort()));
+                orderXML.Append(string.Format("<Remarks>{0}</Remarks>", dr["Remarks"].ToString()));
+                orderXML.Append(string.Format("<CreateTime>{0}</CreateTime>", string.IsNullOrEmpty(dr["CreateTime"].ToString()) ? string.Empty : dr["CreateTime"]));
+                orderXML.Append(string.Format("<OrderStatus>0</OrderStatus>", dr["OrderStatus"].ToShort()));
+                orderXML.Append(string.Format("<PayStatus>{0}</PayStatus>", dr["PayStatus"].ToShort()));
+                orderXML.Append(string.Format("<RebateFee>{0}</RebateFee>", 0));                            //  返利比例
+                orderXML.Append(string.Format("<MediumSource>{0}</MediumSource>", dr["MediumSource"].ToString()));
+                orderXML.Append(string.Format("<OrderSource>{0}</OrderSource>", dr["OrderSource"].ToShort()));
+                orderXML.Append(string.Format("<ReduceType>{0}</ReduceType>", dr["ReduceType"].ToShort()));                 //  优惠减免类型
+                orderXML.Append(string.Format("<ReduceFee>{0}</ReduceFee>", dr["ReduceFee"].ToDecimal()));                    //  优惠减免金额
+                orderXML.AppendFormat("<ActiveReduceType>{0}</ActiveReduceType>", dr["ActiveReduceType"].ToShort());                                  //  满减类型
+                orderXML.AppendFormat("<ActiveReduceFee>{0}</ActiveReduceFee>", dr["ActiveReduceFee"].ToDecimal());                                    //  满减金额
+                orderXML.Append(string.Format("<CardNo>{0}</CardNo>", string.Empty));         //  包邮卡
+                orderXML.Append(string.Format("<VoucherFee>{0}</VoucherFee>", dr["VoucherFee"].ToDecimal()));                 //  优惠劵金额
+                orderXML.Append(string.Format("<VoucherSerial>{0}</VoucherSerial>", dr["VoucherSeriall"].ToString()));           //  优惠劵号码
+                orderXML.Append(string.Format("<ShoppingCardNo>{0}</ShoppingCardNo>", string.Empty));         //  购物卡卡号
+                orderXML.Append(string.Format("<ShoppingCardPwd>{0}</ShoppingCardPwd>", string.Empty));     //  购物卡密码
+                orderXML.Append(string.Format("<ShoppingCardFee>0</ShoppingCardFee>"));        //  购物卡使用金额
+                orderXML.Append("<UseAccountFee>0</UseAccountFee>");                                        //  账户余额
+                orderXML.Append(string.Format("<UnionPara>{0}</UnionPara>", string.Empty));
+                orderXML.Append(string.Format("<UnionType>{0}</UnionType>", "0"));
+                orderXML.Append(string.Format("<Creator>{0}</Creator>", dr["Creator"].ToString()));
+                orderXML.Append(string.Format("<SplitType>{0}</SplitType>", dr["SplitType"].ToString()));
+                orderXML.Append(string.Format("<ThirdOrderID>{0}</ThirdOrderID>", dr["OrderID"].ToString()));
+                orderXML.Append(string.Format("<ThirdStatus>0</ThirdStatus>"));
+                orderXML.Append("</BasicInfo>");
+                string orderProductXmlStr = GetOrderProductXML(dr["OrderID"].ToInt());
+                if (!string.IsNullOrEmpty(orderProductXmlStr))
+                {
+                    orderXML.Append(orderProductXmlStr);
+                }
+                orderXML.Append("</JXOrder>");
+                orderXmlStr = orderXML.ToString().Replace("\\", "\\\\");
+            }
+            catch(Exception ex)
+            {
+                myLog.ErrorFormat("GetOrderXML 获取订单的XML失败,订单ThirdOrderID:{0},异常信息:{1}", dr["OrderID"], ex.Message);
+                myLog.ErrorFormat(orderXmlStr);
+                myLog.ErrorFormat(orderXML.ToString());
+            }
+            return orderXmlStr;
+        }
+
+        private string GetOrderProductXML(int orderID)
+        {
+            string orderProductXmlStr = string.Empty;
+            StringBuilder orderXML = new StringBuilder();
+            try
+            {
+                MySqlOrderDAL orderDal = new MySqlOrderDAL();
+                DataTable dt = orderDal.GetAddList(orderID, DateTime.Now.AddMinutes(-30).ToString(), 0, 1, "orderproduct");
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    orderXML.Append("<OrderProducts>");
+                    orderXML.Append("<OrderProduct>");
+                    orderXML.Append(string.Format("<OrderProductID>{0}</OrderProductID>", dr["OrderProductID"].ToInt()));
+                    orderXML.Append(string.Format("<OrderID>{0}</OrderID>", DateTime.Now.ToString("yyMMddHHmmssfff")));
+                    orderXML.Append(string.Format("<ProductID>{0}</ProductID>", dr["ProductID"].ToInt()));
+                    orderXML.Append(string.Format("<OrderSplitID>{0}</OrderSplitID>", string.Empty));
+                    orderXML.Append(string.Format("<ProductCode>{0}</ProductCode>", dr["ProductCode"].ToString()));
+
+                    orderXML.Append(string.Format("<ProductName>{0}</ProductName>", dr["ProductName"].ToString()));
+                    orderXML.Append(string.Format("<ProductImage>{0}</ProductImage>", dr["ProductImage"].ToString()));
+                    orderXML.Append(string.Format("<ProductType>{0}</ProductType>", 0));                  //  包邮卡卡号
+                    orderXML.Append(string.Format("<MarketPrice>{0}</MarketPrice>", dr["MarketPrice"].ToDecimal()));
+                    orderXML.Append(string.Format("<TradePrice>{0}</TradePrice>", dr["TradePrice"].ToDecimal()));
+
+                    orderXML.Append(string.Format("<CostPrice>{0}</CostPrice>", dr["CostPrice"].ToDecimal()));
+                    orderXML.Append(string.Format("<Quantity>{0}</Quantity>", dr["Quantity"].ToInt()));
+                    orderXML.Append(string.Format("<OutQuantity>{0}</OutQuantity>", dr["SendQuantity"].ToInt()));
+                    orderXML.Append(string.Format("<ReturnQuantity>{0}</ReturnQuantity>", dr["ReturnQuantity"].ToInt()));
+                    orderXML.Append(string.Format("<ProfeeDiscount>{0}</ProfeeDiscount>", dr["ProFeeDiscount"].ToDecimal()));
+
+                    orderXML.Append(string.Format("<ParaValue>{0}</ParaValue>", string.Empty));
+                    orderXML.Append(string.Format("<PriceParaID>0</PriceParaID>"));
+                    orderXML.Append(string.Format("<PriceParaValue>{0}</PriceParaValue>", string.Empty));
+                    orderXML.Append(string.Format("<ProBatchNumber>{0}</ProBatchNumber>", dr["ProBatchNumber"].ToString()));
+                    orderXML.Append(string.Format("<Memo>{0}</Memo>", dr["Memo"].ToString()));
+
+                    orderXML.Append(string.Format("<CommissionRatio>{0}</CommissionRatio>", string.Empty));
+                    orderXML.Append(string.Format("<CommissionType>0</CommissionType>"));
+                    orderXML.Append(string.Format("<VoucherFee>{0}</VoucherFee>", dr["VoucherFee"].ToDecimal()));
+                    orderXML.Append(string.Format("<ActiveReduceFee>0</ActiveReduceFee>", dr["ActiveReduceFee"].ToDecimal()));
+                    orderXML.Append(string.Format("<ActiveReduceType>{0}</ActiveReduceType>", dr["ActiveReduceType"].ToShort()));
+
+                    orderXML.Append(string.Format("<BuyScore>0</BuyScore>"));                            //  返利比例
+                    orderXML.Append(string.Format("<HouseID>0</HouseID>"));
+
+                    orderXML.Append("</OrderProduct>");
+                    orderXML.Append("</OrderProducts>");
+                    orderProductXmlStr = orderXML.ToString();
+                }
+                else
+                {
+                    myLog.ErrorFormat("GetOrderProductXML 获取订单商品的XML失败,订单对应的订单商品记录不存在,订单ID:{0},异常信息:{1}", orderID.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetOrderProductXML 获取订单商品的XML失败,订单ID:{0},异常信息:{1}", orderID.ToString(), ex.Message);
+                myLog.ErrorFormat(orderProductXmlStr);
+                myLog.ErrorFormat(orderXML.ToString());
+            }
+            return orderProductXmlStr;
+        }
+
+        private bool GetAndAddOrderOperateLog(int orderID, string orderIDDateTimeStr)
+        {
+            bool flag = true;
+            try
+            {
+                MySqlOrderDAL orderDal = new MySqlOrderDAL();
+                DataTable dt = orderDal.GetAddList(orderID, "", 0, 1, "orderoperatelog");
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        DataRow dr = dt.Rows[0];
+                        var sql = "OrderOperateLog_Insert";
+                        var cmd = dbw.GetStoredProcCommand(sql);
+                        dbw.AddInParameter(cmd, "OrderID", DbType.String, orderIDDateTimeStr);
+                        dbw.AddInParameter(cmd, "UID", DbType.Int32, dr["UID"].ToInt());
+                        dbw.AddInParameter(cmd, "UserType", DbType.Int32, dr["UserType"].ToShort());
+                        dbw.AddInParameter(cmd, "UserName", DbType.String, "系统");
+                        dbw.AddInParameter(cmd, "OldStatus", DbType.Int16, Convert.ToBoolean(dr["OldStatus"]) ? 1 : 0);
+                        dbw.AddInParameter(cmd, "NewStatus", DbType.Int16, Convert.ToBoolean(dr["NewStatus"]) ? 1 : 0);
+                        dbw.AddInParameter(cmd, "Tittle", DbType.String, dr["Tittle"].ToString().Replace("\\", "\\\\"));
+                        dbw.AddInParameter(cmd, "Remarks", DbType.String, "订单等待审核");
+
+                        dbw.AddOutParameter(cmd, "Error", DbType.String, 100);
+                        dbw.ExecuteNonQuery(cmd);
+                        int result = int.Parse(dbw.GetParameterValue(cmd, "Error").ToString());
+                        if (result != 0)
+                        {
+                            flag = false;
+                            myLog.ErrorFormat("AddOrders 添加订单操作日志表失败,订单ID:{0}", orderID.ToString());
+                        }
+                    }
+                }
+                else
+                {
+                    flag = false;
+                    myLog.ErrorFormat("GetOrderOperateLogXML 获取订单操作日志的XML失败,订单对应的操作日记记录不存在,订单ID:{0}", orderID.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                flag = false;
+                myLog.ErrorFormat("GetOrderOperateLogXML 获取订单操作日志的XML失败,订单ID:{0},异常信息:{1}", orderID.ToString(), ex.Message);
+            }
+            return flag;
+        }
+
+        private string parmsKey = string.Format(@"OrderID,UID,UserName,ProductFee,ShipFee,NewShipFee,VoucherFee,VoucherSeriall,PaymentMethodID
+                                                 ,ShipMethodID,Province,City,County,Receiver,Telephone,Mobile,Address,PostalCode,Invoice
+                                                 ,SendTimeInfo,SplitType,Remarks,CreateTime,Creator,PayStatus,PayTime,AuditTime,Auditor,Sender
+                                                 ,SendTime,OrderStatus,FeeHasUpdate,FeeUpdateTime,StatusChangTime,NextOperateTime,SerialNumber,BalanceFee,RefundFee,Refunder
+                                                 ,RefundTime,CacelTime,Cancer,RevokeTime,Revoker,MediumSource,OrderSource,ReduceType,ReduceFee,ActiveReduceFee
+                                                 ,ActiveReduceType,UseAccountFee,IsFreeShip,VisitTime,Visit,VisitStatus,ThirdOrderID,ThirdStatus");
+
+        #endregion
+    }
+}

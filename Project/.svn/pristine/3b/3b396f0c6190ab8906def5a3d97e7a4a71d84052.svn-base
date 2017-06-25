@@ -1,0 +1,84 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model JXProduct.AdminUI.Models.Product.PendingListModel
+@{
+    ViewBag.Title = "PendingList";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css{
+
+}
+@section js{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/Content/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () {
+            var $search = $('#gosearch');
+            var $form = $('#form1');
+            $search.click(function () { $form.submit(); });
+        });
+    </script>
+}
+<div id="l-content-right">
+    <div class="single-product-h container-fluid">
+        <span>
+            @switch (Model.PendingType)
+            {
+                case 1:
+                    @:待维护商品基础信息-产品部
+                    break;
+                case 2:
+                @:待维护商品信息资质-资管部
+                    break;
+                case 3:
+                @:待审核商品-资管部
+                    break;
+                case 4:
+                @:待设置商品价格-运营部
+                    break;
+            }
+        </span>
+    </div>
+    <div class="container-fluid" style="margin-top:20px;">
+        <div class="row">
+            @using (Ajax.BeginForm(Model.ActionName, "product", null, new AjaxOptions { UpdateTargetId = "tablelist", HttpMethod = "post", InsertionMode = InsertionMode.Replace }, new { id = "form1", @class = "form-horizontal" }))
+            {
+                @Html.HiddenFor(t => t.PendingType)
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">商品ID：</label>
+                    <div class="col-xs-2">
+                        <input type="text" class="form-control" value="@(Model.ProductID > 0 ? Model.ProductID.ToString() : "")" name="ProductID" />
+                    </div>
+                    <label class="col-sm-1 control-label">金象码：</label>
+                    <div class="col-xs-2">
+                        <input type="text" class="form-control" value="@Model.ProductCode" name="ProductCode" />
+                    </div>
+                    @*<label class="col-sm-1 control-label">旧数据：</label>
+                    <div class="col-xs-2">
+                        <select name="HasOldInfo" class="form-control">
+                            <option value="0" @Html.Raw(Model.HasOldInfo == 0 ? "selected='selected'" : "")>不展示</option>
+                            <option value="1" @Html.Raw(Model.HasOldInfo == 1 ? "selected='selected'" : "")>展示</option>
+                        </select>
+                    </div>*@
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">商品名称：</label>
+                    <div class="col-xs-3">
+                        <input type="text" class="form-control" value="@Model.ChineseName" name="ChineseName" />
+                    </div>
+                    @*<label class="col-sm-1 control-label">是否有图：</label>
+                    <div class="col-xs-2">
+                        <select name="HasImage" class="form-control">
+                            <option value="1" @Html.Raw(Model.HasImage == 1 ? "selected='selected'" : "")>无图</option>
+                            <option value="2" @Html.Raw(Model.HasImage == 2 ? "selected='selected'" : "")>有图</option>
+                        </select>
+                    </div>*@
+                    <input type="button" class="btn btn-default" value="搜索" id="gosearch" />
+                    <input type="reset" class="btn btn-default" value="重置" />
+                </div>
+            }
+        </div>
+    </div>
+    <div class="container-fluid " id="tablelist">
+        @Html.Partial("_PartialPendingList", Model)
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿using JXAPI.Component.IBLL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class SqlBLL : ISqlBLL
+    {
+        private static readonly JXAPI.Component.SQLServerDAL.SqlDAL dal = new JXAPI.Component.SQLServerDAL.SqlDAL();
+        public static SqlBLL Instance
+        {
+            get
+            {
+                return new SqlBLL();
+            }
+        }
+
+        #region CURD
+
+        public System.Data.DataTable GetAddList(int ID, string updateTime, int pageSize, string tableName)
+        {
+            return dal.GetAddList(ID,updateTime,pageSize,tableName);
+        }
+
+        public System.Data.DataTable GetUpdateList(int MaxID, int NowID, string updateTime, int pageSize, string tableName)
+        {
+            return dal.GetUpdateList(MaxID,NowID,updateTime,pageSize,tableName);
+        }
+        
+        #endregion
+
+        /// <summary>
+        /// 关键词列表
+        /// </summary>
+        /// <param name="strWhere">条件</param>
+        /// <returns></returns>
+        public System.Data.DataTable Keyword_GetListForSearch(string strWhere)
+        {
+            return dal.Keyword_GetListForSearch(strWhere);
+        }
+
+    }
+}

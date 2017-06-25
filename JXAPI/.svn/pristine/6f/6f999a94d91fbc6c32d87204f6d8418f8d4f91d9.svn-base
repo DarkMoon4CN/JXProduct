@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
+using JXAPI.JXSdk.Domain;
+
+namespace JXAPI.JXSdk.Response
+{
+    public class HeadLinesProductResponse : Venus.VenusClientResponse
+    {
+        [XmlElement("tips")]
+        public IList<HeadlinesProductInfo> list { get; set; }
+
+        [XmlElement("totalCount")]
+        public int totalCount { get; set; }
+    }
+}

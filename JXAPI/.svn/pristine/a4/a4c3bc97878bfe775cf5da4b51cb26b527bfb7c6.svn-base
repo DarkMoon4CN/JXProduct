@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Request
+{
+    /// <summary>
+    /// 消息推送
+    /// </summary>
+    public class PushMessageRequest
+    {
+        /// <summary>
+        /// 推送目标类型：用于区分推送类型：ios与android 方式不一样 默认 全部推送
+        /// </summary>
+        public string TargetType {get;set; }
+       
+        private string _pushType;
+
+        /// <summary>
+        /// 推送类型  单推：single 群推：list  应用：app 默认：app
+        /// </summary> 
+        public string PushType
+        {
+            get
+            {
+                if (this._pushType == null || this._pushType == string.Empty)
+                {
+                    return "app";
+                }
+                return this._pushType;
+            }
+            set
+            { this._pushType = value; }
+        }
+        
+        /// <summary>
+        /// 推送模板  1普通通知，2链接通知，3下载通知
+        /// </summary>
+        public int Template { get; set; }
+
+        /// <summary>
+        /// 是否使用别名 0:不使用 1:使用 默认为0
+        /// </summary>
+        public int IsAlias { get; set; }
+
+        /// <summary>
+        ///  IsAlias=1 TargetList 一组别名中间逗号隔开 ;IsAlias=0 TargetList一组clientid
+        /// </summary>
+        public string TargetList { get; set; }
+
+        /// <summary>
+        /// Template=1 时被使用，正常的主体内容 
+        /// </summary>
+        public string Content { get; set; }
+
+        /// <summary>
+        ///  Template=2 || template=3 时被使用，用户下载和链接的URL
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        ///  判定功能区间 如：优惠促销，系统通知，物流中心，商品提示 等等
+        /// </summary>
+        public string Section { get; set; }
+
+        /// <summary>
+        ///  附带参数，例：Section=物流中心后，提示订单状态，NodeId转义成orderId
+        /// </summary>
+        public string NodeId { get; set; }
+
+        /// <summary>
+        /// 调用的apiName
+        /// </summary>
+        public string Method { get; set; }
+    }
+}

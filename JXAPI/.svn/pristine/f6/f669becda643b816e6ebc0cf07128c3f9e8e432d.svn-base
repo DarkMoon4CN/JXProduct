@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="securevalid" type="JXAPI.QueuePush.Config.SecureConfigSection, JXAPI.QueuePush"/> 
+  </configSections>
+  <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
+    </startup>
+
+  <securevalid ipvalid="0">
+    <secures>
+      <add source="messages" key="118234" pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2" token="FSILPO1BY4TMRIKLB" url="http://192.168.21.48:8080/jxdyf-health-1.0/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+      <add source="switch" key="118235" pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2" token="FSILPO1BY4TMRIKLB" url="http://192.168.21.48:8080/jxdyf-user-1.0/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+     </secures>
+  </securevalid>
+</configuration>

@@ -1,0 +1,120 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class CouponTypeService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string list = "couponType/getList";
+        private static string get = "couponType/getByID";
+        private static string add = "couponType/addCouponType";
+        private static string update = "couponType/updateCouponType";
+        private static string delete = "couponType/deleteCouponType";
+        private static string typeList = "couponType/getTypeList";
+        public static CouponTypeService Instance
+        {
+            get { return new CouponTypeService(); }
+        }
+
+
+        /// <summary>
+        /// 优惠券类型
+        /// </summary>
+        /// <param name="request">条件实体</param>
+        /// <returns></returns>
+        public CouponTypeListResponse List(CouponTypeListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponTypeListResponse response = client.Execute(request, list, postData);
+            return response;
+        }
+
+        /// <summary>
+        /// 优惠券类型详细
+        /// </summary>
+        /// <param name="typeID">ID</param>
+        /// <returns></returns>
+        public CouponTypeInfo Get(int typeID)
+        {
+            CouponTypeRequest request = new CouponTypeRequest()
+            {
+                typeID=typeID
+            };
+            string postData = JsonHelper.GetJson(request);
+            CouponTypeResponse response = client.Execute(request, get, postData);
+            if (response != null && response.template != null)
+            {
+                return response.template;
+            }
+            return null;
+        }
+
+        /// <summary>
+        ///  新增优惠券类型
+        /// </summary>
+        /// <param name="info">优惠券类型信息</param>
+        /// <returns></returns>
+        public bool Add(CouponTypeInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+        
+        /// <summary>
+        /// 编辑优惠券类型
+        /// </summary>
+        /// <param name="info">优惠券类型信息</param>
+        /// <returns></returns>
+        public bool Update(CouponTypeInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, update, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 删除优惠券类型
+        /// </summary>
+        /// <param name="typeID">ID</param>
+        /// <returns></returns>
+        public bool Delete(int typeID)
+        {
+            CouponTypeRequest request = new CouponTypeRequest()
+            {
+                typeID = typeID
+            };
+            string postData = JsonHelper.GetJson(request);
+            CouponTypeResponse response = client.Execute(request, delete, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 优惠券类型集合（用于下拉框）
+        /// </summary>
+        /// <returns></returns>
+        public CouponTypeListResponse TypeList()
+        {
+            CouponTypeListRequest request = new CouponTypeListRequest();
+            string postData = JsonHelper.GetJson(request);
+            CouponTypeListResponse response = client.Execute(request, typeList, postData);
+            return response;
+        }  
+    }
+}

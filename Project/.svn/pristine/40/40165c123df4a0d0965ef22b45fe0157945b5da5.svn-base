@@ -1,0 +1,154 @@
+﻿@model JXProduct.AdminUI.Models.Audit.AuditEditModel
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+    var product = Model.product;
+    var audit = Model.audit;
+    var m = Model.Manufacturer;
+    var list1 = Model.list1;
+    var list2 = Model.list2;
+    var productcf = Model.productCF;
+    var ins = Model.instructions;
+
+}
+<div id="l-content-right" class="overflow">
+    <div class="single-product-h">
+        <a href="javascript:;"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="infoTable to-examine table-responsive">
+        <div class="examine-state-y"></div>
+        <table class="table">
+            <thead>
+                <tr class="bg">
+                    <th>通用名</th>
+                    <th>商品名称</th>
+                    <th class="tabWidth">单位</th>
+                    <th>规格</th>
+                    <th>商品类别</th>
+                    <th>生产企业</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg">
+                    <td>@product.CADN</td>
+                    <td>@product.ChineseName</td>
+                    <td class="tabWidth">@ins.Package</td>
+                    <td>@product.Specifications</td>
+                    <td>@product.TypeName</td>
+                    <td>@ins.Manufacturer</td>
+                </tr>
+            </tbody>
+        </table>
+        @if (audit.Status == (short)JXProduct.Component.Enums.Product.AuditStatus.未通过审核)
+        {
+            <div class="notBy-txt">
+                <span class="triangle"></span>
+                <p>审核未通过原因： </p>
+                <p>@audit.Remarks</p>
+                <time>审核人：@audit.Creator    @audit.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</time>
+            </div>
+        }
+    </div>
+    <div class="basic-informa-box examine-center">
+        <div class="jbxx-txt">资质信息完善</div>
+        <div class="informa-box-center none-border">
+            <!-- ********************商品分类*********************** -->
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">* </i></span>商品分类
+            </div>
+            @{
+                int index = 0;
+            }
+            @foreach (var cf in Model.productCF)
+            {
+                index++;
+                var l = cf.CFPath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(t => int.Parse(t));
+                var cflist = Model.cfList.Where(t => l.Contains(t.CFID)).ToList();
+
+                <div class="every-one-info">
+                    <span class="num-text">@index</span>@string.Join(">", cflist.Select(t => t.ChineseName))
+                </div>
+            }
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">* </i></span>企业资质
+            </div>
+            <div class="enterprise-auali clear">
+                <div class="enterprise-nav fl">
+                    <ul class="clear">
+                        <li><a class="active" href="#">营业执照</a></li>
+                        <li><a href="#">药品</a></li>
+                        <li><a href="#">医疗器械</a></li>
+                        <li><a href="#">保健食品</a></li>
+                        <li><a href="#">食品</a></li>
+                        <li><a href="#">化妆品</a></li>
+                        <li><a href="#">消毒用品</a></li>
+                        <li><a href="#">百货</a></li>
+                    </ul>
+                </div>
+                <div class="enter-right fl">
+                    <div class="enter-wrap not-indent">
+                        <div class="enter-every active">
+                            <span class="deng"></span>
+                            <div class="enter-title">营业执照图片：</div>
+                            <div class="comm-five-img active">
+                                <img src="http://img.jxdyf.com/other/@m.Image" alt="">
+                            </div>
+                            <div class="enter-txt">
+                                证件编号：@m.Number
+                                有效期: @m.StartDate.ToString("yyyy-MM-dd") 到 @m.EndDate.ToString("yyyy-MM-dd")
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        index = 0;
+                    }
+                    @foreach (var l in list1)
+                    {
+                        index++;
+                        <div class="enter-wrap">
+                            <div class="enter-every">
+                                <div class="enter-title">@index、@l.ChineseName</div>
+                                <p>证件图片：</p>
+                                <div class="comm-five-img active">
+                                    <img src="http://img.jxdyf.com/other/@l.Image" alt="">
+                                </div>
+                                <div class="enter-txt">
+                                    <p>证件号码：@l.Number</p>
+                                    <p>有效期：@l.StartDate.ToString("yyyy-MM-dd")  至  @l.EndDate.ToString("yyyy-MM-dd")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">* </i></span>商品资质
+            </div>
+            <div class="enterprise-auali clear">
+                <div class="enter-right fl">                    
+                    @{
+                        index = 0;
+                    }
+                    @foreach (var l in list2)
+                    {
+                        index++;
+                        <div class="enter-wrap">
+                            <div class="enter-every">
+                                <div class="enter-title">@index、@l.ChineseName</div>
+                                <p>证件图片：</p>
+                                <div class="comm-five-img active">
+                                    <img src="http://img.jxdyf.com/other/@l.Image" alt="">
+                                </div>
+                                <div class="enter-txt">
+                                    <p>证件号码：@l.Number</p>
+                                    <p>有效期：@l.StartDate.ToString("yyyy-MM-dd")  至  @l.EndDate.ToString("yyyy-MM-dd")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

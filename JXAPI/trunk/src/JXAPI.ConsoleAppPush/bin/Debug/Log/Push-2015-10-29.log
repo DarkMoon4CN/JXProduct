@@ -1,0 +1,86 @@
+2015-10-29 15:35:31,447  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/10/29 15:35:31
+2015-10-29 15:35:31,739  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:14
+2015-10-29 15:35:34,577  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:34,578  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-10-29 15:35:34,578  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-10-29 15:35:34,579  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000240,2001923,2000245,2000214
+2015-10-29 15:35:55,129  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:55,255  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:55,259  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:55,261  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:dddd
+2015-10-29 15:35:55,263  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:55,546  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:55,635  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:55,639  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:55,662  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:aaa
+2015-10-29 15:35:55,663  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:55,929  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:56,014  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:56,017  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:56,019  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:1111
+2015-10-29 15:35:56,020  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:56,347  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:56,431  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:56,433  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:56,435  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:xxxx
+2015-10-29 15:35:56,436  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:56,696  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:56,793  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:56,794  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:56,797  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:asdfa
+2015-10-29 15:35:56,802  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:57,159  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:35:57,245  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:57,246  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:57,248  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:ggg
+2015-10-29 15:35:57,249  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:57,471  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:57,553  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:57,557  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:57,558  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:ggg
+2015-10-29 15:35:57,560  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:57,781  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:57,870  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:57,875  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:57,880  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:444
+2015-10-29 15:35:57,881  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:58,149  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:58,242  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:58,244  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:58,245  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:aaa
+2015-10-29 15:35:58,247  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:58,527  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:58,626  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:58,634  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:58,635  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:1111
+2015-10-29 15:35:58,637  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:58,864  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:58,947  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:58,949  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:58,950  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:aaa
+2015-10-29 15:35:58,952  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:59,163  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:59,253  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:59,259  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:59,264  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:aaa333
+2015-10-29 15:35:59,265  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:59,511  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:59,624  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:35:59,628  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:app
+2015-10-29 15:35:59,631  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:aaa2222
+2015-10-29 15:35:59,635  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:应用内的所有用户
+2015-10-29 15:35:59,856  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：TooFrequent
+2015-10-29 15:35:59,860  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/10/29 15:35:59
+2015-10-29 15:35:59,862  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-10-29 15:36:20,015  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/10/29 15:36:20
+2015-10-29 15:36:20,128  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-10-29 15:36:20,810  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-10-29 15:36:20,811  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-10-29 15:36:20,811  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-10-29 15:36:20,812  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000240,2001923,2000245,2000214
+2015-10-29 15:36:28,880  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-10-29 15:36:28,897  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/10/29 15:36:28
+2015-10-29 15:36:28,899  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-10-29 15:44:16,264  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/10/29 15:44:16
+2015-10-29 16:20:07,063  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/10/29 16:20:07
+2015-10-29 16:26:17,147  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/10/29 16:26:17

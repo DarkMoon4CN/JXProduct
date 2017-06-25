@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace JXAPI.QueuePush
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("PUSH 正在执行{0}",DateTime.Now);
+            Push push = new Push();
+            System.Threading.Thread myThrad = new System.Threading.Thread(push.PushStart);
+            myThrad.IsBackground = false;
+            myThrad.Start();
+        }
+    }
+}
+

@@ -1,0 +1,105 @@
+﻿using com.igetui.api.openservice;
+using com.igetui.api.openservice.igetui;
+using com.igetui.api.openservice.igetui.template;
+using com.igetui.api.openservice.payload;
+using JXAPI.Common.Utils;
+using JXAPI.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Messaging;
+using System.Web;
+
+namespace JXPAI.Service.Controllers.Push
+{
+    public class PushService
+    {
+        public static string queueName = "PushQueue";   //队列名
+
+        public JsonResultObject PushMessage() 
+        {
+            var result = new JsonResultObject();
+            Environment.SetEnvironmentVariable("needDetails", "true");
+            PushMessageInfo pushMessageInfo = new PushMessageInfo();
+            pushMessageInfo.PushType = HttpContext.Current.Request["pushType"];
+            pushMessageInfo.TargetType = HttpContext.Current.Request["targetType"];
+            pushMessageInfo.TargetList = HttpContext.Current.Request["targetList"];
+            pushMessageInfo.Section = HttpContext.Current.Request["section"];
+            pushMessageInfo.Url = HttpContext.Current.Request["url"];
+            pushMessageInfo.Content = HttpContext.Current.Request["content"];
+            string template = HttpContext.Current.Request["template"];
+            string isAlias = HttpContext.Current.Request["isAlias"];
+
+            #region 验证
+            if (pushMessageInfo.PushType == null || pushMessageInfo.PushType == string.Empty)
+            {
+                result.msg = "推送失败，缺少必要的参数: pushType ！";
+                return result;
+            }
+            if (pushMessageInfo.PushType!="app")
+            {
+                if (pushMessageInfo.TargetList == null || pushMessageInfo.TargetList == "") 
+                {
+                    result.msg = "推送失败，推送类型pushType:" + pushMessageInfo.PushType + "时，targetList 不能为空！";
+                    return result;
+                }
+            }
+            #endregion
+
+            #region 处理
+            if (template != null && template != string.Empty) 
+            {
+                pushMessageInfo.Template = int.Parse(template);
+            }
+            if (isAlias != null && isAlias != string.Empty)
+            {
+                pushMessageInfo.IsAlias = int.Parse(isAlias);
+            }
+            #endregion
+            //向队列里写入
+            result =Send(pushMessageInfo);
+            return result;
+        }
+
+        #region 发送队列
+        public JsonResultObject Send(PushMessageInfo pushMessageInfo)
+        {
+            var result = new JsonResultObject();
+            MessageQueue MyQueue = new MessageQueue(".\\private$\\" + queueName);
+            MessageQueueTransaction myTransaction = new MessageQueueTransaction();
+            try
+            {
+                //发送
+                System.Messaging.Message msg = new System.Messaging.Message();
+                msg.Formatter = new XmlMessageFormatter(new Type[] { typeof(PushMessageInfo) });
+                MyQueue.Send(pushMessageInfo);
+                result.msg = "推送完成，正在发送中...";
+                result.status = true;
+            }
+            catch (MessageQueueException ex)
+            {
+                result.msg ="无法发送推送队列，详细错误如下："+ex.Message;
+            }
+            return result;
+        }
+        #endregion
+
+
+        /// <summary>
+        ///  提供给IOS的更新 模块推送的开关方法
+        /// </summary>
+        /// <returns></returns>
+        public JsonResultObject PushSwitch() 
+        {
+            var result = new JsonResultObject();
+            string iosToken = HttpContext.Current.Request["token"];
+            string iosAlias = HttpContext.Current.Request["alias"];
+            string iosSectionType = HttpContext.Current.Request["sectionType"];
+            string isStatus = HttpContext.Current.Request["status"];
+
+            result.msg = "模块更新完成！";
+            result.status = true;
+            return result;
+        }
+    }
+}

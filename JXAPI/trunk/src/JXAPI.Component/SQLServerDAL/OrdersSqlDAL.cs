@@ -1,0 +1,385 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Xml;
+using System.Data.SqlTypes;
+using System.Data.Common;
+using JXAPI.Component.Model;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrdersSqlDAL
+    {
+        private static Database dbr = JXThirdPartyData.Reader;
+        private static Database dbw = JXThirdPartyData.Writer;
+        private static Database db_union = JXThirdPartyData.JXUnionBaseDB;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrdersSqlDAL));
+
+        /// <summary>
+        /// 查询待处理订单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetList(string id, string createTime, int start, int pageSize, string tableName, int status = 0)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                switch (tableName.ToLower())
+                {
+                    case "orders":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE StatusChangTime>'{1}' AND OrderSource IN (0,3,4,10) AND OrderStatus NOT IN (0,17) ORDER BY OrderID", tableName, createTime));
+                        break;
+                    case "orderspay":
+                        sqlCommand.Append(string.Format("SELECT * FROM Orders WHERE PayTime>'{0}' AND OrderSource IN (0,3,4,10) AND PayStatus IN (1,2,3) ORDER BY OrderID", createTime));
+                        break;
+                    case "orderlogistics":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID='{1}' ORDER BY CreateTime", tableName, id));
+                        break;
+                    case "orderoperatelog":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID='{1}'", tableName, id));
+                        if (status > 0)
+                        {
+                            sqlCommand.Append(string.Format(" AND NewStatus={0}", status));
+                        }
+                        sqlCommand.Append(" ORDER BY CreateTime");
+                        break;
+                }
+                DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetList 查询：{0} ID:{1} 异常信息:{2}", tableName, id, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询三方运单号
+        /// </summary>
+        /// <param name="ThirdOrderId">三方单号</param>
+        /// <returns></returns>
+        public OrdersInfo GetOrderIDByThirdOrderID(string thirdOrderID)
+        {
+            OrdersInfo orderInfo = null;
+            string sqlCommand = "SELECT OrderID,OrderStatus,PayStatus FROM Orders WHERE ThirdOrderID = @ThirdOrderID";
+            DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(dbCommand, "ThirdOrderID", DbType.String, thirdOrderID);
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                if (dataReader.Read())
+                {
+                    orderInfo = new OrdersInfo()
+                    {
+                        OrderID = dataReader["OrderID"].ToString(),
+                        OrderStatus = short.Parse(dataReader["OrderStatus"].ToString()),
+                        PayStatus = short.Parse(dataReader["PayStatus"].ToString())
+                    };
+                }
+            }
+            return orderInfo;
+        }
+
+        /// <summary>
+        /// 新增订单
+        /// </summary>
+        /// <param name="OrderXML">订单数据XML</param>
+        /// <param name="Result">添加状态</param>
+        internal void Orders_InsertByXML(string OrderXML, out int Result)
+        {
+            string sqlCommand = "Orders_InsertByXML";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "OrderXML", DbType.String, OrderXML);
+            dbw.AddOutParameter(dbCommand, "Result", DbType.Int16, 4);
+            dbw.ExecuteNonQuery(dbCommand);
+
+            //  返回参数
+            Result = int.Parse(dbw.GetParameterValue(dbCommand, "Result").ToString());
+        }
+
+        /// <summary>
+        /// 更新订单 指定列的值
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="colName">列名</param>
+        /// <param name="colValue">列值</param>
+        /// <returns>true、false</returns>
+        internal bool Orders_Update(string orderId, string[] colName, object[] colValue)
+        {
+            string sSQL = " Update Orders set ";
+            for (int i = 0; i < colName.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(colName[i]))
+                {
+                    Type colType = colValue[i].GetType();
+                    if (colType == Type.GetType("System.Int16") ||
+                        colType == Type.GetType("System.Int32") ||
+                        colType == Type.GetType("System.Int64") ||
+                        colType == Type.GetType("System.Decimal") ||
+                        colType == Type.GetType("System.Float"))
+                        sSQL += string.Format("{0}={1},", colName[i], colValue[i]);
+                    else
+                        sSQL += string.Format("{0}='{1}',", colName[i], colValue[i]);
+                }
+            }
+            sSQL = sSQL.Remove(sSQL.Length - 1, 1);
+            sSQL += string.Format(" WHERE OrderID='{0}'", orderId);
+
+            return dbr.ExecuteNonQuery(CommandType.Text, sSQL) == 1 ? true : false;
+        }
+
+        /// <summary>
+        /// 订单状态修改
+        /// </summary>
+        /// <param name="log">状态日志内容</param>
+        /// <param name="disposeType">修改类型，1=支付状态，2=订单状态</param>
+        /// <returns>返回：0=成功，1=失败，其他自定义错误</returns>
+        internal string Orders_Dispose(OrderOperateLogInfo log, int disposeType)
+        {
+            string sqlCommand = "Orders_Dispose";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.String, log.OrderID);
+            dbw.AddInParameter(dbCommand, "UID", DbType.String, log.UID);
+            dbw.AddInParameter(dbCommand, "UserType", DbType.String, log.UserType);
+            dbw.AddInParameter(dbCommand, "UserName", DbType.String, log.UserName);
+            dbw.AddInParameter(dbCommand, "DisposeID", DbType.String, log.NewStatus);
+            dbw.AddInParameter(dbCommand, "DisposeType", DbType.String, disposeType);
+            dbw.AddInParameter(dbCommand, "Remarks", DbType.String, log.Content);
+            dbw.AddOutParameter(dbCommand, "Error", DbType.String, 100);
+            dbw.ExecuteNonQuery(dbCommand);
+
+            //  返回参数
+            return dbw.GetParameterValue(dbCommand, "Error").ToString();
+        }
+
+        /// <summary>
+        /// 添加订单操作日志
+        /// </summary>
+        /// <param name="ool">实体</param>
+        /// <returns>返回数据：0=成功，1=失败，其它自定义消息</returns>
+        public string OrderOperateLog_Insert(OrderOperateLogInfo ool)
+        {
+            string sqlCommand = "OrderOperateLog_Insert";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.String, ool.OrderID);
+            dbw.AddInParameter(dbCommand, "UID", DbType.Int32, ool.UID);
+            dbw.AddInParameter(dbCommand, "UserType", DbType.Int32, ool.UserType);
+            dbw.AddInParameter(dbCommand, "UserName", DbType.String, ool.UserName);
+            dbw.AddInParameter(dbCommand, "OldStatus", DbType.Int32, ool.OldStatus);
+            dbw.AddInParameter(dbCommand, "NewStatus", DbType.Int32, ool.NewStatus);
+            dbw.AddInParameter(dbCommand, "Tittle", DbType.String, ool.Tittle);
+            dbw.AddInParameter(dbCommand, "Remarks", DbType.String, ool.Content);
+            dbw.AddOutParameter(dbCommand, "Error", DbType.String, 100);
+
+            dbw.ExecuteNonQuery(dbCommand);
+            return dbw.GetParameterValue(dbCommand, "Error").ToString();
+        }
+
+        /// <summary>
+        /// 订单查询
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <returns></returns>
+        public OrdersInfo GetByOrderId(string orderId)
+        {
+            OrdersInfo orderInfo = null;
+            string sqlCommand = "SELECT * FROM Orders WHERE OrderID=@OrderID ORDER BY CreateTime DESC";
+            DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(dbCommand, "OrderID", DbType.String, orderId);
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                if (dataReader.Read())
+                {
+                    orderInfo = new OrdersInfo()
+                    {
+                        OrderID = dataReader["OrderID"].ToString(),
+                        OrderStatus = short.Parse(dataReader["OrderStatus"].ToString()),
+                        PayStatus = short.Parse(dataReader["PayStatus"].ToString()),
+
+                        PaySum = decimal.Parse(dataReader["PaySum"].ToString()),
+                        PaymentMethodID = short.Parse(dataReader["PaymentMethodID"].ToString()),
+                        Province = dataReader["Province"].ToString(),
+                        City = dataReader["City"].ToString(),
+                        County = dataReader["County"].ToString(),
+                        Receiver = dataReader["Receiver"].ToString(),
+                        Telephone = dataReader["Telephone"].ToString(),
+                        Mobile = dataReader["Mobile"].ToString(),
+                        Address = dataReader["Address"].ToString()
+                    };
+                }
+            }
+            return orderInfo;
+        }
+        
+        /// <summary>
+        /// 根据收货人电话、手机号查询订单信息
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="mobile">手机号</param>
+        /// <returns></returns>
+        public OrdersInfo GetByOrderId(string orderId, string mobile)
+        {
+            OrdersInfo orderInfo = null;
+            string sqlCommand = "SELECT * FROM Orders WHERE OrderID LIKE '%" + orderId + "' AND Mobile=@Mobile AND PayStatus=0 AND OrderSource IN (1,5) ORDER BY CreateTime DESC";
+            DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(dbCommand, "Mobile", DbType.String, mobile);
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                if (dataReader.Read())
+                {
+                    orderInfo = new OrdersInfo()
+                    {
+                        OrderID = dataReader["OrderID"].ToString(),
+                        PaySum = decimal.Parse(dataReader["PaySum"].ToString()),
+                        PaymentMethodID = short.Parse(dataReader["PaymentMethodID"].ToString()),
+                        Province = dataReader["Province"].ToString(),
+                        City = dataReader["City"].ToString(),
+                        County = dataReader["County"].ToString(),
+                        Receiver = dataReader["Receiver"].ToString(),
+                        Telephone = dataReader["Telephone"].ToString(),
+                        Mobile = dataReader["Mobile"].ToString(),
+                        Address = dataReader["Address"].ToString()
+                    };
+                }
+            }
+            return orderInfo;
+        }
+
+        /// <summary>
+        /// 查询订单商品
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <returns></returns>
+        public IList<OrderProductInfo> GetOrderProduct(string orderId, int history = 0, string thirdOrderID = "")
+        {
+            IList<OrderProductInfo> list = new List<OrderProductInfo>();
+            string sqlCommand = "SELECT * FROM OrderProduct WHERE OrderID=@OrderID";
+            if (history == 1)
+            {
+                sqlCommand = "SELECT * FROM OrderProductHistory WHERE OrderID=@OrderID";
+            }
+            DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(dbCommand, "OrderID", DbType.String, orderId);
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                while (dataReader.Read())
+                {
+                    list.Add(new OrderProductInfo()
+                    {
+                        OrderID = string.IsNullOrEmpty(thirdOrderID) ? dataReader["OrderID"].ToString() : thirdOrderID,
+                        ProductID = int.Parse(dataReader["ProductID"].ToString()),
+                        ProductCode = dataReader["ProductCode"].ToString(),
+                        ProductName = dataReader["ProductName"].ToString(),
+                        ProfeeDiscount = decimal.Parse(dataReader["ProfeeDiscount"].ToString()),
+                        Quantity = int.Parse(dataReader["Quantity"].ToString())
+                    });
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 新增联盟订单
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="unionPara">网盟唯一码</param>
+        /// <param name="source">来源</param>
+        /// <param name="advertId">广告ID</param>
+        /// <param name="siteId">站点ID</param>
+        /// <param name="clientIP">IP</param>
+        /// <param name="clientIdentity">联盟商识别码</param>
+        /// <param name="customerInfo">联盟商自定义参数</param>
+        /// <returns></returns>
+        public string UnionOrders_Insert(int orderId, string unionPara, string source, int advertId, int siteId, string clientIP, string clientIdentity, string customerInfo)
+        {
+            string sqlCommand = "Orders_NewInsert";
+            DbCommand dbCommand = db_union.GetStoredProcCommand(sqlCommand);
+
+            db_union.AddInParameter(dbCommand, "UnionType", DbType.Int16, 0);
+            db_union.AddInParameter(dbCommand, "UnionPara", DbType.String, unionPara);
+            db_union.AddInParameter(dbCommand, "OrderID", DbType.String, orderId);
+            db_union.AddInParameter(dbCommand, "Source", DbType.String, source);
+            db_union.AddInParameter(dbCommand, "AdvertId", DbType.Int32, advertId);
+            db_union.AddInParameter(dbCommand, "SiteId", DbType.Int32, siteId);
+            db_union.AddInParameter(dbCommand, "ClientIP", DbType.String, clientIP);
+            db_union.AddInParameter(dbCommand, "ClientIdentity", DbType.String, clientIdentity);
+            db_union.AddInParameter(dbCommand, "CustomerInfo", DbType.String, customerInfo);
+            db_union.AddOutParameter(dbCommand, "Error", DbType.String, 100);
+
+            db_union.ExecuteNonQuery(dbCommand);
+            return db_union.GetParameterValue(dbCommand, "Error").ToString();
+        }
+
+        /// <summary>
+        /// 查询联盟订单列表
+        /// </summary>
+        /// <param name="pageIndex">页码</param>
+        /// <param name="pageSize">数量</param>
+        /// <param name="orderType">排序</param>
+        /// <param name="strWhere">条件</param>
+        /// <returns></returns>
+        public IList<OrdersInfo> UnionOrders_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            string sqlCommand = "Orders_GetList";
+            DbCommand dbCommand = db_union.GetStoredProcCommand(sqlCommand);
+            db_union.AddInParameter(dbCommand, "PageIndex", DbType.String, pageIndex);
+            db_union.AddInParameter(dbCommand, "PageSize", DbType.String, pageSize);
+            db_union.AddInParameter(dbCommand, "OrderType", DbType.String, orderType);
+            db_union.AddInParameter(dbCommand, "StrWhere", DbType.String, strWhere);
+            db_union.AddOutParameter(dbCommand, "RecordCount", DbType.Int32, 4);
+
+            IList<OrdersInfo> list = new List<OrdersInfo>();
+            using (IDataReader dataReader = db_union.ExecuteReader(dbCommand))
+            {
+                OrdersInfo info = null;
+                while (dataReader.Read())
+                {
+                    info = new OrdersInfo()
+                    {
+                        OrderID = dataReader["ThirdOrderID"].ToString(),
+                        PaySum = decimal.Parse(dataReader["PaySum"].ToString()),
+                        NewShipFee = decimal.Parse(dataReader["NewShipFee"].ToString()),
+                        VoucherFee = decimal.Parse(dataReader["VoucherFee"].ToString()),
+                        CreateTime = DateTime.Parse(dataReader["CreateTime"].ToString()),
+                        OrderStatus = short.Parse(dataReader["OrderStatus"].ToString()),
+                        RefundFee = decimal.Parse(dataReader["RefundFee"].ToString()),
+                        ReduceFee = decimal.Parse(dataReader["ReduceFee"].ToString()),
+
+                        UnionPara = dataReader["UnionPara"].ToString(),
+                        Amount = decimal.Parse(dataReader["Amount"].ToString()),
+                        CommissionRatio = decimal.Parse(dataReader["CommissionRatio"].ToString()),
+                        CommissionType = short.Parse(dataReader["CommissionType"].ToString()),
+                        RebateFee = decimal.Parse(dataReader["RebateFee"].ToString()),
+                        ActID = int.Parse(dataReader["ActID"].ToString()),
+                        SiteID = int.Parse(dataReader["SiteID"].ToString()),
+                        Source = dataReader["Source"].ToString(),
+                        ClientIP = dataReader["ClientIP"].ToString(),
+                        ClientIdentity = dataReader["ClientIdentity"].ToString(),
+                        CustomerInfo = dataReader["CustomerInfo"].ToString(),
+                    };
+                    //  订单商品
+                    if (info.CreateTime > DateTime.Now.AddMonths(-1))
+                    {
+                        info.ProductList = GetOrderProduct(dataReader["OrderID"].ToString(), 0, info.OrderID);
+                    }
+                    else
+                    {
+                        info.ProductList = GetOrderProduct(dataReader["OrderID"].ToString(), 1, info.OrderID);
+                    }
+
+                    //  合并
+                    list.Add(info);
+                }
+            }
+            int.TryParse(db_union.GetParameterValue(dbCommand, "RecordCount").ToString(), out recordCount);
+            return list;
+        }
+    }
+}

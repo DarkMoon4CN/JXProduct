@@ -1,0 +1,109 @@
+﻿using JXAPI.Common.Utils;
+using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Data.Common;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrdersDAL
+    {
+        private static Database dbr = JXOrderMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrdersDAL));
+
+        /// <summary>
+        /// 查询需要添加列表
+        /// </summary>
+        /// <param name="productID">ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetAddList(long ID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0} ", pageSize));
+                switch (tableName.ToLower())
+                {
+                    case "orders":
+                        sqlCommand.AppendFormat(@"select t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from Orders as o where o.OrderID = t.OrderID) as status
+                                                from Orders as t");
+                        sqlCommand.Append(string.Format(" where t.OrderID > {0}  ORDER BY t.OrderID", ID));
+                        break;
+                    case "orderproduct":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  AND OrderProductID > {1}  ORDER BY OrderProductID", tableName,ID));
+                        break;
+                    case "orderoperatelog":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 AND LogID > {1}  ORDER BY LogID", tableName,ID));
+                        break;
+                    default:
+                        break;
+                }
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("OrdersDAL 查询需要添加的{0}表失败,ID:{1},异常信息:{2}", tableName, ID, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询需要更新的列表
+        /// </summary>
+        /// <param name="productInitID">需要更新的原始ID,即需要更新的最大ID</param>
+        /// <param name="productNowID">当前更新到的ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetUpdateList(long MaxID, long NowID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0} ", pageSize));
+                switch (tableName.ToLower())
+                {
+                    case "orders":
+                        sqlCommand.AppendFormat(@" t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM orderproduct where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM orderproduct where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from Orders as o where o.OrderID = t.OrderID) as status
+                                                from Orders as t");
+                        sqlCommand.Append(string.Format(" where t.OrderNO > {0} AND t.OrderNO <= {1} ORDER BY t.OrderNO", NowID, MaxID));
+                        break;
+                    case "orderproduct":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 AND OrderProductID > {1} AND OrderProductID <= {2} ORDER BY OrderProductID", tableName,NowID, MaxID));
+                        break;
+                    case "orderoperatelog":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 AND LogID > {1} AND LogID <= {2} ORDER BY LogID", tableName,NowID, MaxID));
+                        break;
+                    default:
+                        break;
+                }
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("{0} 更新失败 ID:{1},异常信息:{2}", tableName, NowID, ex.Message);
+                return null;
+            }
+        }
+    }
+}

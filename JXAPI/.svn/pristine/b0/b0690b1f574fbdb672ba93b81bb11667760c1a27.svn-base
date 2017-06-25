@@ -1,0 +1,43 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.Model;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class OrdersBLL  : IOrdersRelatedBLL
+    {
+        #region 变量
+
+        private static readonly OrdersDAL dal = new OrdersDAL();
+
+        #endregion
+
+        private OrdersBLL() { }
+
+        public static OrdersBLL Instance
+        {
+            get
+            {
+                return new OrdersBLL();
+            }
+        }
+
+        #region CURD
+
+        public System.Data.DataTable GetAddList(long ID, string updateTime, int pageSize, string tableName)
+        {
+            return dal.GetAddList(ID, updateTime, pageSize, tableName);
+        }
+
+        public System.Data.DataTable GetUpdateList(long MaxID, long NowID, string updateTime, int pageSize, string tableName)
+        {
+            return dal.GetUpdateList(MaxID, NowID, updateTime, pageSize, tableName);
+        }
+
+        #endregion
+    }
+}

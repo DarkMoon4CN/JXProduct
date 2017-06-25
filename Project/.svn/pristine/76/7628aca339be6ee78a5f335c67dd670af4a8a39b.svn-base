@@ -1,0 +1,49 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@model  JXProduct.AdminUI.Models.Product.PendingListModel
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>商品ID</td>
+            <td>金象码</td>
+            <td>商品名称</td>
+            <td>规格</td>
+            <td>操作</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.PagedList)
+        {
+            <tr>
+                <td>@p.ProductID</td>
+                <td>@p.ProductCode</td>
+                <td><a href="http://www.jxdyf.com/product/@(p.ProductID).html" target="_blank">@p.ChineseName</a></td>
+                <td>@p.Specifications</td>
+                <td>
+                    @switch (Model.PendingType)
+                    {
+                        case 1:
+                            <a href="/product/edit?productid=@(p.ProductID)" target="_blank">编辑商品</a>
+                            break;
+                        case 2:
+                        <a href="/audit/edit?productid=@(p.ProductID)" target="_blank">商品资质</a>
+                            break;
+                        case 3:
+                            <a href="/audit/edit?productid=@(p.ProductID)" target="_blank">审核商品资质</a>
+                            <a href="/product/edit?productid=@(p.ProductID)" target="_blank">审核商品信息</a>
+                            break;
+                        case 4:
+                            <a href="/product/edit?productid=@(p.ProductID)" target="_blank">编辑商品</a>
+                            break;
+                    }
+                </td>
+            </tr>
+        }
+        @if (Model.PagedList.Count == 0)
+        {
+            <tr><td colspan="5" align="center">当前条件下记录!</td></tr>
+        }
+    </tbody>
+</table>
+<div class="general-pagin">
+    @Ajax.Pager(Model.PagedList, new PagerOptions { AutoHide =false , PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "tablelist", HttpMethod = "Post", DataFormId = "form1" })
+</div>

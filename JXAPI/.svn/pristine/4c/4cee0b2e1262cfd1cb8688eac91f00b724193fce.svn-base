@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Configuration;
+
+namespace JXSearch.ConfigComponent
+{
+    public class SearchEngineConfig : ConfigurationSection
+    {
+        private static SearchEngineConfig _Instance;
+        public static SearchEngineConfig Instance
+        {
+            get
+            {
+                if (null == _Instance)
+                    _Instance = (ConfigurationSection)ConfigurationManager.GetSection("SearchEngine") as SearchEngineConfig;
+                return _Instance;
+            }
+        }
+
+        [ConfigurationProperty("cacheTime", IsRequired = true)]
+        public int CacheTime
+        {
+            get
+            {
+                return (int)this["cacheTime"];
+            }
+        }
+
+        [ConfigurationProperty("engines", IsDefaultCollection = true)]
+        public EnginesCollection Engines
+        {
+            get { return this["engines"] as EnginesCollection; }
+        }
+    }
+
+    public class EnginesCollection : ConfigurationElementCollection
+    {
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new EnginesElement();
+        }
+
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((EnginesElement)element).Name;
+        }
+
+        public EnginesElement this[int index]
+        {
+            get
+            {
+                return this.BaseGet(index) as EnginesElement;
+            }
+        }
+
+        new public EnginesElement this[string Name]
+        {
+            get
+            {
+                return (EnginesElement)BaseGet(Name);
+            }
+        }
+
+        new public int Count
+        {
+            get { return base.Count; }
+        }
+    }
+
+    public class EnginesElement : ConfigurationElement
+    {
+        [ConfigurationProperty("name", IsRequired = true, IsKey = true)]
+        public string Name
+        {
+            get
+            {
+                return Convert.ToString(this["name"]);
+            }
+        }
+
+        [ConfigurationProperty("indexDir", IsRequired = true)]
+        public string IndexDir
+        {
+            get
+            {
+                return Convert.ToString(this["indexDir"]);
+            }
+        }
+
+        [ConfigurationProperty("dictDir", IsRequired = true)]
+        public string DictDir
+        {
+            get
+            {
+                return Convert.ToString(this["dictDir"]);
+            }
+        }
+
+        [ConfigurationProperty("tagFileName", IsRequired = true)]
+        public string TagFileName
+        {
+            get
+            {
+                return Convert.ToString(this["tagFileName"]);
+            }
+        }
+
+        [ConfigurationProperty("maxRowCount", IsRequired = false)]
+        public int MaxRowCount
+        {
+            get
+            {
+                return Convert.ToInt32(this["maxRowCount"]);
+            }
+        }
+
+        [ConfigurationProperty("currIndexDir", IsRequired = true)]
+        public string CurrIndexDir
+        {
+            get
+            {
+                return Convert.ToString(this["currIndexDir"]);
+            }
+        }
+    }
+}

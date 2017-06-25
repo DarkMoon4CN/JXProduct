@@ -1,0 +1,246 @@
+﻿using JXBigData.Component.BLL;
+using JXBigData.Component.Enum;
+using JXBigData.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class SalesController : Controller
+    {
+        public ActionResult Detail()
+        {
+            //查询订单来源占有率
+            
+            return View();
+        }
+
+        //获取饼状图数据
+        public JsonResult GetCakeData(string startTime,string endTime,int typeID=0) 
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            OperationResult<IList<OrderDailyInfo>> ort = OrderDailyBLL.Instance.OrderDaily_GetSourcePrice(sTime, eTime);
+            if (ort.ResultType == OperationResultType.Success)
+            {
+
+                IList<OrderDailyInfo> odInfoList = ort.AppendData;
+                foreach (var item in odInfoList)
+                {
+                   item.SourceName=Enum.GetName(typeof(OrderSource),item.Source);
+                }
+                result.data = JsonHelper.ConvertToJson(odInfoList);
+                result.status = true;
+            }
+            else 
+            {
+                result.status = false;
+                result.msg = "数据获取失败，未能连接至网络！";
+            }
+            return Json(result);
+        }
+
+        //获取线状图数据
+        public JsonResult GetLineData(string startTime, string endTime, int typeID = 0)
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            //例：100: 111,111,111,111,111,111,111 
+            Dictionary<string, string> allData = new Dictionary<string, string>();
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            OperationResult<IList<OrderDailyInfo>> ort = OrderDailyBLL.Instance.OrderDaily_GetStationePrice(sTime, eTime);
+            //生成y轴时间点
+           
+            if (ort.ResultType == OperationResultType.Success)
+            {
+                IList<OrderDailyInfo> odInfoList = ort.AppendData;
+                foreach (var item in odInfoList)
+                {
+                    item.SourceName = Enum.GetName(typeof(OrderSource), item.Source);
+                }
+
+                //设置指定天数
+                IList<string> timeList = new List<string>();
+                while (true)
+                {
+                    timeList.Add(sTime.ToShortDateString());
+                    sTime = sTime.AddDays(1);
+                    if (sTime > Convert.ToDateTime(eTime.ToShortDateString()))
+                    {
+                        break;
+                    }
+                }
+
+                var web = odInfoList.Where(p => p.Source ==(int)OrderSource.普通订单);
+                var ios = odInfoList.Where(p => p.Source == (int)OrderSource.IOS);
+                var android = odInfoList.Where(p => p.Source ==(int)OrderSource.Android);
+                var h5 = odInfoList.Where(p => p.Source == (int)OrderSource.手机订单);
+
+                string  webStr = string.Empty;
+                string iosStr = string.Empty;
+                string androidStr = string.Empty;
+                string h5Str = string.Empty;
+
+                #region 数据整合
+                for (int i = 0; i < timeList.Count; i++)
+                {
+                   
+                  var  webdata =web.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source==(int)OrderSource.普通订单);
+                  if (webdata.Count() != 0)
+                  {
+                      foreach (var t in webdata)
+                      {
+                          webStr += t.PayAmount + ",";
+                          break;
+                      }
+                  }
+                  else
+                  {
+                      webStr += "0,";
+                  }
+
+                  var iosdata = ios.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.IOS);
+                  if (iosdata.Count() != 0)
+                  {
+                      foreach (var t in iosdata)
+                      {
+                          iosStr += t.PayAmount + ",";
+                          break;
+                      }
+                  }
+                  else
+                  {
+                      iosStr += "0,";
+                  }
+                  var androiddata = android.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.Android);
+                  if (androiddata.Count() != 0)
+                  {
+                      foreach (var t in androiddata)
+                      {
+                          androidStr += t.PayAmount + ",";
+                          break;
+                      }
+                  }
+                  else
+                  {
+                      androidStr += "0,";
+                  }
+                  var h5data = h5.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.手机订单);
+                  if (h5data.Count() != 0)
+                  {
+                      foreach (var t in h5data)
+                      {
+                          h5Str += t.PayAmount + ",";
+                          break;
+                      }
+                  }
+                  else
+                  {
+                      h5Str += "0,";
+                  }
+                }
+
+                //去除多余逗号
+                if (webStr.EndsWith(","))
+                {
+                   webStr=webStr.Substring(0, webStr.Length - 1);
+                }
+                if (iosStr.EndsWith(","))
+                {
+                   iosStr= iosStr.Substring(0, iosStr.Length - 1);
+                }
+                if (androidStr.EndsWith(","))
+                {
+                    androidStr = androidStr.Substring(0, androidStr.Length - 1);
+                }
+                if (h5Str.EndsWith(","))
+                {
+                    h5Str = h5Str.Substring(0, h5Str.Length - 1);
+                }
+                allData.Add("WEB", webStr);
+                allData.Add("IOS", iosStr);
+                allData.Add("ANDROID", androidStr);
+                allData.Add("H5", h5Str);
+                #endregion
+                
+
+                result.data = JsonHelper.ConvertToJson(allData);
+                result.status = true;
+            }
+            else
+            {
+                result.status = false;
+                result.msg = "数据获取失败，未能连接至网络！";
+            }
+            return Json(result);
+        }
+
+        private void  GetTime(string startTime, string endTime, int typeID,ref DateTime sTime,ref DateTime eTime) 
+        {
+            //设定当前时间和结束时间
+            switch (typeID)
+            {
+                case 0:
+                    sTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 1:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-1).ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 2:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-7).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 3:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-30).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 4:
+                    sTime = DateTime.Parse(startTime + " 00:00:00");
+                    eTime = DateTime.Parse(endTime + " 23:59:59");
+                    break;
+            }
+        }
+
+
+        /// <summary>
+        /// 提供出Y轴的时间点
+        /// </summary>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <param name="typeID">时间类型</param>
+        /// <returns></returns>
+        public JsonResult GetYTimeString(string startTime, string endTime, int typeID = 0) 
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            string yTimeString = string.Empty;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            while(true)
+            {
+                yTimeString += sTime.ToShortDateString();
+                sTime = sTime.AddDays(1);
+                if(sTime > Convert.ToDateTime(eTime.ToShortDateString()))
+                {
+                    break;
+                }
+                else 
+                {
+                    yTimeString +=",";
+                }
+            }
+            result.status = true;
+            result.data =yTimeString;
+            return Json(result);
+        }
+    }
+}

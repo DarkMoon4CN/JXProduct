@@ -1,0 +1,91 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXBigData.Component.Model;
+@using JXBigData.Component.Enum;
+@using JXProduct.Component.Model;
+@{
+    ViewBag.Title = "商品成交明细";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css {
+    <link href="~/css/right.css" rel="stylesheet" />
+    <style type="text/css">
+        .thun_feedBack {
+            width: 120px;
+            height: 28px;
+            border: 1px solid #E7E7EB;
+            padding-left: 10px;
+            outline: medium none;
+            background: #FFF url("/js/My97DatePicker/skin/datePicker.gif") no-repeat scroll right center;
+            border: 1px solid #E7E7EB;
+        }
+
+        .s_lm {
+            margin-right: -15px;
+        }
+
+        .p_s_lm {
+            margin-right: -15px;
+        }
+    </style>
+
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+
+    <script src="~/js/map/highcharts.js"></script>
+    <script src="~/js/map/map.js"></script>
+    <script src="~/js/map/data.js"></script>
+    <script src="~/js/map/drilldown.js"></script>
+    <script src="~/js/map/cn-china-by-peng8.js"></script>
+    <script src="~/Content/js/jx.analyse.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            region.init();
+            $("#tm").click();
+        });
+    </script>
+}
+
+<div id="l-content-right">
+    <div class="sp_right">
+        <div class="bg">
+            <div class="sp_datail">
+                <div class="r_top" style="  min-height: 900px; ">
+                    <div class="tab" style="margin-top: 0px;">
+                        <ul class="tab_con">
+                            <li><a href="/Sales/Detail">销售额</a></li>
+                            <li><a href="/ProductTrade/List">商品成交明细</a></li>
+                            <li><a href="/Sales/Orders">成交订单数</a></li>
+                            <li><a href="/Analyse/SearchList">搜索分析</a></li>
+                            <li class="tab_con_current" style="margin-left:62px;"><a href="/Analyse/Region">人群分析</a></li>
+                        </ul>
+                    </div>
+                    <div id="topicText" class="tip">销售额数据</div>
+                    <div class="date">
+                        <a id="td" href="javascript:void(0);">今日</a>
+                        <a id="tm" href="javascript:void(0);">昨日</a>
+                        <a id="sw" href="javascript:void(0);">最近7天</a>
+                        <a id="st" href="javascript:void(0);">最近30天</a>
+                        <a id="other" href="javascript:void(0);">双日历</a>
+
+                        <span class='s_lm'>日期：</span>
+                        <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        &nbsp;
+                        <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        <a id="submit" href="#">查看</a>
+                        <input type="hidden" id="startTime" value="@ViewBag.StartTime" />
+                        <input type="hidden" id="endTime" value="@ViewBag.EndTime" />
+                        <input type="hidden" id="typeID" value="@ViewBag.TypeID" />
+                    </div>
+                    <br><div style="margin-left:30px;" id="msg"><span style="font-size: 18px; color: #4274C5">无查询信息</span></div>
+                    <div id="map" style="float: left; padding: 10px; width: 99%; height: 500px; margin: 0 auto; min-width: 850px; height: 700px; ">
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

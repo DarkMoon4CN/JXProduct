@@ -1,0 +1,5 @@
+E:\JXUsers\src\JXUsers.ConfigComponent\bin\Debug\JXUsers.ConfigComponent.dll
+E:\JXUsers\src\JXUsers.ConfigComponent\bin\Debug\JXUsers.ConfigComponent.pdb
+E:\JXUsers\src\JXUsers.ConfigComponent\obj\Debug\JXUsers.ConfigComponent.dll
+E:\JXUsers\src\JXUsers.ConfigComponent\obj\Debug\JXUsers.ConfigComponent.pdb
+E:\JXUsers\src\JXUsers.ConfigComponent\obj\Debug\JXUsers.ConfigComponent.csprojResolveAssemblyReference.cache

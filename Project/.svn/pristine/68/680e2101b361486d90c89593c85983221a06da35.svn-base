@@ -1,0 +1,225 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    ViewBag.Title = "商品列表";
+}
+@section css{
+    <style>
+        .table-conm-set .spInputWrap .giftid { width: 80px; }
+        .every-select.first { margin-top: 15px; }
+        .every-select { margin-top: 0px; }
+        .select-block { margin-right: 0px; }
+        .select-block select { width: 150px; }
+        .every-select .inputTitme input { width: 260px; }
+        .every-select .inputTitme { margin: 9px; }
+
+        .comm-details, .details-section { width: auto; min-width:initial;}
+        #l-content-right .cz { white-space: nowrap; }
+    </style>
+}
+@section js{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/Content/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/js/jx.product.js"></script>
+    <script>
+        $(function () { product.list();  });
+    </script>
+}
+<div id="l-content-right" class='commodity-wrap'>
+    <div class="comm-admin">
+        @{ Ajax.BeginForm("list", "product", null, new AjaxOptions { UpdateTargetId = "tablelist", HttpMethod = "post", OnSuccess = "product.pagechange", InsertionMode = InsertionMode.Replace }, new { id = "form1" });}
+        <div class="every-select first">
+            <div class="select-block">
+                <span class='width-150'>商品分类：</span>
+                <select id="cf1" class="cf" name="cf1"><option value="0">请选择</option></select>
+                <select id="cf2" class="cf" name="cf2"><option value="0">请选择</option></select>
+                <select id="cf3" class="cf" name="cf3"><option value="0">请选择</option></select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>无分类商品：</span>
+                <select name="hasCF">
+                    <option value="-1">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-select">
+            <div class="select-block">
+                <span class='width-150'>商品类型：</span>
+                <select name="Type">
+                    <option value="-1">请选择</option>
+                    <option value="0">单品</option>
+                    <option value="1">大包装</option>
+                    <option value="2">组合</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>特殊商品：</span>
+                <select name="OtherType">
+                    <option value="-1">请选择</option>
+                    <option value="0">普通</option>
+                    <option value="1">泰康</option>
+                    <option value="2">麻黄碱</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>标签关联：</span>
+                <select name="AnyKeywords">
+                    <option value="-1">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-select">
+            <div class="select-block">
+                <span class='width-150'>商品活动：</span>
+                <select name="activity">
+                    <option value="-1">请选择</option>
+                    @{
+                        var acts = JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.ProductActivity>();
+                        foreach (var a in acts)
+                        {
+                            <option value="@a.Key">@a.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>运营标示：</span>
+                <select name="actions">
+                    <option value="-1">请选择</option>
+                    @{
+                        var actions = JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.ProductActions>();
+                        foreach (var a in actions)
+                        {
+                            <option value="@a.Key">@a.Value</option>
+                        }
+                    }
+                </select>
+
+            </div>
+            <div class="select-block">
+                <span class='width-150'>商品基础信息：</span>
+                <select name="baseinfo">
+                    <option value="-1">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>商品详情图片：</span>
+                <select name="Description">
+                    <option value="-1">请选择</option>
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-select">
+            <div class="select-block">
+                <span class='width-150'>审核状态：</span>
+                <select name="status">
+                    <option value="-1">请选择</option>
+                    <option value="0">正常</option>
+                    <option value="3">待审核</option>
+                    <option value="4">未通过</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>商品上/下架：</span>
+                <select name="selling">
+                    <option value="-1">请选择</option>
+                    <option value="0">下架</option>
+                    <option value="1" selected="selected">上架</option>
+                    <option value="2">暂无库存</option>
+                    <option value="3">暂停销售</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>结果排序：</span>
+                <select name="orderby">
+                    <option value="-1">请选择</option>
+                    <option value="0">综合排序</option>
+                    <option value="1">按照人气从高到低排序</option>
+                    <option value="2">按照销量从高到低排序</option>
+                    <option value="3">按照价格从高到低排序</option>
+                    <option value="4">按照价格从低到高排序</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-select">
+            <div class="select-block">
+                <span class='width-150'>商品资质审核：</span>
+                <select name="audit1">
+                    <option value="-1">请选择</option>
+                    <option value="0">未审核</option>
+                    <option value="1">已审核</option>
+                    <option value="2">未通过</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>商品信息审核：</span>
+                <select name="audit2">
+                    <option value="-1">请选择</option>
+                    <option value="0">未审核</option>
+                    <option value="1">已审核</option>
+                    <option value="2">未通过</option>
+                </select>
+            </div>
+            <div class="select-block">
+                <span class='width-150'>商品详情审核：</span>
+                <select name="audit3">
+                    <option value="-1">请选择</option>
+                    <option value="0">未审核</option>
+                    <option value="1">已审核</option>
+                    <option value="2">未通过</option>
+                </select>
+            </div>
+        </div>
+        <div class="every-select clear">
+            <div class="spInputWrap">
+                <span class='width-150'>商品编号：</span>
+                <input class="sf" type="text" name="productid">
+            </div>
+            <div class="spInputWrap">
+                <span class='width-150'>金象码：</span>
+                <input class="sf" type="text" name="productcode">
+            </div>
+
+            <div class="spInputWrap">
+                <label>@Html.CheckBox("showselling")只显示上架商品</label>
+                <label>@Html.CheckBox("expire")只显示过期预警商品</label>
+            </div>
+        </div>
+        <div class="every-select clear">
+            <div class="spInputWrap">
+                <span class='width-150'>商品名称：</span>
+                <input class="sf" type="text" name="chinesename">
+            </div>
+            <div class="inputTitme fl">
+                <div class="timeBg fl">
+                    <input type="text" placeholder='请输入关键词搜索' name="keywords">
+                    <span class='seach'></span>
+                </div>
+            </div>
+            <div class="inputTitme fl">
+                <a href="javascript:;" class="addBtn submit">确定</a>
+            </div>
+        </div>
+        @{ Html.EndForm();}
+    </div>
+    <div class="comm-details">
+        <div class="comm-verticalLine">
+            <span></span>
+            <span></span>
+        </div>
+        <div class="details-section">
+            <div class="details-sectionBg"></div>
+            <div class="details-secTable" id="tablelist">
+                @{Html.RenderPartial("_PartialList");}
+            </div>
+        </div>
+    </div>
+</div>

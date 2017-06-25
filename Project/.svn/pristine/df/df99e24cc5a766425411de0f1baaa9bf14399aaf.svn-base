@@ -1,0 +1,59 @@
+﻿@using JXProduct.Component.Model;
+@section css{
+    <style type="text/css">
+        .addHdComm .kuangCenter .confirmBtn { padding-top: 10px; }
+        .inputBg { margin-top: 5px; }
+        .kuang .enddate { padding-top: 3px; }
+        .spInputWrap span { width: 70px; text-align: right; }
+        .generalTable { width: 95%; margin-top: 20px; }
+        .kuang .showname { width: 260px; text-align: left; }
+        body { background: #fff; }
+    </style>
+}
+@section script{
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/jx.activity.js"></script>
+    <script>
+        $(function () { activity.rule(); });
+    </script>
+}
+@{
+    ViewBag.Title = "全站活动规则";
+    Layout = "~/Views/Shared/_WinLayout.cshtml";
+
+    ActivityInfo act = ViewBag.Activity;
+    List<ActivityRuleInfo> rules = ViewBag.Rules;
+
+}
+@model JXProduct.AdminUI.Models.Activity.RuleModel
+<div class="kuang addHdComm">
+    @{ Html.RenderPartial("_PartialRuleEdit", Model);}
+</div>
+<div class="table">
+    <table class='generalTable'>
+        <thead>
+            <tr>
+                <th style="width:20%">编号</th>
+                <th>说明</th>
+                <th style="width:20%">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var index = 1;
+                foreach (var rule in rules)
+                {
+                    <tr>
+                        <td>@(index++)</td>
+                        <td>@Html.Raw(JXProduct.Component.BLL.ActivityRuleBLL.Instance.ActivityRule_Description(act, rule))</td>
+                        <td ruleid="@rule.RuleID">
+                            @*<a href="javascript:void(0)" name="update">编辑</a>*@
+                            <a href="javascript:void(0)" name="del">删除</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

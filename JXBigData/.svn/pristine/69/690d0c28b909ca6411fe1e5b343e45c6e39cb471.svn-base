@@ -1,0 +1,456 @@
+﻿using JXBigData.AdminUI.Models;
+using JXBigData.Component.BLL;
+using JXBigData.Component.Enum;
+using JXBigData.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class SalesController : Controller
+    {
+        public ActionResult Detail()
+        {
+            //查询订单金额来源占有率
+            return View();
+        }
+
+        //获取饼状图数据
+        public JsonResult GetCakeData(string startTime,string endTime,int typeID=0) 
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            OperationResult<IList<OrderDailyInfo>> ort = OrderDailyBLL.Instance.OrderDaily_GetSourcePrice(sTime, eTime);
+            if (ort.ResultType == OperationResultType.Success)
+            {
+
+                IList<OrderDailyInfo> odInfoList = ort.AppendData;
+                foreach (var item in odInfoList)
+                {
+                   item.SourceName=Enum.GetName(typeof(OrderSource),item.Source);
+                }
+                result.data = JsonHelper.ConvertToJson(odInfoList);
+                result.status = true;
+            }
+            else 
+            {
+                result.status = false;
+                result.msg = "数据获取失败，未能连接至网络！";
+            }
+            return Json(result);
+        }
+
+        //获取线状图数据
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="typeID"></param>
+        /// <param name="searchType">0：销售统计，1订单总数统计，2 已支付统计，3未支付统计</param>
+        /// <returns></returns>
+        public JsonResult GetLineData(string startTime, string endTime, int typeID = 0, int searchType=0)
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            //例：100: 111,111,111,111,111,111,111 
+            Dictionary<string, string> allData = new Dictionary<string, string>();
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            OperationResult<IList<OrderDailyInfo>> ort = OrderDailyBLL.Instance.OrderDaily_GetStationePrice(sTime, eTime);
+            //生成y轴时间点
+           
+            if (ort.ResultType == OperationResultType.Success)
+            {
+                IList<OrderDailyInfo> odInfoList = ort.AppendData;
+                foreach (var item in odInfoList)
+                {
+                    item.SourceName = Enum.GetName(typeof(OrderSource), item.Source);
+                }
+
+                //设置指定天数
+                IList<string> timeList = new List<string>();
+                while (true)
+                {
+                    timeList.Add(sTime.ToShortDateString());
+                    sTime = sTime.AddDays(1);
+                    if (sTime > Convert.ToDateTime(eTime.ToShortDateString()))
+                    {
+                        break;
+                    }
+                }
+
+                var web = odInfoList.Where(p => p.Source ==(int)OrderSource.WEB);
+                var ios = odInfoList.Where(p => p.Source == (int)OrderSource.IOS);
+                var android = odInfoList.Where(p => p.Source ==(int)OrderSource.Android);
+                var h5 = odInfoList.Where(p => p.Source == (int)OrderSource.H5);
+
+                string  webStr = string.Empty;
+                string iosStr = string.Empty;
+                string androidStr = string.Empty;
+                string h5Str = string.Empty;
+
+                #region 数据整合
+                for (int i = 0; i < timeList.Count; i++)
+                {
+                   
+                  var  webdata =web.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source==(int)OrderSource.WEB);
+                  if (webdata.Count() != 0)
+                  {
+                      foreach (var t in webdata)
+                      {
+                          switch (searchType) 
+                          {
+                              case 0:
+                                  webStr += t.PayAmount + ",";
+                                  break;
+                              case 1:
+                                  webStr += t.OrderQuan+",";
+                                  break;
+                              case 2:
+                                  webStr += t.PayQuan + ",";
+                                  break;
+                              case 3:
+                                  webStr += t.OrderQuan - t.PayQuan + ",";
+                                  break;
+                          }
+                      }
+                  }
+                  else
+                  {
+                      webStr += "0,";
+                  }
+
+                  var iosdata = ios.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.IOS);
+                  if (iosdata.Count() != 0)
+                  {
+                      foreach (var t in iosdata)
+                      {
+                          switch (searchType)
+                          {
+                              case 0:
+                                  iosStr += t.PayAmount + ",";
+                                  break;
+                              case 1:
+                                  iosStr += t.OrderQuan + ",";
+                                  break;
+                              case 2:
+                                  iosStr += t.PayQuan + ",";
+                                  break;
+                              case 3:
+                                  iosStr += t.OrderQuan - t.PayQuan + ",";
+                                  break;
+                          }
+                      }
+                  }
+                  else
+                  {
+                      iosStr += "0,";
+                  }
+                  var androiddata = android.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.Android);
+                  if (androiddata.Count() != 0)
+                  {
+                      foreach (var t in androiddata)
+                      {
+                          switch (searchType)
+                          {
+                              case 0:
+                                  androidStr += t.PayAmount + ",";
+                                  break;
+                              case 1:
+                                  androidStr += t.OrderQuan + ",";
+                                  break;
+                              case 2:
+                                  androidStr += t.PayQuan + ",";
+                                  break;
+                              case 3:
+                                  androidStr += t.OrderQuan - t.PayQuan + ",";
+                                  break;
+                          }
+                      }
+                  }
+                  else
+                  {
+                      androidStr += "0,";
+                  }
+                  var h5data = h5.Where(p => p.CreateDate.ToShortDateString() == timeList[i] && p.Source == (int)OrderSource.H5);
+                  if (h5data.Count() != 0)
+                  {
+                      foreach (var t in h5data)
+                      {
+                          switch (searchType)
+                          {
+                              case 0:
+                                  h5Str += t.PayAmount + ",";
+                                  break;
+                              case 1:
+                                  h5Str += t.OrderQuan + ",";
+                                  break;
+                              case 2:
+                                  h5Str += t.PayQuan + ",";
+                                  break;
+                              case 3:
+                                  h5Str += t.OrderQuan - t.PayQuan + ",";
+                                  break;
+                          }
+                      }
+                  }
+                  else
+                  {
+                      h5Str += "0,";
+                  }
+                }
+
+                //去除多余逗号
+                if (webStr.EndsWith(","))
+                {
+                   webStr=webStr.Substring(0, webStr.Length - 1);
+                }
+                if (iosStr.EndsWith(","))
+                {
+                   iosStr= iosStr.Substring(0, iosStr.Length - 1);
+                }
+                if (androidStr.EndsWith(","))
+                {
+                    androidStr = androidStr.Substring(0, androidStr.Length - 1);
+                }
+                if (h5Str.EndsWith(","))
+                {
+                    h5Str = h5Str.Substring(0, h5Str.Length - 1);
+                }
+                allData.Add("WEB", webStr);
+                allData.Add("IOS", iosStr);
+                allData.Add("ANDROID", androidStr);
+                allData.Add("H5", h5Str);
+                #endregion
+                
+
+                result.data = JsonHelper.ConvertToJson(allData);
+                result.status = true;
+            }
+            else
+            {
+                result.status = false;
+                result.msg = "数据获取失败，未能连接至网络！";
+            }
+            return Json(result);
+        }
+
+        private void  GetTime(string startTime, string endTime, int typeID,ref DateTime sTime,ref DateTime eTime) 
+        {
+            //设定当前时间和结束时间
+            switch (typeID)
+            {
+                case 0:
+                    sTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 1:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-1).ToShortDateString() + " 00:00:00");
+                    eTime = eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 2:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-7).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 3:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-30).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+                case 4:
+                    sTime = DateTime.Parse(startTime + " 00:00:00");
+                    eTime = DateTime.Parse(endTime + " 23:59:59");
+                    break;
+                case 5:
+                    sTime = DateTime.Parse(DateTime.Now.AddDays(-90).ToShortDateString() + " 00:00:00");
+                    eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 23:59:59");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 提供出Y轴的时间点
+        /// </summary>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <param name="typeID">时间类型</param>
+        /// <returns></returns>
+        public JsonResult GetYTimeString(string startTime, string endTime, int typeID = 0) 
+        {
+            var result = new JsonResultObject();
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            string yTimeString = string.Empty;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+            while(true)
+            {
+                yTimeString += sTime.ToShortDateString();
+                sTime = sTime.AddDays(1);
+                if(sTime > Convert.ToDateTime(eTime.ToShortDateString()))
+                {
+                    break;
+                }
+                else 
+                {
+                    yTimeString +=",";
+                }
+            }
+            result.status = true;
+            result.data =yTimeString;
+            return Json(result);
+        }
+
+
+        /// <summary>
+        ///  查询对比值
+        /// </summary>
+        /// <param name="typeID">类型： 0：当天 1：昨天 2：7天 3:30天 4：自定义时间 5:90天</param>
+        /// <returns></returns>
+        public JsonResult GetDataContrast(string startTime,string endTime, int typeID = 2) 
+        {
+            //同比:由时间控制
+            //环比：开始时间 对比的数据是上一个月数据,被对比的数据，是由时间提供，本月数据不作对比
+
+
+            //设定时间
+            var result = new JsonResultObject();
+            IList<DataContrastInfo> dcInfoList = new List<DataContrastInfo>();
+            
+            //当前时间
+            DateTime sTime = DateTime.Now;
+            DateTime eTime = DateTime.Now;
+            GetTime(startTime, endTime, typeID, ref sTime, ref eTime);
+
+            //同比时间
+            DateTime anSTime = sTime.AddYears(-1);
+            DateTime anETime = eTime.AddYears(-1);
+         
+            //被环比的时间
+            DateTime adjStime = sTime.AddDays(-1);
+            DateTime adjEtime = eTime.AddDays(-1);
+
+
+            TimeSpan ts = sTime - DateTime.Parse(eTime.ToShortDateString());
+            adjStime = adjStime.Add(ts);
+            adjEtime = adjEtime.Add(ts);
+
+            //同比数据
+            OperationResult<IList<OrderDailyInfo>> anInfo =
+                 OrderDailyBLL.Instance.OrderDaily_GetSUMAll(anSTime, anETime);
+
+            //环比数据
+            OperationResult<IList<OrderDailyInfo>> adjInfo =
+                 OrderDailyBLL.Instance.OrderDaily_GetSUMAll(adjStime, adjEtime);
+
+            //获取本年同比数据
+            OperationResult<IList<OrderDailyInfo>> currentAnInfo =
+                             OrderDailyBLL.Instance.OrderDaily_GetSUMAll(sTime, eTime);
+
+            if (anInfo.ResultType != OperationResultType.Success
+                || adjInfo.ResultType != OperationResultType.Success
+                || currentAnInfo.ResultType != OperationResultType.Success)
+            {
+                result.status = false;
+                result.msg = "展示异常，数据库连接异常！";
+                return Json(result);
+            }
+            IList<OrderDailyInfo> cInfoList= currentAnInfo.AppendData;
+
+            for (int i = 0; i < cInfoList.Count; i++)
+            {
+                OrderDailyInfo cInfo = cInfoList[i];
+                DataContrastInfo dcInfo = new DataContrastInfo();
+                dcInfo.Source = cInfo.Source;
+                dcInfo.SourceName = Enum.GetName(typeof(OrderSource), dcInfo.Source);
+                dcInfo.OrderAmount = cInfo.OrderAmount;
+                dcInfo.OrderQuan = cInfo.OrderQuan;
+                dcInfo.PayQuan = cInfo.PayQuan;
+                dcInfo.NoPayQuan = cInfo.OrderQuan - cInfo.PayQuan;
+                dcInfoList.Add(dcInfo);
+            }
+
+            foreach (var cInfo in dcInfoList)
+            {
+                foreach (var aInfo in anInfo.AppendData)
+                {
+                    //同比值
+                    if (cInfo.Source == aInfo.Source) 
+                    {
+                        cInfo.AnOrderAmount =GetPercent(cInfo.OrderAmount,aInfo.OrderAmount) ;//总订单额
+                        cInfo.AnOrderQuan = GetPercent(cInfo.OrderQuan ,aInfo.OrderQuan);//总订单数
+                        cInfo.AnPayQuan = GetPercent(cInfo.PayQuan, aInfo.PayQuan);//支付订单
+                        cInfo.AnNoPayQuan = GetPercent(cInfo.OrderQuan - cInfo.PayQuan, aInfo.OrderQuan - aInfo.PayQuan);  //未支付订单量
+                    }
+                } 
+                foreach (var adInfo in adjInfo.AppendData)
+                {
+                    //环比值
+                    if (cInfo.Source == adInfo.Source)
+                    {
+                        cInfo.AdjOrderAmount = GetPercent(cInfo.OrderAmount, adInfo.OrderAmount);//总订单额
+                        cInfo.AdjOrderQuan = GetPercent(cInfo.OrderQuan, adInfo.OrderQuan);//总订单数
+                        cInfo.AdjPayQuan = GetPercent(cInfo.PayQuan, adInfo.PayQuan);//支付订单
+                        cInfo.AdjNoPayQuan = GetPercent(cInfo.OrderQuan - cInfo.PayQuan, adInfo.OrderQuan - adInfo.PayQuan);  //未支付订单量
+                    }
+                }
+            }
+            result.data = JsonHelper.ConvertToJson(dcInfoList) ;
+            result.msg = null;
+            result.status = true;
+            return Json(result);
+        }
+
+
+        /// <summary>
+        /// 取得某月的第一天
+        /// </summary>
+        /// <param name="datetime">要取得月份第一天的时间</param>
+        /// <returns></returns>
+        private DateTime FirstDayOfMonth(DateTime datetime)
+        {
+            return datetime.AddDays(1 - datetime.Day);
+        }
+
+        /// <summary>
+        /// 取得某月的最后一天
+        /// </summary>
+        /// <param name="datetime">要取得月份最后一天的时间</param>
+        /// <returns></returns>
+        private DateTime LastDayOfMonth(DateTime datetime)
+        {
+            return datetime.AddDays(1 - datetime.Day).AddMonths(1).AddDays(-1);
+        }
+
+        private string GetPercent(decimal molecular, decimal denominator) 
+        {
+            string perStr = string.Empty;
+            if (denominator == 0)
+            {
+                return "-";
+            }
+            else 
+            {
+                var result =molecular/denominator;
+                result = (result -1) * 100;
+                perStr = result.ToString("0.0") ;
+                return perStr;
+            }
+        
+        }
+
+
+        public ActionResult Orders()
+        {
+            //查询订单订单数来源占有率
+            return View();
+        }
+
+    }
+}
+

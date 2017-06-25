@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<configuration>
+    <configSections>
+        <section name="SearchEngine" type="JXSearch.ConfigComponent.SearchEngineConfig, JXSearch.ConfigComponent" />
+    </configSections>
+
+    <connectionStrings>
+        <add name="JXProductReader" connectionString="data source=192.168.21.8;uid=jxproduct;pwd=df,sf(mn)jil;Initial Catalog=JXProduct" providerName="System.Data.SqlClient"/>
+        <add name="JXProductWriter" connectionString="data source=192.168.21.8;uid=jxproduct;pwd=df,sf(mn)jil;Initial Catalog=JXProduct" providerName="System.Data.SqlClient"/>
+        <add name="JXMarketingReader" connectionString="data source=192.168.21.8;uid=jxproduct;pwd=df,sf(mn)jil;Initial Catalog=JXMarketing" providerName="System.Data.SqlClient"/>
+        <add name="JXMarketingWriter" connectionString="data source=192.168.21.8;uid=jxproduct;pwd=df,sf(mn)jil;Initial Catalog=JXMarketing" providerName="System.Data.SqlClient"/>
+    </connectionStrings>
+
+    <appSettings>
+        <add key="dictionaries" value="E:\Project\Dictionaries\" />
+    </appSettings>
+    
+    <SearchEngine cacheTime="24">
+        <engines>
+            <add name="ProductEngine" tagFileName="product_tag.txt" indexDir="E:\Project\SearchEngine\Product" currIndexDir="20140210" dictDir="" maxRowCount="1000000" />
+            <add name="KeywordEngine" tagFileName="keyword_tag.txt" indexDir="E:\Project\SearchEngine\Keyword" currIndexDir="20140210" dictDir="" maxRowCount="1000000" />
+        </engines>
+    </SearchEngine>
+</configuration>

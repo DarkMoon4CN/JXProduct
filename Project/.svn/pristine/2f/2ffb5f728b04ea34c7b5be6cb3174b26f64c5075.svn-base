@@ -1,0 +1,81 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "添加公告";
+    Layout = "~/Views/Shared/_WinLayout.cshtml";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            om.noticeAddInit();
+        });
+    </script>
+}
+@section css {
+
+    <style type="text/css">
+    .selecWrap .imitationSelect {
+        margin-top: 0px;
+        margin-left: 10px;
+        width: 241px;
+    }
+   .addTitle {
+            width: 230px;
+            padding-left: 10px;
+            line-height: 28px;
+            height: 28px;
+            border: 1px solid #E7E7EB;
+            border-radius: 5px;
+            outline: medium none;
+     }
+</style>
+
+}
+<div class="kuang commAddSp">
+    <div class="kuangHead"><span>发布网站公告</span></div>
+    <div class="kuangCenter">
+        @using (Html.BeginForm("Add", "OM", FormMethod.Post))
+        {
+            <div class="kuCun clear">
+                <div class="selecWrap">
+                    <div class="titleSelecWrap">
+                        <span>类型:</span>
+                        <div class="imitationSelect setPLWidth fl">
+                            <div class="selectTitle">
+                                <span class='selectTitleLeft'>公告</span>
+                                <span class='selectTitleRight'></span>
+                            </div>
+                            <div class="imitaSelectList">
+                                <ul>
+                                    <li><a href="#" t="1">公告</a></li>
+                                    <li><a href="#" t="2">广告</a></li>
+                                </ul>
+                            </div>
+                            <input type="hidden" id="evalType" value="1" />
+                        </div>
+                    </div>
+                </div>
+                <div class="sw">
+                    <div class="titleSelecWrap">
+                        <span>标题：</span>
+                        <div class="selectTit">
+                            <input id='Title' name='Title' class="addTitle" placeholder='标题' value='' type='text' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inputPl">
+                <p id="showLine">内容：</p>
+                <div id="TransType">
+                    <textarea cols="20" id="Content" name="Content" rows="2" placeholder='请输入内容'></textarea>
+                </div>
+            </div>
+            <div class="confirmBtn clear">
+                <a class="q submit" href="#" onclick="om.noticeAddSubmit()">发布</a>
+                <a class="x closewin" href="#">取消</a>
+            </div>
+        }
+    </div>
+</div>

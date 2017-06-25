@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Enums
+{
+
+    /// <summary>
+    /// 1:大包装
+    /// 2:不同规格
+    /// 3:最佳推荐
+    /// </summary>
+    public enum RelatedType
+    {
+        全部 = 0,
+        大包装 = 1,
+        不同规格 = 2,
+        最佳推荐 = 3
+    }
+}

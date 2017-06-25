@@ -1,0 +1,156 @@
+﻿@model JXProduct.AdminUI.Models.Audit.AuditEditModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+    var product = Model.product;
+    var audit = Model.audit;
+    var m = Model.Manufacturer;
+    var list1 = Model.list1;
+    var list2 = Model.list2;
+    var productcf = Model.productCF;
+    var ins = Model.instructions;
+}
+@section css{
+    <style>
+        .enter-two-nav li { width: 150px; }
+        #upload1, #upload2 { text-align: left; background-image: url('/image/sprites/btnbg.png'); }
+        #upload1 .uploadify-button-text, #upload2 .uploadify-button-text, .enter-sec-wrap .operAdverW span { text-align: center; }
+    </style>
+}
+@section js{
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/uploadify3.2.1/jquery.uploadify.js"></script>
+    <script src="~/Content/js/jx.audit.js"></script>
+    <script>
+        var productid = @(product.ProductID + ";")
+        $(function () {
+            audit.init();
+        });
+    </script>
+}
+<div id="l-content-right" class="overflow">
+    <div class="single-product-h">
+        <a href="javascript:;"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="infoTable to-examine table-responsive">
+        <!-- <div class="examine-state-y"></div> -->
+        <table class="table">
+            <thead>
+                <tr class="bg">
+                    <th>通用名</th>
+                    <th>商品名称</th>
+                    <th class="tabWidth">单位</th>
+                    <th>规格</th>
+                    <th>商品类别</th>
+                    <th>生产企业</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg">
+                    <td>@product.CADN</td>
+                    <td>@product.ChineseName</td>
+                    <td class="tabWidth">@ins.Package</td>
+                    <td>@product.Specifications</td>
+                    <td>@product.TypeName</td>
+                    <td>@ins.Manufacturer</td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (audit.Status == (short)JXProduct.Component.Enums.Product.AuditStatus.未通过审核)
+        {
+            <div class="notBy-txt">
+                <span class="triangle"></span>
+                <p>审核未通过原因： </p>
+                <p>@audit.Remarks</p>
+                <time>审核人：@audit.Creator    @audit.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</time>
+            </div>
+        }
+
+    </div>
+    <div class="basic-informa-box examine-center">
+        <div class="jbxx-txt">资质信息完善</div>
+        <div class="daerfect-addComm">
+            <div class="open-contrWrap">
+                <div class="open-contr">
+                    <span><i class="xingRed">* </i>商品分类</span>
+                    <i class="add"></i>
+                </div>
+            </div>
+            <div class="addComm-select">
+                <div class="addComm-title"><i class="xingRed">* </i>商品销售分类：</div>
+                @{
+                    var count = productcf.Count > 5 ? productcf.Count : 5;
+                    for (int index = 1; index <= count; index++)
+                    {
+                        var cf = productcf.Count >= index ? productcf[index - 1] : new JXProduct.Component.Model.ProductClassificationInfo();
+                        <div class="every-select" cfid="@cf.CFID" cfpath="@cf.CFPath">
+                            <span class="num-text">@index</span>
+                            @Html.Raw(JXProduct.Component.BLL.ClassificationBLL.Instance.ToSelect(Model.cfList, cf.CFPath))
+                        </div>
+                    }
+                }
+            </div>
+            <div class="enterprise-box">
+                <div class="open-contrWrap">
+                    <div class="open-contr">
+                        <span><i class="xingRed">* </i>企业资质</span>
+                    </div>
+                    <div class="enterprise-section">
+                        <div class="enter-line"><span></span><span></span></div>
+                        <div class="enter-nav">
+                            <ul class="clear">
+                                <li><a href="#" qid="@m.QualificationID" t='0' mid="@product.ManufacturerID">@m.ChineseName</a></li>
+                                @foreach (var l in list1)
+                                {
+                                    <li><a href="#" qid="@l.QualificationID" t="1">@l.ChineseName</a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="enter-sec-wrap" id="forcompany">
+                            @{Html.RenderAction("partialedit", new { QualID = m.QualificationID, mid = product.ManufacturerID, pid = product.ProductID, type = 0 });}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="enterprise-box">
+                <div class="open-contrWrap">
+                    <div class="open-contr">
+                        <span><i class="xingRed">* </i>企业资质</span>
+                        <i class="add"></i>
+                    </div>
+                    <div class="enterprise-section">
+                        <div class="enter-sec-wrap">
+                            <div class="enter-sec-left">
+                                <div class="enter-left-nav" id="forproduct">
+                                    <div class="enter-nav-title">资质种类</div>
+                                    <ul>
+                                        @foreach (var l in list2)
+                                        {
+                                            <li><a href="#" t="2" pid="@product.ProductID" qid="@l.QualificationID">@l.ChineseName</a></li>
+                                        }
+                                    </ul>
+                                    <div class="enter-btn">
+                                        <a class="active" href="#">添加</a>
+                                        <a href="#">编辑</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="enter-sec-right" id="product">
+                                @{Html.RenderAction("partialedit", new { QualID = list2[0].QualificationID, mid = 0, pid = product.ProductID, type = 2 });}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="examine-btn inform-btn">
+        <div class="confirm">
+            <a href="#" name="save">保存</a>
+            <a href="#" name="audit">保存并提交审核</a>
+        </div>
+    </div>
+</div>

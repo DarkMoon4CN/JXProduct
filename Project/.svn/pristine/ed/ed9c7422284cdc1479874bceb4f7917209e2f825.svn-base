@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "全站活动关联商品";
+}
+@section css{
+    <style>
+        body { font-size: 12px; background: #fff; }
+        .content { width: 1200px; margin: 0px auto; height: auto; }
+        .kuangHead { height: 50px; line-height: 50px; }
+        #nav span { height:50px;line-height:50px; width:100px; float:left; display:block; font-weight:bold;  cursor:pointer;}
+        #nav .active { border-bottom: 3px solid #377bee; }
+        .commodityConter {z-index:auto;}
+        #nav span { text-align: center; }
+         .searchContent { height: 35px; line-height: 35px; }
+        .search { display: block; width: 100px; height: 28px; border: 1px solid #e7e7eb; border-radius: 5px; text-align: center; line-height: 28px; font-size: 12px; color: #333; }
+    </style>
+}
+
+@section script{
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/js/jx.activity.js"></script>
+    <script>
+        $(function () { activity.product(); });
+    </script>
+}
+@using Webdiyer.WebControls.Mvc
+
+@model JXProduct.AdminUI.Models.Activity.SearchProductModel
+<div class="commodityHead w">
+    <div class="fl"><span>活动商品管理</span></div>
+</div>
+<div class="commodityConter w clear">
+    <div id="searchWhere" class="commodityScreening clear">
+        @{ Ajax.BeginForm("SearchProduct", "activity", null, new AjaxOptions { UpdateTargetId = "searchlist", HttpMethod = "post", InsertionMode = InsertionMode.Replace }, new { id = "form1" });}
+        @Html.HiddenFor(t=>t.ActID)
+        <div class="commW">
+            @Html.Select1("商品分类", "cf1", null, string.Empty, true)
+            @Html.Select1("", "cf2", null, string.Empty, true)
+            @Html.Select1("", "cf3", null, string.Empty, true)
+        </div>
+        <div class="spInput commW">
+            <div class="spInputWrap">
+                <span>商品ID：</span>
+                <input id="ProductID" name="ProductID" placeholder="输入商品ID" type="text" value="">
+            </div>
+            <div class="spInputWrap">
+                <span>金象码：</span>
+                <input id="ProductCode" name="ProductCode" placeholder="请输入金象码" type="text" value="">
+            </div>
+            <div class="addConter searchContent"><a href="#" id="search" class="search">搜索</a></div>
+        </div>
+        @{ Html.EndForm();}
+    </div>
+</div>
+<div class="commodityConter w clear tc" id="nav">
+    <span class="active">未添加商品信息</span>
+    <span>已关联</span>
+</div>
+<div id="searchlist" class="productdata">
+    @{ Html.RenderPartial("_PartialSearchProduct");}
+</div>
+<div id="tablist" class="productdata hide">
+    @{ Html.RenderPartial("_PartialProduct"); }
+</div>

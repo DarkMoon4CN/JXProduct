@@ -1,0 +1,648 @@
+﻿@using JXProduct.AdminUI.Image;
+@model JXProduct.AdminUI.Models.Product.ProductEditModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+    var p = Model.Product;
+    var ins = Model.Instructions;
+}
+@section css{
+    <link href="~/css/jquery.autocomplete.css" rel="stylesheet" />
+    <link href="~/kindeditor/themes/default/default.css" rel="stylesheet" />
+    <style>
+        .col-md-11 label { margin-right: 10px; }
+        .uploadify-button { background: url("/image/sprites/btnbg.png"); text-align: center; }
+        .informa-title .resetUpBtn { padding-top: 18px; }
+        .drug { display: none; }
+    </style>
+}
+@section js{
+    <script src="~/kindeditor/kindeditor-min.js"></script>
+    <script src="~/js/base.autocomplete.js"></script>
+    <script src="~/content/js/jquery.validate.js"></script>
+    <script src="~/js/uploadify3.2.1/jquery.uploadify.js"></script>
+    <script src="~/Content/js/jx.product.js"></script>
+    <script>
+        var productid = @(p.ProductID + ";")
+        $(function () {
+            productedit.init();
+            productedit.keyword();
+            productedit.operate();
+            productedit.upload();
+        });
+        KindEditor.ready(function (K) {
+            editor = K.create('textarea[name="Promotion"]', {
+                uploadJson: '/kindeditor/handler/upload_json.ashx',
+                resizeType: 0,
+                allowFileManager: true
+            });
+        });
+    </script>
+}
+
+<div id="l-content-right">
+    <div class="single-product-h">
+        <a href="/product/list"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="single-center authority-informa">
+        <div class="single-name">
+            <span>@p.BrandName @p.CADN @p.Specifications</span>
+        </div>
+        <form id="formproduct">
+            @Html.Hidden("ProductID", p.ProductID)
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">基本信息</div>
+                <div class="examine-state-d"></div>
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品属性：
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>商品商用名：</span>
+                            <input name="ChineseName" value="@p.ChineseName" required data-msg-required="请填写商品商用名" />
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>商品通用名：</span>
+                            <input name="CADN" value="@p.CADN" required data-msg-required="请填写商品通用名" />
+                        </div>
+                    </div>
+                    <div class="every-one-info fl">
+                        <span class="col-md-1 width-150"><i class="xingRed">* </i>商品属类：</span>
+                        <div class="col-md-11 ptype" style="width:60%">
+                            @{
+                                var parameters = JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.ParameterType>();
+                                foreach (var para in parameters)
+                                {
+                                    <label><input type="checkbox" name="ParameterType" value="@para.Key" @(para.Key == p.ParameterType ? "checked=checked" : "")>@para.Value</label>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>商品品牌：</span>
+                            @Html.DropDownList("BrandID", Model.Brands);
+                            <i class="color-gray">温馨提示：如果没有相关品牌请联系技术人员添加</i>
+                        </div>
+                    </div>
+
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>生产企业：</span>
+                            @Html.Hidden("ManufacturerID", p.ManufacturerID.ToString())
+                            <input type="text" name="Manufacturer" value="@ins.Manufacturer" required data-msg-required="请填写生产企业">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>企业地址：</span>
+                            <input type="text" name="ManufacturerAddress" value="@ins.ManufacturerAddress" required data-msg-required="请填写企业地址">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>批准文号：</span>
+                            <input type="text" name="ManufacturerApprovalNumber" value="@p.ApprovalNumber" required data-msg-required="请填写批准文号">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>产地：</span>
+                            <select name='Origin' required data-msg-required="请选择产地">
+                                <option value="">请选择产地</option>
+                                @{
+                                    var originlist = JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.Product.Origin>();
+                                    foreach (var o in originlist)
+                                    {
+                                        <option value="@o.Key" @(o.Key == p.Origin ? "selected=selected" : "")>@o.Value</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+
+                            <span class="width-150"><i class="xingRed">* </i>存储条件：</span>
+                            <select name="Storage" required data-msg-required="请选择存储条件">
+                                <option value="">请选择</option>
+                                @{
+                                    var storagelist = new List<SelectListItem>();
+                                    storagelist.Add(new SelectListItem() { Value = "1", Text = "冷藏(2-10℃)", Selected = p.Storage == 1 });
+                                    storagelist.Add(new SelectListItem() { Value = "2", Text = "阴凉(20℃以下)", Selected = p.Storage == 2 });
+                                    storagelist.Add(new SelectListItem() { Value = "3", Text = "常温(10-30℃)", Selected = p.Storage == 3 });
+                                    foreach (var o in storagelist)
+                                    {
+                                        <option value="@o.Value" @(o.Selected ? "selected=selected" : "")>@o.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>单位：</span>
+                            <select name="Unit" required data-msg-required="请选择单位">
+                                <option value="">请选择</option>
+                                @foreach (var o in Model.UnitList)
+                                {
+                                    <option value="@o.Value" @(o.Text == p.Unit ? "selected=selected" : "")>@o.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info displayBox caozuo-check clear">
+                        <span class="width-150 col-md-1"></span>
+                        <div class="col-md-11">
+                            <label>@Html.CheckBox("IsDeluxe", p.IsDeluxe == 1)礼盒装</label>
+                            <label>@Html.CheckBox("IsOdour", p.IsOdour == 1)易串味</label>
+                            <label>@Html.CheckBox("IsProtection", p.IsProtection == 1)重点养护</label>
+                            <label>@Html.CheckBox("IsFragile", p.IsFragile == 1)易碎</label>
+                            <label>@Html.CheckBox("ContainMHJ", p.ContainMHJ == 1)含麻黄碱</label>
+                            <label>@Html.CheckBox("IsBasePowder", p.IsBasePowder == 1)基药</label>
+                            <label>@Html.CheckBox("IsYiBao", p.IsYiBao == 1)医保</label>
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>商品销售显示名称：</span>
+                            <input type="text" name="SellingName" value="@p.SellingName" required data-msg-required="请填写销售显示名称">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i> 商品销售卖点说明：</span>
+                            <input type="text" name="LongName" value="@p.LongName" required data-msg-required="请填写卖点说明">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i> 加链接的文字：</span>
+                            <input type="text" name="LinkName" value="@p.LinkName">
+                        </div>
+                    </div>
+                    <div class="every-one-info">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i> 链接地址：</span>
+                            <input type="text" name="LinkUrl" value="@p.LinkUrl" data-rule-url="true" data-msg-url="请填写正确的url路径">
+                        </div>
+                    </div>
+                    <div class="every-one-info be-careful xingRed drug"><span class="width-150">特别注意：</span>如果是药品则显示以下内容，要求必须填写</div>
+                    <div class="every-one-info drug">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>药品类别：</span>
+                            <select name="DrugClassification" required data-msg-required="请选择药品类别">
+                                <option value="">请选择</option>
+                                @{
+                                    var druglist = new List<SelectListItem>();
+                                    druglist.Add(new SelectListItem() { Value = "1", Text = "中成药", Selected = p.DrugClassification == 1 });
+                                    druglist.Add(new SelectListItem() { Value = "2", Text = "西药", Selected = p.DrugClassification == 2 });
+                                    foreach (var d in druglist)
+                                    {
+                                        <option value="@d.Value" @(d.Selected ? "selected=selected" : "")>@d.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info drug">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>药品药剂：</span>
+                            <select name="Dosage" required data-msg-required="请选择药品药剂">
+                                <option value="">请选择</option>
+                                @foreach (var d in JXProduct.Component.BLL.ProductBLL.Instance.Product_GetDosage)
+                                {
+                                    <option value="@d" @(p.Dosage == d ? "selected=selected" : "")>@d</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info drug">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>药剂用法：</span>
+                            <select name="Usage" required data-msg-required="请选择药剂用法">
+                                <option value="">请选择</option>
+                                @{
+                                    var usagelist = new List<SelectListItem>();
+                                    usagelist.Add(new SelectListItem() { Value = "1", Text = "内服", Selected = p.Usage == 1 });
+                                    usagelist.Add(new SelectListItem() { Value = "2", Text = "外用", Selected = p.Usage == 2 });
+                                    foreach (var d in usagelist)
+                                    {
+                                        <option value="@d.Value" @(d.Selected ? "selected=selected" : "")>@d.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info drug">
+                        <div class="spInputWrap clear">
+                            <span class="width-150"><i class="xingRed">* </i>药品类型：</span>
+                            <select name="DrugType" required data-msg-required="请填写药品类型">
+                                <option value="">请选择</option>
+                                @{
+                                    var drugtype = new List<SelectListItem>();
+                                    drugtype.Add(new SelectListItem() { Value = "1", Text = "处方药", Selected = p.DrugType == 1 });
+                                    drugtype.Add(new SelectListItem() { Value = "2", Text = "甲类非处方药", Selected = p.DrugType == 2 });
+                                    drugtype.Add(new SelectListItem() { Value = "3", Text = "乙类非处方药", Selected = p.DrugType == 3 });
+                                    foreach (var d in drugtype)
+                                    {
+                                        <option value="@d.Value" @(d.Selected ? "selected=selected" : "")>@d.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="every-one-info displayBox clear">
+                        <div class="every-info-left col-md-1 width-150 fl"> <span class="xingRed">* </span>规格关联：</div>
+                        <div class="every-info-right col-md-11 fl boxFlex-1">
+                            <div class="spInputWrap clear">
+                                <span class="width-130">请填写金象码：</span>
+                                <input type="text" name="productcode">
+                            </div>
+                            <div class="spInputWrap clear">
+                                <span class="width-130">请填写规格：</span>
+                                <input type="text" name="guige">
+                            </div>
+                            <div class="spInputWrap clear">
+                                <span class="width-130">请填写颜色：</span>
+                                <input type="text" name="color">
+                            </div>
+                            <div class="spInputWrap clear">
+                                <span class="width-130">请填写尺寸：</span>
+                                <input type="text" name="size">
+                            </div>
+                            <div class="spInputWrap clear">
+                                <span class="width-130">请填写度数：</span>
+                                <input type="text" name="dushu">
+                            </div>
+                            <div class="confirm clear">
+                                <a class="fl" href="#" name="save">添加</a>
+                            </div>
+                            <div class="authority-table table-responsive">
+                                <table class="table table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>商品ID</th>
+                                            <th>金象码</th>
+                                            <th>商品通用名</th>
+                                            <th>商品商用名</th>
+                                            <th>规格</th>
+                                            <th>颜色</th>
+                                            <th>尺寸</th>
+                                            <th>度数</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int currindex = 1;
+                                        }
+                                        @foreach (var r in Model.relateds)
+                                        {
+                                            <tr>
+                                                <td>@(currindex++)</td>
+                                                <td>@r.ProductID</td>
+                                                <td>@r.ProductCode</td>
+                                                <td>@r.CADN</td>
+                                                <td>@r.ChineseName</td>
+                                                <td>@r.Specifications</td>
+                                                <td>@(r.Prop.Prop1)</td>
+                                                <td>@(r.Prop.Prop2)</td>
+                                                <td>@(r.Prop.Prop3)</td>
+                                                <td index="@(currindex)">
+                                                    <a href="#" name="edit">编辑</a><a href="#" name="del">删除</a>
+                                                    <input type="hidden" name="editproduct@(r.ProductID)" value="@(string.Format("{0}|{1}|{2}|{3}|{4}|{5}", r.ProductID, r.ProductCode, r.Specifications, r.Prop.Prop1, r.Prop.Prop2, r.Prop.Prop3))" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                @Html.Hidden("ProductIDs", string.Join(",", Model.relateds.Select(t => t.ProductID)))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informa-title">说明书：</div>
+                    <div class="informa-box-center informa-two">
+                        <div class="informa-other-t">药品名称</div>
+                        <div class="every-one-info clear">
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">通用名称：</span>
+                                    <input class="fl" type="text" name="CADN1" readonly="readonly" value="@ins.CADN">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">商品商用名：</span>
+                                    <input class="fl" type="text" name="ChineseName1" readonly="readonly" value="@ins.ChineseName">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">英文名称：</span>
+                                    <input class="fl" type="text" name="EnglishName" value="@ins.EnglishName">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">拼音名称：</span>
+                                    <input class="fl" type="text" name="PinyinName" value="@p.PinyinName">
+                                </div>
+                            </div>
+
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">成分/原料：</span>
+                                    <input class="fl" type="text" name="Element" value="@ins.Element">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">性状：</span>
+                                    <input class="fl" type="text" name="Character" value="@ins.Character">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">功能主治：</span>
+                                    <input class="fl" type="text" name="Efficacy" value="@ins.Efficacy">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">规格：</span>
+                                    <input class="fl" type="text" name="Specifications" value="@ins.Specifications">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">用法用量：</span>
+                                    <input class="fl" type="text" name="Dosage" value="@ins.Dosage">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">不良反应：</span>
+                                    <input class="fl" type="text" name="UntowardEffect" value="@ins.UntowardEffect">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">禁忌：</span>
+                                    <input class="fl" type="text" name="Taboo" value="@ins.Taboo">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">注意事项：</span>
+                                    <input class="fl" type="text" name="Attention" value="@ins.Attention">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">孕妇,哺乳期用药：</span>
+                                    <input class="fl" type="text" name="Gravida" value="@ins.Gravida">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">儿童用药：</span>
+                                    <input class="fl" type="text" name="Children" value="@ins.Children">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">老年用药：</span>
+                                    <input class="fl" type="text" name="Old" value="@ins.Old">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">药物相互作用：</span>
+                                    <input class="fl" type="text" name="DDIs" value="@ins.DDIs">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">药物过量：</span>
+                                    <input class="fl" type="text" name="OverDose" value="@ins.OverDose">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">药理毒理：</span>
+                                    <input class="fl" type="text" name="Pharmacology" value="@ins.Pharmacology">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">药代动力学：</span>
+                                    <input class="fl" type="text" name="DMPK" value="@ins.DMPK">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">贮存：</span>
+                                    <input class="fl" type="text" name="Storage" value="@ins.Storage">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">包装：</span>
+                                    <input class="fl" type="text" name="Package" value="@ins.Package">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">重量：</span>
+                                    <input class="fl" type="text" name="Weight" value="@ins.Weight">
+                                </div>
+                            </div>
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">有效期：</span>
+                                    <input class="fl" type="text" name="Validity" value="@ins.Validity">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">执行标准：</span>
+                                    <input class="fl" type="text" name="CarriedStard" value="@ins.CarriedStard">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">批准文号：</span>
+                                    <input class="fl" type="text" name="ApprovalNumber" value="@ins.ApprovalNumber">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">核准日期：</span>
+                                    <input class="fl" type="text" name="ApprovedDate" value="@ins.ApprovedDate">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">修订日期：</span>
+                                    <input class="fl" type="text" name="RevisionDate" value="@ins.RevisionDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informa-box-center informa-two">
+
+                        <div class="informa-other-t">生产企业</div>
+                        <div class="every-one-info clear">
+                            <div class="every-info-left fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">企业名称：</span>
+                                    <input class="fl" type="text" name="Manufacturer1" readonly="readonly" value="@ins.Manufacturer">
+                                </div>
+                            </div>
+                            <div class="every-info-right fl">
+                                <div class="spInputWrap clear">
+                                    <span class="width-150">企业地址：</span>
+                                    <input class="fl" type="text" name="ManufacturerAddress1" readonly="readonly" value="@ins.ManufacturerAddress">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informa-title">
+                        <span class="fl">说明书图片：</span>
+                        <div class="resetUpBtn fl"><span id="shuoming"><img src="/content/images/upImg.png" alt=""></span></div>
+                    </div>
+                    <div class="every-one-info informa-upImg">
+                        <div class="informa-imgWrap" id="shuomingimg">
+                            @{
+                                if (p.Instructions.Length > 0)
+                                {
+                                    <a href="#" class="closeBtn">X</a>
+                                    <img src="http://img.jxdyf.com/other/@(p.Instructions)" alt="说明书图片">
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="informa-title margin-top30"><span class="xingRed">*</span>商品五张图：</div>
+                    <div class="color-gray">&nbsp;&nbsp;&nbsp;温馨提示：①图片尺寸为1024*1024。仅支持 jpg，jpeg，png 格式。②图片质量要清晰，不能虚化。建议主图为白色背景正面图。</div>
+                    <div class="every-one-info" id="uploadimage">
+                        @{
+                            var dic = JXProduct.Component.BLL.ProductBLL.Instance.GetImages(p.Images);
+                            for (int i = 0; i < 5; i++)
+                            {
+
+                                <div class="operAdverW clear">
+                                    <div class="InformaUpload clear">
+                                        <span class="fl"><i class="xingRed">*</i> 主图上传：</span>
+                                        <div class="resetUpBtn fl"><span id="image@(i)"><img src="/content/images/upImg.png" alt=""></span></div>
+                                        <span class="imgInfo fl">大小：60PX*90PX</span>
+                                    </div>
+                                    <div class="informa-imgWrap" id="imagequeue@(i)">
+                                        @if (!string.IsNullOrWhiteSpace(dic[i]))
+                                        {
+                                            <a href="#" class="closeBtn">X</a>
+                                            <img src="http://img.jxdyf.com/product/@dic[i]" alt="">
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">商品详情图片</div>
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>针对本商品的促销：
+                    </div>
+                    <div class="every-one-info">
+                        <textarea id="Promotion" name="Promotion" style="height: 500px; width: 880px;" placeholder="最多可输入200字">@p.Promotion</textarea>
+                    </div>
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品详情图片上传：
+                        <i class="addImg-btn">+</i>
+                    </div>
+                    <div class="every-one-info" id="descuploadimage">
+                        @{
+                            var descimages = JXProduct.Component.BLL.ProductBLL.Instance.GetDescImages(p.Description);
+                            foreach (var d in descimages)
+                            {
+                                <div class="operAdverW clear">
+                                    <div class="InformaUpload clear">
+                                        <span class="fl"><i class="xingRed">*</i> 详情图@(d.Key)：</span>
+                                        <div class="resetUpBtn fl"><span id="descimage@(d.Key)"><img src="/content/images/upImg.png" alt=""></span></div>
+                                        <span class="imgInfo fl">大小：60PX*90PX</span>
+                                    </div>
+                                    <div class="informa-imgWrap" id="descimagequeue@(d.Key)">
+                                        @if (!string.IsNullOrWhiteSpace(d.Value))
+                                        {
+                                            <div class="upImage">
+                                                <a href="#" class="closeBtn">X</a>
+                                                <img src="@d.Value" alt="">
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">标签关联</div>
+                <div class="tag-center">
+                    <ul class="clear" id="existskeyword">
+                        @foreach (var k in Model.keywords)
+                        {
+                            <li><a href="#" keywordid="@k.KeywordID">@k.ChineseName</a><i class="del">×</i></li>
+                        }
+                    </ul>
+                </div>
+                <div class="popupGeneral-c informa-addTag">
+                    <div class="popup-dropDown">
+                        <div class="popup-dropDown-t">
+                            <input type="text" placeholder="请输入关键字" id="keyword">
+                            <a href="#" name="addkeyword">增加</a>
+                        </div>
+                        <div class="popup-dropDown-b" id="keywordlist">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">SEO</div>
+                <div class="seo-distance">
+                    <div class="spInputWrap clear">
+                        <span class="width-130">显示标题：</span>
+                        <input type="text" name="Title" value="@p.Title">
+                    </div>
+                    <div class="spInputWrap clear">
+                        <span class="width-130">搜索关键词：</span>
+                        <input type="text" name="Keywords" value="@p.Keywords">
+                    </div>
+                    <div class="spInputWrap clear">
+                        <span class="width-130">Meta关键词：</span>
+                        <input type="text" name="MetaKeywords" value="@p.MetaKeywords">
+                    </div>
+                    <div class="spInputWrap clear">
+                        <span class="width-130">Meta描述：</span>
+                        <input type="text" name="MetaDescription" value="@p.MetaDescription">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="examine-btn inform-btn">
+        <div class="confirm">
+            <a href="javascript:return false;" class="save">仅本地保存</a>
+            <a href="javascript:return false;" class="publish">保存并发布</a>
+        </div>
+    </div>
+</div>

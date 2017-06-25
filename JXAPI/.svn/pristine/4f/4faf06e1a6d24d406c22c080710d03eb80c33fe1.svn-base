@@ -1,0 +1,169 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.Model
+{
+    public class OrdersInfo
+    {
+        #region 订单信息
+        /// <summary>
+        /// 订单号
+        /// </summary>
+        public string OrderID { get; set; }
+
+        /// <summary>
+        /// 下单用户
+        /// </summary>
+        public int UID { get; set; }
+
+        /// <summary>
+        /// 订单金额
+        /// </summary>
+        public decimal PaySum { get; set; }
+
+        /// <summary>
+        /// 配送费
+        /// </summary>
+        public decimal NewShipFee { get; set; }
+
+        /// <summary>
+        /// 优惠金额
+        /// </summary>
+        public decimal VoucherFee { get; set; }
+
+        /// <summary>
+        /// 支付方式
+        /// </summary>
+        public short PaymentMethodID { get; set; }
+
+        /// <summary>
+        /// 收件省
+        /// </summary>
+        public string Province { get; set; }
+
+        /// <summary>
+        /// 市
+        /// </summary>
+        public string City { get; set; }
+
+        /// <summary>
+        /// 地区
+        /// </summary>
+        public string County { get; set; }
+
+        /// <summary>
+        /// 收件人
+        /// </summary>
+        public string Receiver { get; set; }
+
+        /// <summary>
+        /// 收件人电话
+        /// </summary>
+        public string Telephone { get; set; }
+
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        public string Mobile { get; set; }
+
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public string Address { get; set; }
+
+        /// <summary>
+        /// 订单备注
+        /// </summary>
+        public string Remarks { get; set; }
+
+        /// <summary>
+        /// 下单时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 付款状态
+        /// </summary>
+        public short PayStatus { get; set; }
+
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public short OrderStatus { get; set; }
+
+        /// <summary>
+        /// 预付金额
+        /// </summary>
+        public decimal ReduceFee { get; set; }
+
+        /// <summary>
+        /// 退款金额
+        /// </summary>
+        public decimal RefundFee { get; set; }
+        #endregion
+
+        #region 联盟订单参数
+        /// <summary>
+        /// 联盟商唯一码
+        /// </summary>
+        public string UnionPara { get; set; }
+
+        /// <summary>
+        /// 返利类型
+        /// </summary>
+        public short CommissionType { get; set; }
+
+        /// <summary>
+        /// 返利比率
+        /// </summary>
+        public decimal CommissionRatio { get; set; }
+
+        /// <summary>
+        /// 返利金额
+        /// </summary>
+        public decimal RebateFee { get; set; }
+
+        /// <summary>
+        /// 订单计费金额
+        /// </summary>
+        public decimal Amount { get; set; }
+
+        /// <summary>
+        /// 联盟来源
+        /// </summary>
+        public string Source { get; set; }
+
+        /// <summary>
+        /// 活动ID
+        /// </summary>
+        public int ActID { get; set; }
+
+        /// <summary>
+        /// 站点ID
+        /// </summary>
+        public int SiteID { get; set; }
+
+        /// <summary>
+        /// 客户IP
+        /// </summary>
+        public string ClientIP { get; set; }
+
+        /// <summary>
+        /// 客户识别码
+        /// </summary>
+        public string ClientIdentity { get; set; }
+
+        /// <summary>
+        /// 联盟商自定义参数
+        /// </summary>
+        public string CustomerInfo { get; set; }
+        #endregion
+
+        /// <summary>
+        /// 订单商品
+        /// </summary>
+        public IList<OrderProductInfo> ProductList { get; set; }
+    }
+}

@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C8687553-6C68-49BB-B842-5D4E82266D43}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JXAPI.JXSdk</RootNamespace>
+    <AssemblyName>JXAPI.JXSdk</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\ComDLL\Bin\log4net__13\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET-AnyCPU">
+      <HintPath>..\..\..\..\ComDLL\Bin\Magick.NET-AnyCPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Venus">
+      <HintPath>..\CommonBin\Venus.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\DefaultJXClient.cs" />
+    <Compile Include="Config\JXServiceConfig.cs" />
+    <Compile Include="Config\SecureConfigSection.cs" />
+    <Compile Include="Domain\AccountBalanceInfo.cs" />
+    <Compile Include="Domain\AccountInfo.cs" />
+    <Compile Include="Domain\AccountRecordInfo.cs" />
+    <Compile Include="Domain\ActivityInfo.cs" />
+    <Compile Include="Domain\ActivityProductInfo.cs" />
+    <Compile Include="Domain\AppVersionInfo.cs" />
+    <Compile Include="Domain\CouponBatchInfo.cs" />
+    <Compile Include="Domain\CouponChannelInfo.cs" />
+    <Compile Include="Domain\CouponChoseInfo.cs" />
+    <Compile Include="Domain\CouponInfo.cs" />
+    <Compile Include="Domain\CouponTypeInfo.cs" />
+    <Compile Include="Domain\ErrorInfo.cs" />
+    <Compile Include="Domain\EvaluationKeyword.cs" />
+    <Compile Include="Domain\FeedBackInfo.cs" />
+    <Compile Include="Domain\HeadLinesCommentInfo.cs" />
+    <Compile Include="Domain\HeadLinesInfo.cs" />
+    <Compile Include="Domain\HeadlinesProductInfo.cs" />
+    <Compile Include="Domain\OrderLogisticsInfo.cs" />
+    <Compile Include="Domain\PageFormInfo.cs" />
+    <Compile Include="Domain\ProductEvaluationInfo.cs" />
+    <Compile Include="Domain\ReceiverInfo.cs" />
+    <Compile Include="Domain\RegionInfo.cs" />
+    <Compile Include="Domain\ShoppingCardChoseInfo.cs" />
+    <Compile Include="Domain\ShoppingCardConsumeInfo.cs" />
+    <Compile Include="Domain\ShoppingCardInfo.cs" />
+    <Compile Include="Domain\TipsCommentInfo.cs" />
+    <Compile Include="Domain\TipsInfo.cs" />
+    <Compile Include="Domain\UseCouponInfo.cs" />
+    <Compile Include="Domain\UserInfo.cs" />
+    <Compile Include="Enum\CouponType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\AccountBalanceListRequest.cs" />
+    <Compile Include="Request\AccountListRequest.cs" />
+    <Compile Include="Request\AccountRecordListRequest.cs" />
+    <Compile Include="Request\AccountResetPwdRequest.cs" />
+    <Compile Include="Request\AccountUpdateBalanceRequest.cs" />
+    <Compile Include="Request\AccountEnableStutusRequest.cs" />
+    <Compile Include="Request\AppVersionListRequest.cs" />
+    <Compile Include="Request\CommonRequest.cs" />
+    <Compile Include="Request\CouponBatchIDRequest.cs" />
+    <Compile Include="Request\CouponBatchListRequest.cs" />
+    <Compile Include="Request\CouponBindRequest.cs" />
+    <Compile Include="Request\CouponChannelListRequest.cs" />
+    <Compile Include="Request\CouponChannelRequest.cs" />
+    <Compile Include="Request\CouponChoseListRequest.cs" />
+    <Compile Include="Request\CouponListRequest.cs" />
+    <Compile Include="Request\CouponTypeListRequest.cs" />
+    <Compile Include="Request\CouponTypeRequest.cs" />
+    <Compile Include="Request\CouponValidateRequest.cs" />
+    <Compile Include="Request\DeductMoneyRequest.cs" />
+    <Compile Include="Request\FeedBackListRequest.cs" />
+    <Compile Include="Request\FeedBackReplyRequest.cs" />
+    <Compile Include="Request\HeadLinesCommentRequest.cs" />
+    <Compile Include="Request\HeadLinesListRequest.cs" />
+    <Compile Include="Request\HeadLinesProductRequest.cs" />
+    <Compile Include="Request\HeadLinesRequest.cs" />
+    <Compile Include="Request\LogisticsRequest.cs" />
+    <Compile Include="Request\MergeShoppingCardRequest.cs" />
+    <Compile Include="Request\MessagesAddRequest.cs" />
+    <Compile Include="Request\NotifyConfigGetRequest.cs" />
+    <Compile Include="Request\NoUseCouponListRequest.cs" />
+    <Compile Include="Request\OrdersAdminRequest.cs" />
+    <Compile Include="Request\RegionListRequest.cs" />
+    <Compile Include="Request\RegisterRequest.cs" />
+    <Compile Include="Request\ReleaseBindRequest.cs" />
+    <Compile Include="Request\ShoppingCardConsumeListRequest.cs" />
+    <Compile Include="Request\ShoppingCardValidateRequest.cs" />
+    <Compile Include="Request\UseCouponListRequest.cs" />
+    <Compile Include="Request\UseCouponRequest.cs" />
+    <Compile Include="Request\UserExistRequest.cs" />
+    <Compile Include="Request\UseShoppingCardListRequest.cs" />
+    <Compile Include="Request\ProductEvaluationListRequest.cs" />
+    <Compile Include="Request\ProductEvaluationRequest.cs" />
+    <Compile Include="Request\PushMessageRequest.cs" />
+    <Compile Include="Request\ShoppingCardBindRequest.cs" />
+    <Compile Include="Request\ShoppingCardByIdRequest.cs" />
+    <Compile Include="Request\ShoppingCardListRequest.cs" />
+    <Compile Include="Request\TipsCommentRequest.cs" />
+    <Compile Include="Request\TipsListRequest.cs" />
+    <Compile Include="Request\TipsRequest.cs" />
+    <Compile Include="Request\UpLoadImageRequest.cs" />
+    <Compile Include="Request\WebCardMoneyRequest.cs" />
+    <Compile Include="Response\AccountBalanceListResponse.cs" />
+    <Compile Include="Response\AccountListResponse.cs" />
+    <Compile Include="Response\AccountRecordListResponse.cs" />
+    <Compile Include="Response\ActivityListResponse.cs" />
+    <Compile Include="Response\AppVersionListResponse.cs" />
+    <Compile Include="Response\CommonResponse.cs" />
+    <Compile Include="Response\CouponBatchListResponse.cs" />
+    <Compile Include="Response\CouponBatchResponse.cs" />
+    <Compile Include="Response\CouponChannelListResponse.cs" />
+    <Compile Include="Response\CouponChannelResponse.cs" />
+    <Compile Include="Response\CouponChoseListResponse.cs" />
+    <Compile Include="Response\CouponListResponse.cs" />
+    <Compile Include="Response\CouponTypeListResponse.cs" />
+    <Compile Include="Response\CouponTypeResponse.cs" />
+    <Compile Include="Response\CouponValidateResponse.cs" />
+    <Compile Include="Response\FeedBackListResponse.cs" />
+    <Compile Include="Response\FeedBackResponse.cs" />
+    <Compile Include="Response\HeadLinesCommentResponse.cs" />
+    <Compile Include="Response\HeadLinesListResponse.cs" />
+    <Compile Include="Response\HeadLinesProductResponse.cs" />
+    <Compile Include="Response\HeadLinesResponse.cs" />
+    <Compile Include="Response\LogisticsResponse.cs" />
+    <Compile Include="Response\MessagesAddResponse.cs" />
+    <Compile Include="Response\NotifyConfigGetResponse.cs" />
+    <Compile Include="Response\NoUseCouponListResponse.cs" />
+    <Compile Include="Response\RegionListResponse.cs" />
+    <Compile Include="Response\RegisterResponse.cs" />
+    <Compile Include="Response\ShoppingCardConsumeListResponse.cs" />
+    <Compile Include="Response\ShoppingCardValidateResponse.cs" />
+    <Compile Include="Response\UseCouponListResponse.cs" />
+    <Compile Include="Response\UserExistResponse.cs" />
+    <Compile Include="Response\UseShoppingCardListResponse.cs" />
+    <Compile Include="Response\ProductEvaluationListResponse.cs" />
+    <Compile Include="Response\ProductEvaluationResponse.cs" />
+    <Compile Include="Response\ShoppingCardDetailResponse.cs" />
+    <Compile Include="Response\ShoppingCardListResponse.cs" />
+    <Compile Include="Response\TipsCommentResponse.cs" />
+    <Compile Include="Response\TipsListResponse.cs" />
+    <Compile Include="Response\TipsResponse.cs" />
+    <Compile Include="Service\AccountService.cs" />
+    <Compile Include="Service\CouponBatchService.cs" />
+    <Compile Include="Service\CouponChannelService.cs" />
+    <Compile Include="Service\CouponService.cs" />
+    <Compile Include="Service\CouponTypeService.cs" />
+    <Compile Include="Service\FeedBackService.cs" />
+    <Compile Include="Service\HeadLinesService.cs" />
+    <Compile Include="Service\LogisticsService.cs" />
+    <Compile Include="Service\OrdersService.cs" />
+    <Compile Include="Service\OrderUseService.cs" />
+    <Compile Include="Service\ProductEvaluationService.cs" />
+    <Compile Include="Service\PushService.cs" />
+    <Compile Include="Service\RegionService.cs" />
+    <Compile Include="Service\ShoppingCardService.cs" />
+    <Compile Include="Service\TipsService.cs" />
+    <Compile Include="Service\UpLoadService.cs" />
+    <Compile Include="Utils\ConvertDataTimeHelper.cs" />
+    <Compile Include="Utils\ImageConvertUtil.cs" />
+    <Compile Include="Utils\JsonHelper.cs" />
+    <Compile Include="Utils\SignUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

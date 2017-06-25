@@ -1,0 +1,533 @@
+﻿/// <reference path="jquery-2.1.3.min.js" >
+
+var _defaultData;
+var _isSuccess = true;
+function defaultAjax(url, data, callback) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        async: false,
+        error: function () {
+            _isSuccess = false;
+            jx.alert('服务器访问失败，请查看网络是否畅通！');
+        },
+        success: defaultCallback
+    });
+}
+function defaultCallback(data) {
+    _defaultData = data;
+}
+
+var sales = {}
+sales.init = function ()
+{
+    var hidMJ = $(".s_lm");
+    hidMJ.hide();
+    $("#msg").hide();
+    $("#msg1").hide();
+    $("#sTime").hide();
+    $("#eTime").hide();
+    $("#submit").hide();
+    var startTime ;
+    var endTime;
+    $(".date a").click(function () {
+        var typeID = 0;
+        var aid = $(this).attr("id");
+        if (aid != "other") {
+            if (aid == "tm") //昨天
+            {
+                typeID = 1;
+            }
+            else if (aid == "sw") //7天
+            {
+                typeID = 2;
+            }
+            else if (aid == "st")//30天
+            {
+                typeID = 3;
+            }
+            else if (aid == "submit")//双日历
+            {
+                startTime = $("#sTime").val().toString();
+                endTime = $("#eTime").val().toString();
+                typeID = 4;
+
+            }
+            sales.cakeData(startTime, endTime, typeID);
+            sales.lineData(startTime, endTime, typeID);
+        }
+        else
+        {
+            //打开日历
+            if (hidMJ.is(":hidden")) {
+                hidMJ.show();
+                $("#sTime").show();
+                $("#eTime").show();
+                $("#submit").show();
+                $(this).text("收起日历");
+            } else {
+                hidMJ.hide();
+                $("#sTime").hide();
+                $("#eTime").hide();
+                $("#submit").hide();
+                $(this).text("双日历");
+            }
+        }
+    });
+
+     sales.dataContrast();
+}
+sales.cakeData = function (startTime, endTime, typeID)
+{
+    var url = '/Sales/GetCakeData';
+    var data = { startTime: startTime, endTime: endTime, typeID: typeID };
+    defaultAjax(url, data, defaultCallback);
+    var orderPayInfo = $.parseJSON(_defaultData.data);
+    var h = $(".r_top").height();
+    if (orderPayInfo.length == 0) {
+        $("#cake").hide();
+        $("#msg").show();
+        if (parseInt(h) > 500) {
+            $(".r_top").height(h - 700);
+
+        }
+    } else
+    {
+        $("#cake").show();
+        $("#msg").hide();
+        if (parseInt(h) < 500) {
+            $(".r_top").height(h + 700);
+        }
+    }
+    var options = {
+        credits: {
+            enabled: false
+        },
+        chart: {
+            renderTo: 'cake',
+            defaultSeriesType: 'pie'
+        },
+        title: {
+            text: '销售额分布图',
+            x:-50
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+
+            verticalAlign: 'middle',
+            borderWidth: 0,
+            x:-30
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true
+                },
+                showInLegend: true
+            }
+        },
+        series: [
+        ]
+
+    };
+    $(function () {
+        var series1 = {
+            type:'pie',
+            name:'订单量',
+            data: []
+        };
+        for (var i = 0; i < orderPayInfo.length; i++)
+        {
+            var obj = new Object();
+            obj.name = orderPayInfo[i].SourceName + "：¥" + orderPayInfo[i].PayAmount;
+            obj.y = orderPayInfo[i].PayQuan;
+            series1.data.push(obj);
+        }
+        options.series.push(series1);
+        var chart = new Highcharts.Chart(options);
+    });
+}
+sales.lineData = function (startTime, endTime, typeID)
+{
+
+    var url = '/Sales/GetYTimeString';
+    var data = { startTime: startTime, endTime: endTime, typeID: typeID };
+    defaultAjax(url, data, defaultCallback);
+    var yTimeString =_defaultData.data;
+    var ytSplit = yTimeString.split(',');
+    var h = $(".r_top").height();
+   
+    if (ytSplit.length == 1)
+    {
+        $("#line").hide();
+        
+    } else {
+        $("#line").show();
+       
+    }
+    var url = '/Sales/GetLineData';
+    var data = { startTime: startTime, endTime: endTime, typeID: typeID };
+    defaultAjax(url, data, defaultCallback);
+    var lineData = $.parseJSON(_defaultData.data);
+    var web=lineData.WEB.split(',');
+    var webFlag = [];
+    for (var i = 0 ; i < web.length; i++) {
+        webFlag.push(parseFloat(web[i]));
+    }
+
+    var ios = lineData.IOS.split(',');
+    var iosFlag = [];
+    for (var i = 0 ; i < ios.length; i++) {
+        iosFlag.push(parseFloat(ios[i]));
+    }
+
+    var android = lineData.ANDROID.split(',');
+    var androidFlag = [];
+    for (var i = 0 ; i < android.length; i++) {
+        androidFlag.push(parseFloat(android[i]));
+    }
+
+    var h5 = lineData.H5.split(',');
+    var h5Flag = [];
+    for (var i = 0 ; i < h5.length; i++) {
+        h5Flag.push(parseFloat(h5[i]));
+    }
+    $('#line').highcharts({
+        title: {
+            text: '站内平台交易额',
+            x: -20 //center
+        },
+        credits: {
+            enabled: false
+        },
+        subtitle: {
+            text: 'Ctrl + 鼠标滚轮放大缩小',
+            x: -20
+        },
+        xAxis: {
+            categories: ytSplit
+        },
+        yAxis: {
+            title: {
+                text: null
+            },
+            min: 0, //设定Y轴初始值为0
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+
+        legend: {
+
+            align: 'center', //水平方向位置
+            verticalAlign: 'bottom', //垂直方向位置
+            x: 0, //距离x轴的距离
+            y: 0 //距离Y轴的距离
+
+        },
+        series: [
+            {
+                name: 'WEB',
+                data: webFlag
+            }, {
+                name: 'IOS',
+                data: iosFlag
+            }, {
+                name: 'ANDROID',
+                data: androidFlag
+            }, {
+                name: 'H5',
+                data: h5Flag
+            }
+
+        ]
+    });
+}
+sales.dataContrast = function ()
+{
+    var startTime;
+    var endTime;
+    var hidMJ = $(".p_s_lm");
+    hidMJ.hide();
+    $("#p_sTime").hide();
+    $("#p_eTime").hide();
+    $("#p_submit").hide();
+    $(".page_con a").click(function (){
+        var typeID = 2;
+        var aid = $(this).attr("id");
+        
+        if (aid == "p_sw")//7天
+        {
+            typeID = 2;
+        }
+        else if (aid == "p_st")//30天
+        {
+            typeID = 3;
+        }
+        else if (aid == "p_nd")
+        {
+            typeID = 5;
+        }
+        else if (aid == "p_submit")//双日历
+        {
+            startTime = $("#p_sTime").val().toString();
+            endTime = $("#p_eTime").val().toString();
+            typeID = 4;
+        } else
+        {
+            //打开日历
+            if (hidMJ.is(":hidden")) {
+                hidMJ.show();
+                $("#p_sTime").show();
+                $("#p_eTime").show();
+                $("#p_submit").show();
+                $(this).text("收起日历");
+            } else {
+                hidMJ.hide();
+                $("#p_sTime").hide();
+                $("#p_eTime").hide();
+                $("#p_submit").hide();
+                $(this).text("双日历");
+            }
+           
+            return;
+        }
+        
+        var url = '/Sales/GetDataContrast';
+        var data = { startTime: startTime, endTime: endTime, typeID: typeID };
+        defaultAjax(url, data, defaultCallback);
+        if (_defaultData.status == false)
+        {
+            parent.layer.msg(_defaultData.msg, { time: 1000 });
+            return;
+        }
+        var orderPayInfo = $.parseJSON(_defaultData.data);
+       
+
+        var tdListOrder;
+        var underline = "-%";
+
+        tdListOrder += "<td>";
+        tdListOrder += "<table class='left_mobile'>";
+        tdListOrder += " <tbody> ";
+        tdListOrder += "<tr><td class='ios'></td></tr>";
+        for (var i = 0; i < orderPayInfo.length; i++)
+        {
+            tdListOrder += "<tr>";
+            tdListOrder += " <td  class=" + orderPayInfo[i].SourceName.toLowerCase()+ ">" + orderPayInfo[i].SourceName + "</td>  ";
+            tdListOrder += "</tr>";
+        }
+        tdListOrder += "</tbody>";
+        tdListOrder += "</table> ";
+        tdListOrder += "</td>";
+
+        tdListOrder += " <td>";
+        tdListOrder += " <table class='right_xse'> ";
+        tdListOrder += "  <tbody> ";
+        tdListOrder += "  <tr class='one'> ";
+        tdListOrder += "  <td class='title ltab'><span class='xse_ltab'>&nbsp;销售额</span></td>  ";
+        tdListOrder += "  <td class='title'><span>同比</span></td> ";
+        tdListOrder += "  <td class='title rtab'><span class='xse_rtab'>环比&nbsp;</span></td> ";
+        tdListOrder += "  </tr> ";
+        for (var i = 0; i < orderPayInfo.length; i++)
+        {
+                
+            tdListOrder += " <tr> ";
+            tdListOrder += "  <td><span>" + orderPayInfo[i].OrderAmount + "</span></td> ";
+            if (orderPayInfo[i].AnOrderAmount == undefined)
+            {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            }
+            else
+            {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AnOrderAmount + "%</span> ";
+
+                
+                if (orderPayInfo[i].AnOrderAmount.indexOf("-") !=-1)
+                {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else
+                {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+            if (orderPayInfo[i].AdjOrderAmount == undefined)
+            {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            }
+            else
+            {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AdjOrderAmount + "%</span> ";
+                if (orderPayInfo[i].AdjOrderAmount.indexOf("-") != -1)
+                {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+           
+            tdListOrder += " </tr> ";
+            
+        }
+        tdListOrder += "  </tbody> ";
+        tdListOrder += " </table> ";
+        tdListOrder += " </td>";
+
+        tdListOrder += " <td>";
+        tdListOrder += " <table class='right_xse' style= 'margin-left:5%;'> ";
+        tdListOrder += "  <tbody> ";
+        tdListOrder += "  <tr class='one'> ";
+        tdListOrder += "  <td class='title ltab'><span class='xse_ltab'>&nbsp;总订单生成量</span></td>  ";
+        tdListOrder += "  <td class='title'><span>同比</span></td> ";
+        tdListOrder += "  <td class='title rtab'><span class='xse_rtab'>环比&nbsp;</span></td> ";
+        tdListOrder += "  </tr> ";
+
+        for (var i = 0; i < orderPayInfo.length; i++) {
+            tdListOrder += " <tr> ";
+            tdListOrder += "  <td><span>" + orderPayInfo[i].OrderQuan + "</span></td> ";
+            if (orderPayInfo[i].AnOrderQuan == undefined)
+            {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            } else {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AnOrderQuan + "%</span>  ";
+                if (orderPayInfo[i].AnOrderQuan.indexOf("-") != -1)
+                {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else
+                {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+
+            if (orderPayInfo[i].AdjOrderQuan == undefined)
+            {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+
+            } else
+            {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AdjOrderQuan + "%</span> ";
+                if (orderPayInfo[i].AdjOrderQuan.indexOf("-") != -1)
+                {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else
+                {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+            tdListOrder += " </tr> ";
+        }
+
+        tdListOrder += "  </tbody> ";
+        tdListOrder += " </table> ";
+        tdListOrder += " </td>";
+
+        tdListOrder += " <td>";
+        tdListOrder += " <table class='right_xse' style= 'margin-left:5%;'> ";
+        tdListOrder += "  <tbody> ";
+        tdListOrder += "  <tr class='one'> ";
+        tdListOrder += "  <td class='title ltab'><span class='xse_ltab'>&nbsp;支付成功订单量</span></td>  ";
+        tdListOrder += "  <td class='title'><span>同比</span></td> ";
+        tdListOrder += "  <td class='title rtab'><span class='xse_rtab'>环比&nbsp;</span></td> ";
+        tdListOrder += "  </tr> ";
+
+        for (var i = 0; i < orderPayInfo.length; i++) {
+            tdListOrder += " <tr> ";
+            tdListOrder += "  <td><span>" + orderPayInfo[i].PayQuan + "</span></td> ";
+            if (orderPayInfo[i].AnPayQuan == undefined)
+            {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            } else
+            {
+                tdListOrder += "<td><span>" + orderPayInfo[i].AnPayQuan + "%</span>  ";
+               
+                if (orderPayInfo[i].AnPayQuan.indexOf("-") != -1) {
+                   
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+
+            if (orderPayInfo[i].AjdPayQuan == undefined) {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            } else
+            {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AjdPayQuan + "%</span>  ";
+                if (orderPayInfo[i].AjdPayQuan.indexOf("-") != -1) {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+        }
+
+        tdListOrder += " </tbody> ";
+        tdListOrder += " </table> ";
+        tdListOrder += " </td>";
+
+        tdListOrder += " <td>";
+        tdListOrder += " <table class='right_xse' style= 'margin-left:5%;'> ";
+        tdListOrder += "  <tbody> ";
+        tdListOrder += "  <tr class='one'> ";
+        tdListOrder += "  <td class='title ltab'><span class='xse_ltab'>&nbsp;未支付成功订单量</span></td>  ";
+        tdListOrder += "  <td class='title'><span>同比</span></td> ";
+        tdListOrder += "  <td class='title rtab'><span class='xse_rtab'>环比&nbsp;</span></td> ";
+        tdListOrder += "  </tr> ";
+
+        for (var i = 0; i < orderPayInfo.length; i++) {
+            tdListOrder += " <tr> ";
+            tdListOrder += "  <td><span>" + orderPayInfo[i].NoPayQuan + "</span></td> ";
+            if (orderPayInfo[i].AnNoPayQuan == undefined) {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            } else {
+                tdListOrder += "<td><span>" + orderPayInfo[i].AnNoPayQuan + "%</span>  ";
+
+                if (orderPayInfo[i].AnNoPayQuan.indexOf("-") != -1) {
+
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+
+            if (orderPayInfo[i].AdjNoPayQuan == undefined) {
+                tdListOrder += "  <td><span>" + underline + "</span> ";
+                tdListOrder += " <em class='xse_up'></em></td> ";
+            } else {
+                tdListOrder += "  <td><span>" + orderPayInfo[i].AdjNoPayQuan + "%</span>  ";
+                if (orderPayInfo[i].AdjNoPayQuan.indexOf("-") != -1) {
+                    tdListOrder += " <em class='xse_down'></em></td> ";
+                } else {
+                    tdListOrder += " <em class='xse_up'></em></td> ";
+                }
+            }
+        }
+
+        tdListOrder += " </tbody> ";
+        tdListOrder += " </table> ";
+        tdListOrder += " </td>";
+        $("#p_showTable").children().remove();
+        if (orderPayInfo.length == 0) {
+            $("#msg1").show();
+        } else {
+            $("#p_showTable").append(tdListOrder);
+            $("#msg1").hide()
+        }
+    });
+}

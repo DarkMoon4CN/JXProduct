@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Utils;
+
+namespace JXAPI.JXSdk.Config
+{
+    public class JXServiceConfig
+    {
+        public string version = "1.0.0.beta";
+        public string mobileType = "0";
+        public string os = ".NET";
+        public string channel = "jxdyf";
+        public string uuid = "1";
+        public string platform = "4";
+        public string network = "0";
+        public string accessToken = "accessToken";
+
+        public static string ServiceBody
+        {
+            get
+            {
+                string json = JsonHelper.GetJson(new JXServiceConfig());
+                return json.Substring(1, json.Length - 2);
+            }
+        }
+    }
+}

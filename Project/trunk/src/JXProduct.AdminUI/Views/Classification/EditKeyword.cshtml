@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Edit";
+}
+@model JXProduct.AdminUI.Models.Keyword.KeywordEditModel
+@section css{
+    <link href="~/css/jquery.autocomplete.css" rel="stylesheet" />
+}
+@section script{
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/jx.classification.js"></script>
+    <script>
+        $(function () { keyword.edit() });
+    </script>
+}
+<div id='addConter'>
+    <div class="addCenterTitle"><span>编辑关键字</span><a href="javascript:;" class="closewin"></a></div>
+    <div class='addSection'>
+        <p class='strong'>* 请填写@(Model.Title)项名称：</p>
+        @using (Ajax.BeginForm("EditKeywordModel", "Classification", new AjaxOptions { OnSuccess = "keyword.success"}))
+        {
+            <div class='seachKey'>
+                <p>@Html.TextBoxFor(t => t.KeywordName, new { placeholder = "请输入内容" })</p>
+            </div>
+            <div class='operation'>
+                <input type="submit" value='保存' />
+                <input type="button" value="取消" class="closewin" />
+                @Html.HiddenFor(t => t.KeywordID)
+                @Html.HiddenFor(t => t.SectionID)
+                @Html.HiddenFor(t => t.CFID)
+                @Html.HiddenFor(t => t.Method)
+                @*@Html.Raw(Model.ResultToString)*@
+            </div>
+        }
+    </div>
+</div>

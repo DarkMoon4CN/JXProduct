@@ -1,0 +1,39 @@
+﻿@model int
+<table class="taoCanZH">
+    <thead>
+        <tr class="bg">
+            <th style="width:70px;">序号</th>
+            <th style ="width:70px;">套餐金象码</th>
+            <th style="width:100px;">套餐商品ID</th>
+            <th>套餐名称</th>
+            <th style="width:70px;">价格</th>
+            <th style="width:100px;">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var productid = Model;
+            var productIDs = JXProduct.Component.BLL.ProductComboBLL.Instance.ProductCombo_GetComboIDs(productid);
+            var productlist = JXProduct.Component.BLL.ProductBLL.Instance.Product_GetList(productIDs);
+            if (productlist.Count == 0)
+            {
+                <tr><td colspan="6">暂无套餐</td></tr>
+            }
+            else
+            {
+                var index = 1;
+                foreach (var p in productlist)
+                {
+                    <tr>
+                        <td>@(index++)</td>
+                        <td>@p.ProductCode</td>
+                        <td>@p.ProductID</td>
+                        <td>@p.ChineseName</td>
+                        <td>@p.TradePrice</td>
+                        <td productid='@p.ProductID'><a href="#" name="update">编辑</a><a href="#" name="del">删除</a></td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

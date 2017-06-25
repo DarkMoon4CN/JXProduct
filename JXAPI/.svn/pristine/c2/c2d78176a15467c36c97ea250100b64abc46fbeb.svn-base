@@ -1,0 +1,35 @@
+﻿using System;
+
+namespace JXAPI.Common.Utils
+{
+    public class ConvertDataTimeHelper
+    {
+        /// <summary>
+        /// 将DateTime类型转换为long类型
+        /// </summary>
+        /// <param name="dt">时间</param>
+        /// <returns></returns>
+        public static long ConvertDataTimeLong(DateTime dt)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            TimeSpan toNow = dt.Subtract(dtStart);
+            long timeStamp = toNow.Ticks;
+            timeStamp = long.Parse(timeStamp.ToString().Substring(0, timeStamp.ToString().Length - 4));
+            return timeStamp;
+        }
+
+        /// <summary>
+        /// 将Long类型转换为DateTime类型
+        /// </summary>
+        /// <param name="d">long</param>
+        /// <returns></returns>
+        public static DateTime ConvertLongDateTime(long d)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            long lTime = long.Parse(d + "0000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            DateTime dtResult = dtStart.Add(toNow);
+            return dtResult;
+        }
+    }
+}

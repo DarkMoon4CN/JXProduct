@@ -1,0 +1,294 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class productevaluationMySqlDAL
+    {
+        private static Database dbw = JXProductMySqlData.Writer;
+        private static Database dbr = JXProductMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(productevaluationMySqlDAL));
+
+        #region CURD
+
+        /// <summary>
+        /// 查询商品定价最大ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxProductevaluationID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from Productevaluation order by EvaluationID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxProductevaluationID 获取商品定价最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        /// <summary>
+        /// 更新商品定价
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateProductevaluation(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into Productevaluation ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},{1},'{2}',{3},{4},'{5}','{6}','{7}','{8}',{9},{10},{11},{12},{13},{14},{15},{16},'{17}',{18},'{19}')",
+                                    Convert.ToInt64(dr["EvaluationID"]), dr["ProductID"].ToInt(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["UID"].ToInt(), dr["ParentID"].ToInt(), dr["UserName"].ToString().Replace("\'", "\"")
+                                     , dr["EvalTime"].ToDateTime().ToString(), dr["Title"].ToString().Replace("\'", "\""), dr["Content"].ToString().Replace("\'", "\""), dr["Score"].ToShort(), 0, dr["ScoreDes"].ToDecimal()
+                                     , dr["ScoreService"].ToDecimal(), dr["ScoreSend"].ToDecimal(), dr["ScoreLogistics"].ToDecimal(), dr["FlowerCount"].ToInt(), dr["EggCount"].ToInt()
+                                     , dr["OrderID"].ToString().Replace("\'", "\""), dr["Status"].ToShort(), dr["UpdateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateProductevaluation 更新商品定价表失败,商品定价ID{0}-{1},异常信息:{2}", productTable.Rows[0]["EvaluationID"], productTable.Rows[productTable.Rows.Count - 1]["EvaluationID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 更新商品定价
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateProductevaluationEx(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < productTable.Rows.Count; i++)
+            {
+                var dr = productTable.Rows[i];
+                try
+                {
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("update Productevaluation set ");
+                    var Placeholder = string.Format(@"ProductID = '{0}',ProductCode = '{1}',UID = '{2}',ParentID = '{3}',UserName = '{4}',EvaTime = '{5}',Title = '{6}',Content = '{7}',Score = '{8}',Source = '{9}',ScoreDes = '{10}',ScoreService = '{11}'
+                                                         ,ScoreSend = '{12}',ScoreLogistics = '{13}',FlowerCount = '{14}',EggCount = '{15}',OrderID = '{16}',Status = '{17}',UpdateTime = '{18}'",
+                                     dr["ProductID"].ToInt(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["UID"].ToInt(), dr["ParentID"].ToInt(), dr["UserName"].ToString().Replace("\'", "\"")
+                                     , dr["EvalTime"].ToDateTime().ToString(), dr["Title"].ToString().Replace("\'", "\""), dr["Content"].ToString().Replace("\'", "\""), dr["Score"].ToShort(), 0, dr["ScoreDes"].ToDecimal()
+                                     , dr["ScoreService"].ToDecimal(), dr["ScoreSend"].ToDecimal(), dr["ScoreLogistics"].ToDecimal(), dr["FlowerCount"].ToInt(), dr["EggCount"].ToInt()
+                                     , dr["OrderID"].ToString().Replace("\'", "\""), dr["Status"].ToShort(), dr["UpdateTime"].ToDateTime().ToString());
+                    sqlCommand.Append(Placeholder);
+                    sqlCommand.AppendFormat(@" where EvaluationID = {0}", Convert.ToInt64(dr["EvaluationID"]));
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'", "null").Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("UpdateProductevaluation 更新商品定价表失败,商品定价ID：{0},受影响行为0", dr["EvaluationID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("UpdateProductevaluation 更新商品定价表失败,商品定价ID：{0},异常信息:{1}", dr["EvaluationID"], ex.Message);
+                    flag = false;
+                }
+            }
+
+            return flag;
+        }
+
+        /// <summary>
+        /// 添加商品定价
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool AddProductevaluation(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into Productevaluation ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},{1},'{2}',{3},{4},'{5}','{6}','{7}','{8}',{9},{10},{11},{12},{13},{14},{15},{16},'{17}',{18},'{19}')",
+                                    Convert.ToInt64(dr["EvaluationID"]), dr["ProductID"].ToInt(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["UID"].ToInt(), dr["ParentID"].ToInt(), dr["UserName"].ToString().Replace("\'", "\"")
+                                     , dr["EvalTime"].ToDateTime().ToString(), dr["Title"].ToString().Replace("\'", "\""), dr["Content"].ToString().Replace("\'", "\""), dr["Score"].ToShort(), 0, dr["ScoreDes"].ToDecimal()
+                                     , dr["ScoreService"].ToDecimal(), dr["ScoreSend"].ToDecimal(), dr["ScoreLogistics"].ToDecimal(), dr["FlowerCount"].ToInt(), dr["EggCount"].ToInt()
+                                     , dr["OrderID"].ToString().Replace("\'", "\""), dr["Status"].ToShort(), dr["UpdateTime"].ToDateTime().ToString());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddProductevaluation 添加商品定价表失败,商品定价ID{0}-{1},异常信息:{2}", productTable.Rows[0]["EvaluationID"], productTable.Rows[productTable.Rows.Count - 1]["EvaluationID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        ///  更新商品评论数
+        /// </summary>
+        /// <returns></returns>
+        public bool UpdateEvaluationCount()
+        {
+            var flag = true;
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append(@"UPDATE product AS p,(SELECT ProductID,COUNT(*) AS CNT FROM productevaluation  
+	                                WHERE Status=1 GROUP BY ProductID) t  SET p.Comments=t.CNT  
+                                    WHERE t.ProductID=p.ProductID AND t.CNT<>p.Comments ");
+                var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                cmd.CommandTimeout = 300;
+                var result = dbw.ExecuteNonQuery(cmd);
+                if (result < 0)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateEvaluationCount 更新商品定价表评论数失败,异常信息:{0}", ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        ///  更新商品好评率
+        /// </summary>
+        /// <returns></returns>
+        public bool UpdateEvaluationPraiseRate()
+        {
+            var flag = true;
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append(@"UPDATE product AS p,(SELECT ProductID, (COUNT(*)/(SELECT COUNT(*) FROM productevaluation WHERE ProductID=pe.ProductID AND Status=1))*100 AS Rate
+	                                FROM productevaluation AS pe
+	                                WHERE pe.Status=1 AND pe.Score IN (4,5)
+	                                GROUP BY pe.ProductID
+                                    ) t SET p.CommentsRate=t.Rate
+                                    WHERE t.ProductID=p.ProductID AND t.Rate<>p.CommentsRate");
+                var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                cmd.CommandTimeout = 350;
+                var result = dbw.ExecuteNonQuery(cmd);
+                if (result < 0)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateEvaluationPraiseRate 更新商品定价表好评率失败,异常信息:{0}", ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+
+        private string parmsKey = string.Format(@"EvaluationID,ProductID,ProductCode,UID,ParentID,UserName,EvaTime,Title,Content,Score,Source,ScoreDes,ScoreService 
+                           ,ScoreSend,ScoreLogistics,FlowerCount,EggCount,OrderID,Status,UpdateTime");
+    }
+}

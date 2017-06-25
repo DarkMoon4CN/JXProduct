@@ -1,0 +1,185 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Enums;
+@using JXAPI.JXSdk.Domain;
+@using JXAPI.JXSdk.Utils;
+@{
+    ViewBag.Title = "商品评价管理";
+}
+@section script {  
+@{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/jx.om.js"></script>
+     <script type="text/javascript">
+         $(function () {
+             eval.evalListInit();
+         });
+ 
+     </script>
+    }
+@section css {
+    <link href="~/css/fenbu.css" rel="stylesheet" />
+}
+   <div class="right1">
+               <div class="tp_1">
+                   <p><span>商品评价管理</span></p>
+               </div>
+       <div class="addNoticeTab1">
+           <div class="selecWrap cf1" id="statusType">
+               <span class='fl'>状态：</span>
+               <div class="imitationSelect fl">
+                   <div class="selectTitle">
+                       <span class='selectTitleLeft'>请选择</span>
+                       <span class="selectTitleRight"></span>
+                   </div>
+                   <div class="imitaSelectList">
+                       <ul>
+                           <li><a href="#" t="-1">请选择</a></li>
+                           <li><a href="#" t="0">未审核</a></li>
+                           <li><a href="#" t="1">已审核</a></li>
+                       </ul>
+                   </div>
+               </div>
+               <input type="hidden" id="statusTypeKey" value="@ViewBag.StatusType" />
+           </div>
+
+           <div class="selecWrap cf1" id="sourceType" style="margin-left:10px;">
+               &nbsp;&nbsp;<span class='fl'>来源：</span>
+               <div class="imitationSelect fl">
+                   <div class="selectTitle">
+                       <span class='selectTitleLeft'>请选择</span>
+                       <span class="selectTitleRight"></span>
+                   </div>
+                   <div class="imitaSelectList">
+                       <ul>
+                           <li><a href="#" t="-1">请选择</a></li>
+                           <li><a href="#" t="0">web</a></li>
+                           <li><a href="#" t="1">m</a></li>
+                           <li><a href="#" t="2">ios</a></li>
+                           <li><a href="#" t="3">andriod</a></li>
+                       </ul>
+                   </div>
+               </div>
+               <input type="hidden" id="sourceTypeKey" value="@ViewBag.SourceType" />
+           </div>
+           <div class="cent_eval">
+               <span class='s_lm'>日期：</span>
+               @if (ViewBag.STime != "null")
+                   {
+                   <input type="text" id="sTime" class="thun" value="@ViewBag.STime" onfocus="WdatePicker({lang:'zh-cn'})" />
+                   }
+                   else
+                   {
+                   <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                   }
+               @if (ViewBag.ETime != "null")
+                    {
+                   <input type="text" id="eTime" class="thun_feedBack" value="@ViewBag.ETime" onfocus="WdatePicker({lang:'zh-cn'})" />
+                    }
+                   else
+                   {
+                   <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                   }
+               <span class='s_lm'>商品名称：</span>
+               <input type="text" value="@ViewBag.PName" class="thun_feedBackTxtBox" id="pName" />
+               <button class="btn_lm3">查询</button>
+           </div>
+        </div>
+           <div class="top41" style="backgound:red">
+               <div class="addNoticeTab1">
+                   <table>
+                       <tr>
+                           <th>评价号</th>
+                           <th>商品名称</th>
+                           <th width="80">评价用户</th>
+                           <th width="135">时间</th>
+                           <th>来源</th>
+                           <th>评价内容</th>
+                           <th>评价信息</th>
+                           <th>状态</th>
+                           <th>操作</th>
+                       </tr>
+                       @if (ViewBag.ProductEvaluationInfoList != null)
+                            {
+                                for (int i = 0; i < ViewBag.ProductEvaluationInfoList.Count; i++)
+                                {
+                                    var item = (JXAPI.JXSdk.Domain.ProductEvaluationInfo)ViewBag.ProductEvaluationInfoList[i];
+                           <tr>
+                               <td>@item.evaluationID</td>
+                               <td>
+                                   @if (ViewBag.ProductInfoList.Count == 0)
+                                            {
+                                           @item.productID
+                                            }
+                                            else
+                                            {
+                                                foreach (var productItem in @ViewBag.ProductInfoList)
+                                                {
+                                                    if (productItem.ProductID == @item.productID)
+                                                    {
+                                           @productItem.ChineseName
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                           @item.productID
+                                                    }
+                                                }
+                                            }
+                               </td>
+                               <td>
+                                   @item.userName
+                               </td>
+                               <td>@ConvertDataTimeHelper.ConvertLongDateTime(item.evaTime)</td>
+                               <td>@Enum.GetName(typeof(SourceType),item.source)</td>
+                               <td class="addno" onmouseover="eval.tdOver(@item.evaluationID,this)" onmouseout="eval.tdOut()" id="@i">@item.content</td>
+                               <td>
+                                   @for (int j  = 0; j< item.score; j++)
+                                            {
+                                           <img src="/image/pic7.jpg" />
+                                            }
+                               </td>
+                               <td id="td_@item.evaluationID">@Enum.GetName(typeof(AuditStatusType), item.status)</td>
+                               <td class='caozuo'>
+                                   @if (item.status == (short)AuditStatusType.已审核)
+                                            {
+                                           <span class="span_eval">已通过</span>
+                                            }
+                                            else
+                                            {
+                                           <a href="javascript:void(0);" onclick="eval.audit(this,@item.evaluationID)" id="@item.evaluationID">通过</a>
+                                            }
+                               </td>
+                           </tr>
+                                }
+                            }
+                   </table>
+               </div>
+               <div class="Notice1" style="display:none">
+                   <div class="cet">@*<u>X</u>*@</div>
+                   <div id="Contents">
+                       <p> </p>
+                       <p> </p>
+                   </div>
+               </div>
+
+               <div class="sid_top6">
+                   <div class="pageW">
+                       <div class="lPage">
+                           <div class="lPageWrap">
+                               @Html.Pager((IPagedList<JXAPI.JXSdk.Domain.ProductEvaluationInfo>)ViewBag.PageList,
+                                 new PagerOptions()
+                                 {
+                                     PageIndexParameterName = "pageindex"
+                                     ,
+                                     ShowPageIndexBox = true
+                                     ,
+                                     PageIndexBoxType = PageIndexBoxType.DropDownList
+                                 }, new { })
+                           </div>
+                       </div>
+                   </div>
+
+               </div>
+           </div>
+    </div>

@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.ComponentModel.DataAnnotations;
+using JXProduct.Component.Model;
+using System.Web.Mvc;
+
+namespace JXProduct.AdminUI.Models.Product
+{
+    /// <summary>
+    /// 商品数据模型
+    /// </summary>
+    public class ProductModel
+    {
+        //供应商ID
+        [Required]
+        public int SupplierID { get; set; }
+        //供应商名称
+        public string SupplierName { get; set; }
+
+        //商品ID
+        public int ProductID { get; set; }
+
+        //商品名称
+        public string TradeName { get; set; }
+
+        //药品通用名称
+        [Required]
+        public string CADN { get; set; }
+
+        //长名称,卖点
+        public string LongName { get; set; }
+
+        //英文名称
+        public string EnglishName { get; set; }
+
+        //拼音
+        public string PinyinName { get; set; }
+
+        //品牌ID
+        [Required]
+        public int BrandID { get; set; }
+
+        /// <summary>
+        ///商品分类属性  1药品 2医疗器械 3保健品 4化妆品 5消毒品 6百货
+        /// </summary>
+        [Required]
+        public short ParameterType { get; set; }
+        /// <summary>
+        ///药品类型( 1:处方药 2:甲类非处方药 3:乙类非处方药)
+        /// </summary>
+        public short DrugType { get; set; }
+        /// <summary>
+        ///药品分类 (1:中成药 2:西药)
+        /// </summary>
+        public short DrugClassification { get; set; }
+        /// <summary>
+        ///剂型
+        /// </summary>
+        public string Dosage { get; set; }
+        /// <summary>
+        ///使用方式 (1:内服  2:外用)
+        /// </summary>
+        public short Usage { get; set; }
+        public short PrescriptionType { get; set; }
+
+        public decimal CheckPrice { get; set; }
+
+
+        /// <summary>
+        ///生产厂家
+        /// </summary>
+        public int ManufacturerID { get; set; }
+        public string Manufacturer { get; set; }
+        public string ManufacturerAddress { get; set; }
+        public string ApprovalNumber { get; set; }
+
+
+        // 促销专区
+        public string Promotion { get; set; }
+
+        /// <summary>
+        ///产地(0:未处理  1:国产  2:进口)
+        /// </summary>
+        public short Origin { get; set; }
+
+        /// <summary>
+        ///储藏条件( 1:冷藏 2:阴凉 3:常温)
+        /// </summary>
+        public short Storage { get; set; }
+
+        // 单位
+        public string Unit { get; set; }
+
+        /// <summary>
+        /// 麻黄碱 1：是
+        /// </summary>
+        public bool ContainMHJ { get; set; }
+
+        /// <summary>
+        ///易碎 1：是
+        /// </summary>
+        public bool IsFragile { get; set; }
+
+        /// <summary>
+        ///易串味 1：是
+        /// </summary>
+        public bool IsOdour { get; set; }
+
+        /// <summary>
+        ///重点养护
+        /// </summary>
+        public bool IsProtection { get; set; }
+    }
+}

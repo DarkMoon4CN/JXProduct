@@ -1,0 +1,37 @@
+.ac_results {
+    padding-left: 10px;
+    border-right: 1px solid #e7e7eb;
+    border-bottom: 1px solid #e7e7eb;
+    border-left: 1px solid #e7e7eb;
+    background-color: #FFF;
+    font-size: 12px;
+    z-index: 999;
+}
+.ac_results .ac_caption {
+    color: #ff0000;
+    font-size: 12px;
+    padding: 10px 0;
+}
+.ac_results .ac_over {
+    background: #bce7ff;
+}
+.ac_results table td {
+    border-bottom: 1px solid #f2f2f5;
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px;
+    margin-bottom: 2px;
+}
+.ac_results table td a {
+    color: #333;
+    width: 100px;
+}
+.ac_results table td span {
+    background: none repeat scroll 0 0 #e1e1e1;
+    float: right;
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    width: 40px;
+}

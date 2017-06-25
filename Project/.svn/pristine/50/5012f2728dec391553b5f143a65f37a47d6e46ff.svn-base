@@ -1,0 +1,189 @@
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Data;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+
+using JXProduct.Component.Model;
+using JXProduct.Component.DataAccess;
+using JXProduct.Component.Enums;
+using System.Text;
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class QualificationDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        #region 商品的过期
+
+        internal Dictionary<int, int> Qualification_GetExpire(string productids)
+        {
+            var sql = "Qualification_GetExpire";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "ProductIDs", DbType.String, productids);
+            dbr.AddInParameter(cmd, "ExpireDate", DbType.DateTime, DateTime.Now.AddMonths(3));
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                var dic = new Dictionary<int, int>();
+                while (read.Read())
+                {
+                    var c = read["c"].ToInt();
+                    var c1 = read["c1"].ToInt();
+                    dic.Add(read["ProductID"].ToInt(), c + c1);
+                }
+                return dic;
+            }
+        }
+
+        /// <summary>
+        /// 获取企业的过期时间 目前是3个月
+        /// </summary>
+        /// <param name="mid">企业ID</param>
+        /// <returns></returns>
+        internal Dictionary<int, int> Qualification_GetManuExpire(int mid)
+        {
+            var sql = string.Format("SELECT cid,SUM( CASE WHEN pq.EndDate <'{1}' THEN 1 ELSE 0 end ) FROM QualificationCategory AS qc LEFT JOIN ProductQualification AS pq ON qc.Qid = pq.QualificationID AND pq.ManufacturerID = {0} GROUP BY  cid ", mid, DateTime.Now.AddMonths(3));
+            sql += string.Format(" UNION ALL SELECT 0,SUM(CASE WHEN pq.EndDate <'{1}' THEN 1 ELSE 0 end) FROM Qualifications AS q  LEFT JOIN ProductQualification AS pq ON Q.ID =PQ.QualificationID  AND pq.ManufacturerID ={0} WHERE Q.[Type] =0 GROUP by QualificationID ", mid, DateTime.Now.AddMonths(3));
+            var cmd = dbr.GetSqlStringCommand(sql);
+
+            var dic = new Dictionary<int, int>();
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    dic.Add(read.GetInt32(0), read.GetInt32(1));
+                }
+            }
+            return dic;
+        }
+
+        #endregion
+
+
+        #region 拆分 商品资质,企业资质
+
+        /// <summary>
+        /// 企业资质  
+        /// </summary>
+        /// <param name="mid">企业编号</param>
+        /// <param name="type">0 企业资质, 1 企业分类资质</param>
+        /// <param name="categoryID"></param>
+        /// <returns></returns>
+        public List<ProductQualificationInfo> Qualification_GetManufacturerList(int mid, int type, int categoryID)
+        {
+            var list = new List<ProductQualificationInfo>();
+            var sql = new StringBuilder();
+            sql.Append("SELECT * FROM Qualifications AS q ");
+            sql.AppendFormat(" LEFT JOIN ProductQualification AS mq ON mq.QualificationID = q.ID AND  mq.ManufacturerID = {0} ", mid);
+            switch (type)
+            {
+                case 0:
+                    {
+                        sql.Append(" WHERE q.[Type] =0");
+                    } break;
+                case 1:
+                    {
+                        sql.Append(" WHERE q.ID IN ( SELECT qc.Qid from  QualificationCategory AS qc ");
+                        if (categoryID > 0)
+                        {
+                            sql.Append(" WHERE qc.Cid =" + categoryID.ToString());
+                        }
+                        sql.Append(" )");
+                    } break;
+                default:
+                    {
+                        return list;
+                    }
+            }
+
+            var cmd = dbr.GetSqlStringCommand(sql.ToString());
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    var m = ConvertToModel(read);
+                    list.Add(m);
+
+                }
+            }
+            return list;
+        }
+
+        public List<ProductQualificationInfo> Qualification_GetProductList(int productid)
+        {
+            var sql = new StringBuilder();
+            sql.Append("SELECT q.id,q.ChineseName,pq.* FROM Qualifications AS q ");
+            sql.AppendFormat(" LEFT JOIN ProductQualification AS pq ON q.ID = pq.QualificationID AND pq.ProductID={0} ", productid);
+            sql.AppendFormat(" WHERE q.[Type] =2  OR q.ProductID ={0}", productid);
+            var cmd = dbr.GetSqlStringCommand(sql.ToString());
+            var list = new List<ProductQualificationInfo>();
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    list.Add(ConvertToModel(read));
+                }
+            }
+            return list;
+        }
+
+
+        private ProductQualificationInfo ConvertToModel(IDataReader read)
+        {
+            var m = new ProductQualificationInfo();
+            m.PQID = read["PQID"].ToInt();
+            //m.CID = read["CID"].ToInt();
+            m.ManufacturerID = read["ManufacturerID"].ToInt();
+            m.QualificationID = read["ID"].ToInt(); //使用ID 代替 值数据的QualificationID 保证该数据有值
+            m.QualificationName = read["ChineseName"].ToString();
+            m.Image = read["Image"].ToString();
+            m.Number = read["Number"].ToString();
+            m.StartDate = read["StartDate"].ToDateTime();
+            m.EndDate = read["EndDate"].ToDateTime();
+            m.CreateTime = read["CreateTime"].ToDateTime();
+            m.Status = read["Status"].ToShort();
+            return m;
+        }
+
+        public int Qualification_Insert(ProductQualificationInfo info)
+        {
+            string sqlCommand = @"Qualification_Save";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "PQID", DbType.Int32, info.PQID);
+            dbw.AddInParameter(dbCommand, "ManufacturerID", DbType.Int32, info.ManufacturerID);
+            dbw.AddInParameter(dbCommand, "ProductID", DbType.Int32, info.ProductID);
+            dbw.AddInParameter(dbCommand, "QualificationID", DbType.Int32, info.QualificationID);
+            dbw.AddInParameter(dbCommand, "Image", DbType.String, info.Image);
+            dbw.AddInParameter(dbCommand, "Number", DbType.String, info.Number);
+            dbw.AddInParameter(dbCommand, "StartDate", DbType.DateTime, info.StartDate);
+            dbw.AddInParameter(dbCommand, "EndDate", DbType.DateTime, info.EndDate);
+            dbw.AddInParameter(dbCommand, "CreateTime", DbType.DateTime, info.CreateTime);
+            dbw.AddInParameter(dbCommand, "Status", DbType.Int16, info.Status);
+
+            var result = dbw.ExecuteScalar(dbCommand);
+            return result.ToInt();
+        }
+
+        public List<QualificationCategoryInfo> Qualification_GetCategory()
+        {
+            var sql = "SELECT cid,qid FROM QualificationCategory AS qc";
+            var cmd = dbr.GetSqlStringCommand(sql);
+            var category = new List<QualificationCategoryInfo>();
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    category.Add(new QualificationCategoryInfo()
+                    {
+                        Cid = read.GetInt32(0),
+                        Qid = read.GetInt32(1)
+                    });
+                }
+            }
+            return category;
+        }
+        #endregion
+    }
+}

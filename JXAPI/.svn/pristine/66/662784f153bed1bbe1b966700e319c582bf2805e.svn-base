@@ -1,0 +1,184 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ProductMySqlDAL
+    {
+        private static Database dbw = JXProductMySqlData.Writer;
+        private static Database dbr = JXProductMySqlData.Reader;
+
+        public int GetInsetMaxPId()
+        {
+            int maxId = -1;
+            try
+            {
+                var sql = " SELECT MAX(productID) FROM product ";
+                var cmd = dbr.GetSqlStringCommand(sql);
+                maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return maxId;
+        }
+
+        public bool InsertProductMySql(ProductInfo productInfo) 
+        {
+            string parmsKey = string.Empty;
+            string strPlaceholder = string.Empty;
+            parmsKey += " ProductID ";
+            parmsKey += ",ProductCode,CFID,BrandID,ChineseName,PinyinName,CADN,LongName,ProductType,MarketPrice,MobilePrice,TradePrice,CostPrice ";
+            parmsKey += ",Selling,SellingTime,Manufacter,Images,Description,Specifications,ValueList,LargePacking,Unit,Volume,Type,Abbreviation ";
+            parmsKey += ",Rank,IsBasic,IsRecommend,IsTop,ValidPeriod,IsTaiKang,Comments,SellCount,FavorCount,PV,Sort,Actions ";
+            parmsKey += ",Status,Title,Keywords,MetaKeywords,MetaDescription,Creator,CreateTime,Updater,UpdateTime ";
+
+            strPlaceholder += " @ProductID,@ProductCode,@CFID,@BrandID,@ChineseName,@PinyinName,@CADN,@LongName,@ProductType,@MarketPrice,@MobilePrice,@TradePrice,@CostPrice";
+            strPlaceholder += ",@Selling,@SellingTime,@Manufacter,@Images,@Description,@Specifications,@ValueList,@LargePacking,@Unit,@Volume,@Type,@Abbreviation";
+            strPlaceholder += ",@Rank,@IsBasic,@IsRecommend,@IsTop,@ValidPeriod,@IsTaiKang,@Comments,@SellCount,'@FavorCount',@PV,@Sort,@Actions";
+            strPlaceholder += ",@Status,@Title,@Keywords,@MetaKeywords,@MetaDescription,@Creator,@CreateTime,@Updater,@UpdateTime";
+            var sql = " INSERT INTO product ";
+            sql += " ( ";
+            sql += parmsKey;
+            sql += " ) ";
+            sql += " VALUES ";
+            sql += string.Format(" ("+strPlaceholder+") ");
+                         
+            var cmd = dbw.GetSqlStringCommand(sql);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, productInfo.ProductID);
+            dbw.AddInParameter(cmd, "ProductCode", DbType.String, productInfo.ProductCode);
+            dbw.AddInParameter(cmd, "CFID", DbType.Int32, productInfo.CFID);
+            dbw.AddInParameter(cmd, "BrandID", DbType.Int32, productInfo.BrandID);
+            dbw.AddInParameter(cmd, "ChineseName", DbType.String, productInfo.ChineseName);
+            dbw.AddInParameter(cmd, "PinyinName", DbType.String, productInfo.PinyinName);
+            dbw.AddInParameter(cmd, "CADN", DbType.String, productInfo.CADN);
+            dbw.AddInParameter(cmd, "LongName", DbType.String, productInfo.LongName);
+            dbw.AddInParameter(cmd, "ProductType", DbType.Int16, productInfo.ProductType);
+            dbw.AddInParameter(cmd, "MarketPrice", DbType.Int16, productInfo.MarketPrice);
+            dbw.AddInParameter(cmd, "MobilePrice", DbType.Int16, productInfo.MobilePrice);
+            dbw.AddInParameter(cmd, "TradePrice", DbType.Int16, productInfo.TradePrice);
+            dbw.AddInParameter(cmd, "CostPrice", DbType.Int16, productInfo.CostPrice);
+
+            dbw.AddInParameter(cmd, "Selling", DbType.Int16, productInfo.Selling);
+            dbw.AddInParameter(cmd, "SellingTime", DbType.DateTime, productInfo.SellingTime);
+            dbw.AddInParameter(cmd, "Manufacter", DbType.String, productInfo.Manufacturer);
+            dbw.AddInParameter(cmd, "Images", DbType.String, productInfo.Images);
+            dbw.AddInParameter(cmd, "Description", DbType.String, productInfo.Description);
+            dbw.AddInParameter(cmd, "Specifications", DbType.String, productInfo.Specifications);
+            dbw.AddInParameter(cmd, "ValueList", DbType.String, productInfo.ValueList);
+            dbw.AddInParameter(cmd, "LargePacking", DbType.Int32, productInfo.LargePacking);
+            dbw.AddInParameter(cmd, "Unit", DbType.String, productInfo.Unit);
+            dbw.AddInParameter(cmd, "Volume", DbType.String, productInfo.Volume);
+            dbw.AddInParameter(cmd, "Type", DbType.Int16, productInfo.Type);
+            dbw.AddInParameter(cmd, "Abbreviation", DbType.String, productInfo.Abbreviation);
+
+            dbw.AddInParameter(cmd, "Rank", DbType.Int16, productInfo.Rank);
+            dbw.AddInParameter(cmd, "IsBasic", DbType.Int16, productInfo.IsBasic);
+            dbw.AddInParameter(cmd, "IsRecommend", DbType.Int16, productInfo.IsRecommend);
+            dbw.AddInParameter(cmd, "IsTop", DbType.Int16, productInfo.IsTop);
+            dbw.AddInParameter(cmd, "ValidPeriod", DbType.DateTime, productInfo.ValidPeriod);
+            dbw.AddInParameter(cmd, "IsTaiKang", DbType.Int16, productInfo.IsTaiKang);
+            dbw.AddInParameter(cmd, "Comments", DbType.Int32, productInfo.Comments);
+            dbw.AddInParameter(cmd, "SellCount", DbType.Int32, productInfo.SellCount);
+            dbw.AddInParameter(cmd, "FavorCount", DbType.Int32, productInfo.Favorite);
+            dbw.AddInParameter(cmd, "PV", DbType.Int32, productInfo.PV);
+            dbw.AddInParameter(cmd, "Sort", DbType.Int32, productInfo.Sort);
+            dbw.AddInParameter(cmd, "Actions", DbType.Int16, productInfo.Actions);
+
+            dbw.AddInParameter(cmd, "Status", DbType.Int16, productInfo.Status);
+            dbw.AddInParameter(cmd, "Title", DbType.String, productInfo.Title);
+            dbw.AddInParameter(cmd, "Keywords", DbType.String, productInfo.Keywords);
+            dbw.AddInParameter(cmd, "MetaKeywords", DbType.String, productInfo.MetaKeywords);
+            dbw.AddInParameter(cmd, "MetaDescription", DbType.String, productInfo.MetaDescription);
+            dbw.AddInParameter(cmd, "Creator", DbType.String, productInfo.Creator);
+            dbw.AddInParameter(cmd, "CreateTime", DbType.DateTime, productInfo.CreateTime);
+            dbw.AddInParameter(cmd, "Updater", DbType.String, productInfo.Updater);
+            dbw.AddInParameter(cmd, "UpdateTime", DbType.DateTime, productInfo.UpdateTime);
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+
+
+        public bool UpdateProductMySql(ProductInfo productInfo)
+        {
+            var sql = " UPDATE  product SET ";
+            sql += " ProductCode=@ProductCode,CFID=@CFID ,BrandID=@BrandID, ChineseName=@ChineseName";
+            sql += ",PinyinName=@PinyinName,CADN=@CADN,LongName=@LongName, ProductType=@ProductType";
+            sql += ",MarketPrice=@MarketPrice,MobilePrice=@MobilePrice,TradePrice=@TradePrice, CostPrice=@CostPrice";
+
+            sql += ",Selling=@Selling,SellingTime=@SellingTime ,Manufacter=@Manufacter, Images=@Images";
+            sql += ",Description=@Description,Specifications=@Specifications ,ValueList=@ValueList, LargePacking=@LargePacking";
+            sql += ",Unit=@Unit,Volume=@Volume,Type=@Type, Abbreviation=@Abbreviation";
+
+            sql += ",Rank=@Rank,IsBasic=@IsBasic,IsRecommend=@IsRecommend, IsTop=@IsTop";
+            sql += ",ValidPeriod=@ValidPeriod,IsTaiKang=@IsTaiKang,Comments=@Comments, SellCount=@SellCount";
+            sql += ",FavorCount=@FavorCount,PV=@PV ,Sort=@Sort, Actions=@Actions";
+
+            sql += ",Status=@Status,Title=@Title ,Keywords=@Keywords, MetaKeywords=@MetaKeywords";
+            sql += ",MetaDescription=@MetaDescription,Creator=@Creator ,CreateTime=@CreateTime, Updater=@Updater";
+            sql += ",UpdateTime=@UpdateTime";
+
+            sql += " WHERE  ProductID=@ProductID";
+            var cmd = dbw.GetSqlStringCommand(sql);
+            dbw.AddInParameter(cmd, "ProductCode", DbType.String, productInfo.ProductCode);
+            dbw.AddInParameter(cmd, "CFID", DbType.Int32, productInfo.CFID);
+            dbw.AddInParameter(cmd, "BrandID", DbType.Int32, productInfo.BrandID);
+            dbw.AddInParameter(cmd, "ChineseName", DbType.String, productInfo.ChineseName);
+            dbw.AddInParameter(cmd, "PinyinName", DbType.String, productInfo.PinyinName);
+            dbw.AddInParameter(cmd, "CADN", DbType.String, productInfo.CADN);
+            dbw.AddInParameter(cmd, "LongName", DbType.String, productInfo.LongName);
+            dbw.AddInParameter(cmd, "ProductType", DbType.Int16, productInfo.ProductType);
+            dbw.AddInParameter(cmd, "MarketPrice", DbType.Decimal, productInfo.MarketPrice);
+            dbw.AddInParameter(cmd, "MobilePrice", DbType.Decimal, productInfo.MobilePrice);
+            dbw.AddInParameter(cmd, "TradePrice", DbType.Decimal, productInfo.TradePrice);
+            dbw.AddInParameter(cmd, "CostPrice", DbType.Decimal, productInfo.CostPrice);
+
+            dbw.AddInParameter(cmd, "Selling", DbType.Int16, productInfo.Selling);
+            dbw.AddInParameter(cmd, "SellingTime", DbType.DateTime, productInfo.SellingTime);
+            dbw.AddInParameter(cmd, "Manufacter", DbType.String, productInfo.Manufacturer);
+            dbw.AddInParameter(cmd, "Images", DbType.String, productInfo.Images);
+            dbw.AddInParameter(cmd, "Description", DbType.String, productInfo.Description);
+            dbw.AddInParameter(cmd, "Specifications", DbType.String, productInfo.Specifications);
+            dbw.AddInParameter(cmd, "ValueList", DbType.String, productInfo.ValueList);
+            dbw.AddInParameter(cmd, "LargePacking", DbType.Int32, productInfo.LargePacking);
+            dbw.AddInParameter(cmd, "Unit", DbType.String, productInfo.Unit);
+            dbw.AddInParameter(cmd, "Volume", DbType.String, productInfo.Volume);
+            dbw.AddInParameter(cmd, "Type", DbType.Int16, productInfo.Type);
+            dbw.AddInParameter(cmd, "Abbreviation", DbType.String, productInfo.Abbreviation);
+
+            dbw.AddInParameter(cmd, "Rank", DbType.Int16, productInfo.Rank);
+            dbw.AddInParameter(cmd, "IsBasic", DbType.Int16, productInfo.IsBasic);
+            dbw.AddInParameter(cmd, "IsRecommend", DbType.Int16, productInfo.IsRecommend);
+            dbw.AddInParameter(cmd, "IsTop", DbType.Int16, productInfo.IsTop);
+            dbw.AddInParameter(cmd, "ValidPeriod", DbType.DateTime, productInfo.ValidPeriod);
+            dbw.AddInParameter(cmd, "IsTaiKang", DbType.Int16, productInfo.IsTaiKang);
+            dbw.AddInParameter(cmd, "Comments", DbType.Int32, productInfo.Comments);
+            dbw.AddInParameter(cmd, "SellCount", DbType.Int32, productInfo.SellCount);
+            dbw.AddInParameter(cmd, "FavorCount", DbType.Int32, productInfo.Favorite);
+            dbw.AddInParameter(cmd, "PV", DbType.Int32, productInfo.PV);
+            dbw.AddInParameter(cmd, "Sort", DbType.Int32, productInfo.Sort);
+            dbw.AddInParameter(cmd, "Actions", DbType.Int16, productInfo.Actions);
+
+            dbw.AddInParameter(cmd, "Status", DbType.Int16, productInfo.Status);
+            dbw.AddInParameter(cmd, "Title", DbType.String, productInfo.Title);
+            dbw.AddInParameter(cmd, "Keywords", DbType.String, productInfo.Keywords);
+            dbw.AddInParameter(cmd, "MetaKeywords", DbType.String, productInfo.MetaKeywords);
+            dbw.AddInParameter(cmd, "MetaDescription", DbType.String, productInfo.MetaDescription);
+            dbw.AddInParameter(cmd, "Creator", DbType.String, productInfo.Creator);
+            dbw.AddInParameter(cmd, "CreateTime", DbType.DateTime, productInfo.CreateTime);
+            dbw.AddInParameter(cmd, "Updater", DbType.String, productInfo.Updater);
+            dbw.AddInParameter(cmd, "UpdateTime", DbType.DateTime, productInfo.UpdateTime);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, productInfo.ProductID);
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+    }
+}

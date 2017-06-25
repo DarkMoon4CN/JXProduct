@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class FeedBackService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("health");
+        private static string list = "feedBack/getFeedBackForApp";
+        private static string get = "feedBack/getFeedBackInfo";
+        private static string reply = "feedBack/replyFeedBack";
+        private static string delete = "feedBack/deleteFeedBack";
+
+        public static FeedBackService Instance
+        {
+            get { return new FeedBackService(); }
+        }
+        
+        /// <summary>
+        /// 意见反馈列表
+        /// </summary>
+        /// <param name="request">查询实体 </param>
+        /// <returns></returns>
+        public FeedBackListResponse List(FeedBackListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, list, postData);
+        }
+
+        /// <summary>
+        /// 查看意见反馈
+        /// </summary>
+        /// <param name="feedBackId">ID</param>
+        /// <returns></returns>
+        public FeedBackInfo Get(int feedBackId)
+        {
+            FeedBackReplyRequest request = new FeedBackReplyRequest()
+            {
+                feedBackId = feedBackId,
+                uid = 1
+            };
+            string postData = JsonHelper.GetJson(request);
+            FeedBackResponse response = client.Execute(request, get, postData);
+            if (response != null && response.dto != null)
+                return response.dto;
+            return null;
+        }
+
+        /// <summary>
+        /// 回复意见反馈
+        /// </summary>
+        /// <param name="request">回复实体</param>
+        /// <returns></returns>
+        public bool Reply(FeedBackReplyRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            FeedBackResponse response = client.Execute(request, reply, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 删除意见反馈
+        /// </summary>
+        /// <param name="feedBackId">ID</param>
+        /// <param name="changUser">操作用户</param>
+        /// <returns></returns>
+        public bool Delete(int feedBackId, string changUser)
+        {
+            FeedBackReplyRequest request = new FeedBackReplyRequest()
+            {
+                feedBackId = feedBackId,
+                uid = 1,
+                userName = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            FeedBackResponse response = client.Execute(request, delete, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+    }
+}

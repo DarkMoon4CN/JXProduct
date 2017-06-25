@@ -1,0 +1,187 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.ComponentModel.DataAnnotations;
+using JXProduct.Component.Model;
+using System.Web.Mvc;
+
+namespace JXProduct.AdminUI.Models.Product
+{
+    /// <summary>
+    /// 商品数据模型
+    /// </summary>
+    public class ProductModel
+    {
+        /// <summary>
+        ///商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        ///金象码
+        /// </summary>
+        //public string ProductCode { get; set; }
+
+        /// <summary>
+        ///商品名称
+        /// </summary>
+        public string ChineseName { get; set; }
+
+        /// <summary>
+        ///药品通用名称
+        /// </summary>
+        public string CADN { get; set; }
+
+        /// <summary>
+        ///销售名称
+        /// </summary>
+        public string SellingName { get; set; }
+
+        /// <summary>
+        ///长名称,卖点
+        /// </summary>
+        public string LongName { get; set; }
+
+        /// <summary>
+        ///链接文本
+        /// </summary>
+        public string LinkName { get; set; }
+
+        /// <summary>
+        ///链接Url
+        /// </summary>
+        public string LinkUrl { get; set; }
+
+
+
+
+        public string EnglishName { get; set; }
+        /// <summary>
+        ///拼音
+        /// </summary>
+        public string PinyinName { get; set; }
+
+        /// <summary>
+        ///品牌ID
+        /// </summary>
+        public int BrandID { get; set; }
+
+        //两处合并,写到同一个数据里面
+        // 非药品,单轨,双轨,甲类非处方,乙类非处方
+        /// <summary>
+        ///商品类型 0:单轨  1:药品  2:非药品  3:双规
+        /// </summary>
+        public short ProductType { get; set; }
+
+        /// <summary>
+        ///药品类型( 1:处方药 2:甲类非处方药 3:乙类非处方药)
+        /// </summary>
+        public short DrugType { get; set; }
+        /// <summary>
+        ///药品分类 (1:中成药 2:西药)
+        /// </summary>
+        public short DrugClassification { get; set; }
+        /// <summary>
+        ///商品分类属性  1药品 2医疗器械 3保健品 4化妆品 5消毒品 6百货
+        /// </summary>
+        public short ParameterType { get; set; }
+
+        /// <summary>
+        ///生产厂家
+        /// </summary>
+        public int ManufacturerID { get; set; }
+        public string Manufacturer { get; set; }
+        public string ManufacturerAddress { get; set; }
+
+
+        public int SupplierID { get; set; }
+        public string SupplierName { get; set; }
+
+        /// <summary>
+        /// 促销专区
+        /// </summary>
+        public string Promotion { get; set; }
+
+        /// <summary>
+        ///产地(0:未处理  1:国产  2:进口)
+        /// </summary>
+        public short Origin { get; set; }
+
+        /// <summary>
+        ///储藏条件( 1:冷藏 2:阴凉 3:常温)
+        /// </summary>
+        public short Storage { get; set; }
+
+        /// <summary>
+        ///剂型
+        /// </summary>
+        public string Dosage { get; set; }
+
+        /// <summary>
+        /// 单位
+        /// </summary>
+        public string Unit { get; set; }
+        /// <summary>
+        ///使用方式 (1:内服  2:外用)
+        /// </summary>
+        public short Usage { get; set; }
+
+        /// <summary>
+        /// 麻黄碱 1：是
+        /// </summary>
+        public bool ContainMHJ { get; set; }
+
+        /// <summary>
+        ///易碎 1：是
+        /// </summary>
+        public bool IsFragile { get; set; }
+
+        /// <summary>
+        ///礼盒装 1：是
+        /// </summary>
+        public bool IsDeluxe { get; set; }
+
+        /// <summary>
+        ///易串味 1：是
+        /// </summary>
+        public bool IsOdour { get; set; }
+
+        /// <summary>
+        ///重点养护
+        /// </summary>
+        public bool IsProtection { get; set; }
+
+        /// <summary>
+        ///基药 1：是
+        /// </summary>
+        public bool IsBasePowder { get; set; }
+
+        /// <summary>
+        ///医保商品 1：是
+        /// </summary>
+        public bool IsYiBao { get; set; }
+
+
+        /// <summary>
+        ///显示标题
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        ///搜索关键词
+        /// </summary>
+        public string Keywords { get; set; }
+
+        /// <summary>
+        ///Meta关键词
+        /// </summary>
+        public string MetaKeywords { get; set; }
+
+        /// <summary>
+        ///Meta描述
+        /// </summary>
+        public string MetaDescription { get; set; }
+
+    }
+}

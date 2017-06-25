@@ -1,0 +1,122 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrderProductSqlDAL
+    {
+        private static Database dbr = JXThirdPartyData.Reader;
+        private static Database dbw = JXThirdPartyData.Writer;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrderProductSqlDAL));
+
+        public int GetMaxOrderProductID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select max(OrderProductID) from orderproduct";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxOrderProductID 获取订单商品表最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool UpdateOrderProduct(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                var dr = table.Rows[i];
+                try
+                {
+                    string strPlaceholder = string.Empty;
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("update orderproduct set ");
+                    var Placeholder = string.Format(@"ProductID = '{0}',OrderSplitID = '{1}',ProductCode = '{2}',ProductName = '{3}',ProductImage = '{4}',ProductType = '{5}',MarketPrice = '{6}',TradePrice = '{7}',
+                                                      CostPrice = '{8}',Quantity = '{9}',OutQuantity = '{10}',ReturnQuantity = '{11}',ProFeeDiscount = '{12}'
+                                                       ,ProBatchNumber = '{13}',Memo = '{14}',VoucherFee = '{15}',ActiveReduceFee = '{16}',ActiveReduceType = '{17}'",
+                                                     dr["ProductID"].ToInt(), dr["OrderSplitID"].ToString(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["ProductName"].ToString().Replace("\'", "\""), dr["ProductImage"].ToString(), Convert.ToBoolean(dr["ProductType"]) ? 1 : 0, dr["MarketPrice"].ToDecimal()
+                                                    , dr["TradePrice"].ToDecimal(), dr["CostPrice"].ToDecimal(), dr["Quantity"].ToInt(), dr["SendQuantity"].ToInt(), dr["ReturnQuantity"].ToInt(), dr["ProFeeDiscount"].ToDecimal(), dr["ProBatchNumber"].ToString().Replace("\'", "\""), dr["Memo"].ToString().Replace("\'", "\""), dr["VoucherFee"].ToDecimal()
+                                                    , dr["ActiveReduceFee"].ToDecimal(), dr["ActiveReduceType"].ToShort());
+                    sqlCommand.Append(strPlaceholder);
+                    sqlCommand.AppendFormat(" where OrderProductID = {0}", dr["OrderProductID"].ToInt());
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("AddOrderProduct 更新订单商品表失败-受影响行为0,订单商品ID:{0}", dr["OrderProductID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("AddOrderProduct 更新订单商品表失败,订单商品表ID：{0},异常信息:{1}", dr["OrderProductID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        public bool AddOrderProduct(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                var dr = table.Rows[i];
+                try
+                {
+                    string strPlaceholder = string.Empty;
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("insert into orderproduct ( " + parmsKey + " ) values ");
+                    var Placeholder = string.Format(@"('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}'
+                                                       ,'{13}','{14}','{15}','{16}','{17}','{18}','{19}')",
+                                                    dr["OrderProductID"].ToInt(),DateTime.Now.ToString("yyMMddHHmmssfff"), dr["ProductID"].ToInt(), 0, dr["ProductCode"].ToString().Replace("\'", "\""), dr["ProductName"].ToString().Replace("\'", "\""), dr["ProductImage"].ToString(), Convert.ToBoolean(dr["ProductType"]) ? 1 : 0, dr["MarketPrice"].ToDecimal()
+                                                    , dr["TradePrice"].ToDecimal(), dr["CostPrice"].ToDecimal(), dr["Quantity"].ToInt(), dr["SendQuantity"].ToInt(), dr["ReturnQuantity"].ToInt(), dr["ProFeeDiscount"].ToDecimal(), dr["ProBatchNumber"].ToString().Replace("\'", "\""), dr["Memo"].ToString().Replace("\'", "\""), dr["VoucherFee"].ToDecimal()
+                                                    , dr["ActiveReduceFee"].ToDecimal(), dr["ActiveReduceType"].ToShort());
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("AddOrderProduct 添加订单商品表失败-受影响行为0,订单商品ID:{0}", dr["OrderProductID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("AddOrderProduct 添加订单商品表失败,订单商品表ID：{0},异常信息:{1}", dr["OrderProductID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        private string parmsKey = string.Format(@"OrderProductID,OrderID, ProductID,OrderSplitID,ProductCode,ProductName,ProductImage,ProductType,MarketPrice
+                                                  ,TradePrice,CostPrice,Quantity,OutQuantity,ReturnQuantity,ProFeeDiscount,ProBatchNumber,Memo,VoucherFee
+                                                  ,ActiveReduceFee,ActiveReduceType");
+    }
+}

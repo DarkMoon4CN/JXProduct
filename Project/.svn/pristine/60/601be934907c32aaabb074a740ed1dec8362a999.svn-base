@@ -1,0 +1,76 @@
+﻿@using JXProduct.AdminUI.Image;
+@model JXProduct.AdminUI.Models.Proudct.ProductEditModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    var p = Model.Product;
+    var ins = Model.Instructions;
+}
+@section css{
+    <link rel="stylesheet" href="/umeditor/themes/default/css/umeditor.css" />
+    <style>
+        .col-md-11 label { margin-right: 10px; }
+        .uploadify-button { background: url("/image/sprites/btnbg.png"); text-align: center; }
+        .informa-title .resetUpBtn { padding-top: 18px; }
+    </style>
+}
+@section js{
+    <script src="~/js/uploadify3.2.1/jquery.uploadify.js"></script>
+    <script src="~/Content/js/jx.product.js"></script>
+    <script>
+        var productid = @(p.ProductID + ";")
+        $(function () {
+            productedit.upload();
+        });
+    </script>
+}
+
+<div id="l-content-right">
+    <div class="single-product-h">
+        <a href="/product/list"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="single-center authority-informa">
+        <div class="single-name">
+            <span>[品牌名：@p.BrandName ]  [通用名称：@p.CADN][规格：@p.Specifications]</span>
+            <div class="sigle-erweima">
+                <img src="./images/tpl-erweima.jpg">
+            </div>
+        </div>
+        <form id="formproduct">
+            @Html.Hidden("ProductID", p.ProductID)
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">商品详情图片</div>
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品详情图片上传：
+                        <i class="addImg-btn">+</i>
+                    </div>
+                    <div class="every-one-info" id="descuploadimage">
+                        @{
+                            var descimages = JXProduct.Component.BLL.ProductBLL.Instance.GetDescImages(p.Description);
+                            var desccount = descimages.Count > 5 ? descimages.Count : 5;
+                            for (int i = 0; i < desccount; i++)
+                            {
+                                <div class="operAdverW clear">
+                                    <div class="InformaUpload clear">
+                                        <span class="fl"><i class="xingRed">*</i> 主图上传：</span>
+                                        <div class="resetUpBtn fl"><span id="descimage@(i)"><img src="/content/images/upImg.png" alt=""></span></div>
+                                        <span class="imgInfo fl">大小：60PX*90PX</span>
+                                    </div>
+                                    <div class="informa-imgWrap" id="descimagequeue@(i)">
+                                        @if (string.IsNullOrWhiteSpace(descimages[i]))
+                                        {
+                                            <a href="#" class="closeBtn">X</a>
+                                            <img src="http://img.jxdyf.com/other/@descimages[i]" alt="">
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

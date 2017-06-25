@@ -1,0 +1,98 @@
+﻿@using JXProduct.Component.Model;
+@model JXProduct.AdminUI.Models.Activity.RuleModel
+@{
+    ActivityInfo act = ViewBag.Activity;
+}
+<div class="kuangHead"><span>全场活动规则</span></div>
+@{ Ajax.BeginForm("rule", "activity", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "activity.rulesuccess" }, new { id = "form1" }); }
+@Html.HiddenFor(t => t.ActID)
+@Html.HiddenFor(t => t.RuleID)
+<div class="kuangCenter clear">
+    <div class="spInputWrap fl ">
+        <span>* 活动名称：</span>
+        <span class="showname">@act.Name </span>
+    </div>
+    <div class="spInputWrap fl ">
+        <span>* 活动类型：</span>
+        <span class="showname">@act.TypeToString @act.LimitToString</span>
+    </div>
+    @{
+        switch (act.Limit)
+        {
+            case 1:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 满(金额)：</span>
+                        @Html.TextBox("Amount", Model.Amount > 0 ? Model.Amount.ToString() : "")
+                    </div>
+
+                } break;
+            case 2:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 满(数量)：</span>
+                        @Html.TextBox("Quantity", Model.Quantity > 0 ? Model.Quantity.ToString() : "")
+                    </div>
+                } break;
+        }
+
+        switch (act.Type)
+        {
+            case 2:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 商品ID：</span>
+                        @Html.TextBoxFor(t => t.ProductID)
+                    </div>
+                } break;
+            case 3:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 减免：</span>
+                        @Html.TextBox("DiscountAmount", Model.DiscountAmount > 0 ? Model.DiscountAmount.ToString() : "")
+                    </div>
+                } break;
+            case 4:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 返劵：</span>
+                        @Html.TextBoxFor(t => t.CouponBatchNo)
+                    </div>
+                } break;
+            case 5:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 折扣：</span>
+                        @Html.TextBox("Discount", Model.Discount > 0 ? Model.Discount.ToString() : "")
+                    </div>
+                } break;
+            case 6:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 换购：</span>
+                        @Html.TextBoxFor(t => t.ProductID)
+                    </div>
+                } break;
+            case 7:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 折扣：</span>
+                        @Html.TextBox("Discount", Model.Discount > 0 ? Model.Discount.ToString() : "")
+                    </div>
+                } break;
+            case 8:
+                {
+                    <div class="spInputWrap fl ">
+                        <span>* 直降：</span>
+                        @Html.TextBox("DiscountAmount", Model.DiscountAmount > 0 ? Model.DiscountAmount.ToString() : "")
+                    </div>
+                } break;
+        }
+
+    }
+    <div class="confirmBtn clear">
+        <a class="q submit" href="#">确认</a>
+        <a class="x closewin" href="#">取消</a>
+    </div>
+</div>
+@{ Html.EndForm(); }   

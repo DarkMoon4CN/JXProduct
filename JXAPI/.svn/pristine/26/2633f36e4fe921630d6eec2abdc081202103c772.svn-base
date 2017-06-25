@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="securevalid" type="JXAPI.JXSdk.Config.SecureConfigSection, JXAPI.JXSdk"/> 
+  </configSections>
+  <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
+    </startup>
+
+  <securevalid ipvalid="0">
+    <secures>
+      <add source="messages" pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2"  url="http://192.168.21.48:8080/health/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+      <add source="switch"  pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2"  url="http://192.168.21.48:8080/user/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+     </secures>
+  </securevalid>
+  <connectionStrings>
+    <add name="JXMarketingReader" connectionString="data source=192.168.21.8;uid=jxmarketing;pwd=glito9iyd8g7u7;Initial Catalog=jxmarketing" providerName="System.Data.SqlClient" />
+    <add name="JXMarketingWriter" connectionString="data source=192.168.21.8;uid=jxmarketing;pwd=glito9iyd8g7u7;Initial Catalog=jxmarketing" providerName="System.Data.SqlClient" />
+  </connectionStrings>
+  
+</configuration>

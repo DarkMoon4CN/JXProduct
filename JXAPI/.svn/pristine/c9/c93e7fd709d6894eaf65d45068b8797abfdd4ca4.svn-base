@@ -1,0 +1,65 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using JXAPI.Common.Utils;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.Common.Utils;
+using System.Data;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class UsersReceiverDAL
+    {
+        private static Database dbr = JXUsersBaseData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(UsersReceiverDAL));
+
+        #region 用户收货人信息表相关操作
+
+        public DataTable GetAddUsersReceiverList(int ID, string updateTime, int pageSize)
+        {
+            try
+            {
+                string sql = string.Format(@"SELECT TOP " + pageSize + " * FROM UsersReceiver WHERE 1=1 ");
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append(sql);
+                sqlCommand.Append(" AND ReceiverID > " + ID);
+                sqlCommand.Append(" ORDER BY ReceiverID");
+
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetAddUsersReceiverList 查询需要添加的用户收货人信息列表失败,用户收货人信息ID{0},异常信息:{1}", ID, ex.Message);
+                return null;
+            }
+        }
+
+        public DataTable GetUpdateUsersReceiverList(int InitID, int NowID, string updateTime, int pageSize)
+        {
+            try
+            {
+                string sql = string.Format(@"SELECT TOP " + pageSize + " * FROM UsersReceiver WHERE 1=1 ");
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append(sql);
+                sqlCommand.Append(" AND ReceiverID > " + NowID + "AND ReceiverID <= " + InitID);
+                sqlCommand.Append(" ORDER BY ReceiverID");
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetUpdateUsersReceiverList 查询需要更新的用户收货人信息列表失败,用户收货人信息ID{0},异常信息:{1}", NowID, ex.Message);
+                return null;
+            }
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,108 @@
+﻿@model JXProduct.Component.Model.ProductStockInfo
+@{
+    ViewBag.Title = "EvalEdit";
+}
+@section css{
+    <style>
+        .imitationSelect { z-index: auto; }
+        .commKucun .kuCun { padding-top:3px; }
+    </style>
+}
+@section script {
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/jx.product.js"></script>
+    <script>$(function () { productstock.edit(); });</script>
+}
+<div class="kuang commKucun" style="height:580px;">
+    <div class="kuangHead">
+        <span>商品库存设置</span>
+    </div>
+    @{Html.BeginForm("stock", "product", FormMethod.Post, new { id="form1" });}
+    @Html.HiddenFor(t => t.ProductID)
+    @Html.HiddenFor(t => t.ProductCode)
+    @Html.HiddenFor(t => t.ChineseName)
+    <div class="kuangCenter clear">
+        <div class="kuCun">
+            <div class="red clearfix">@Html.ValidationMessage("error")</div>
+            <p>金象码：@Model.ProductCode</p>
+            <p>商品名称：@Model.ChineseName</p>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>* 库房：</span>
+                    <div class="imitationSelect kcGaiW fl">
+                        <div class="selectTitle">
+                            <span class='selectTitleLeft'>请选择</span>
+                            <span class='selectTitleRight'></span>
+                        </div>
+                        <div class="imitaSelectList">
+                            <ul>
+                                <li><a href="#" t="0">请选择</a></li>
+                                <li><a href="#" t="9">549</a></li>
+                                <li><a href="#" t="13">553</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @Html.HiddenFor(t => t.HouseID)
+            </div>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>*库存类型：</span>
+                    <div class="imitationSelect kuGaiTwo fl">
+                        <div class="selectTitle">
+                            <span class='selectTitleLeft'>请选择</span>
+                            <span class='selectTitleRight'></span>
+                        </div>
+                        <div class="imitaSelectList">
+                            <ul>
+                                <li><a href="#" t="0">请选择</a></li>
+                                <li><a href="#" t="1">实库</a></li>
+                                <li><a href="#" t="2">虚库</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @Html.HiddenFor(t => t.TypeID)
+            </div>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>*库存数量：</span>
+                    <div class="selectTit">
+                        @Html.TextBox("Stock", Model.Stock > 0 ? Model.Stock.ToString() : "", new { @class = "xz" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kuCunTable">
+            <table>
+                <tr class='bg'>
+                    <td>库存编号</td>
+                    <td>仓库</td>
+                    <td>库存类型</td>
+                    <td>总库存</td>
+                    <td>可用库存</td>
+                </tr>
+                @{
+                    List<JXProduct.Component.Model.ProductStockInfo> stocklist = ViewBag.StockList;
+                    foreach (var t in stocklist)
+                    {
+                        <tr>
+                            <td>@t.StockID</td>
+                            <td>@t.HouseID</td>
+                            <td>@t.TypeIDString</td>
+                            <td>@t.Stock</td>
+                            <td>@(t.Stock - t.FreezedStock)</td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+        <div class="confirmBtn clear">
+            <a class="q submit" href="#">确认</a>
+            <a class="x closewin" href="#">取消</a>
+        </div>
+        
+    </div>
+    @{Html.EndForm();}
+</div>

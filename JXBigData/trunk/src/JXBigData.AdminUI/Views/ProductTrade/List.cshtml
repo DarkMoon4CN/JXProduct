@@ -1,0 +1,261 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXBigData.Component.Model;
+@using JXBigData.Component.Enum;
+@using JXProduct.Component.Model;
+@{
+    ViewBag.Title = "商品成交明细";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css {
+    <link href="~/css/right.css" rel="stylesheet" />
+    <style type="text/css">
+        .thun_feedBack {
+            width: 120px;
+            height: 28px;
+            border: 1px solid #E7E7EB;
+            padding-left: 10px;
+            outline: medium none;
+            background: #FFF url("/js/My97DatePicker/skin/datePicker.gif") no-repeat scroll right center;
+            border: 1px solid #E7E7EB;
+        }
+
+        .s_lm {
+            margin-right: -15px;
+        }
+
+        .p_s_lm {
+            margin-right: -15px;
+        }
+    </style>
+
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="~/JqueryPlugins/Highcharts-4.1.8/js/highcharts.js"></script>
+    <script src="~/Content/js/jx.trade.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            trade.init();
+            $("zh").click();
+        });
+    </script>
+}
+<div id="l-content-right">
+    <div class="sp_right">
+        <div class="bg">
+            <div class="sp_datail">
+             <div class="r_top" style="height: 1200px; ">
+                    <div class="tab" style="margin-top: 0px;">
+                        <ul class="tab_con">
+                            <li ><a href="/Sales/Detail">销售额</a></li>
+                            <li class="tab_con_current" style="margin-left:62px;"><a href="/ProductTrade/List">商品成交明细</a></li>
+                            <li><a href="/Sales/Orders">成交订单数</a></li>
+                            <li><a href="/Analyse/SearchList">搜索分析</a></li>
+                            <li><a href="/Analyse/Region">人群分析</a></li>
+                        </ul>
+                    </div>
+                    <div id="topicText" class="tip">销售额数据</div>
+                    <div class="date">
+                        <a id="td" href="javascript:void(0);">今日</a>
+                        <a id="tm" href="javascript:void(0);">昨日</a>
+                        <a id="sw" href="javascript:void(0);">最近7天</a>
+                        <a id="st" href="javascript:void(0);">最近30天</a>
+                        <a id="other" href="javascript:void(0);">双日历</a>
+
+                        <span class='s_lm'>日期：</span>
+                        <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        &nbsp;
+                        <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        <a id="submit" href="#">查看</a>
+                        <input type="hidden" id="startTime" value="@ViewBag.StartTime" />
+                        <input type="hidden" id="endTime" value="@ViewBag.EndTime" />
+                        <input type="hidden" id="typeID" value="@ViewBag.TypeID" />
+                        <input type="hidden" id="orderType" value="@ViewBag.OrderType" />
+                        <input type="hidden" id="cfid" value="@ViewBag.CFID" />
+                        <input type="hidden" id="sourceID" value="@ViewBag.SourceID" />
+                </div>
+                    <div class="tab">
+
+                    <div class="li_page" style="">
+                            @if(ViewBag.OrderType == 1)
+                            {
+                                <div class="li_con">
+                                    <span class="list_px" id="zh">综合排序</span>
+                                <span class="line"></span>
+                                    <span class="list_px list_cur" id="fl">按照商品分类排序</span>
+                                <span class="line"></span>
+                                    <span class="list_px last" id="pt">按照平台排序</span>
+                                </div>
+                                @Html.Raw("<div class='list_show' id='cfDiv'>");
+                            }
+                            else if (ViewBag.OrderType == 2)
+                            {
+                                <div class="li_con">
+                                <span class="list_px" id="zh">综合排序</span>
+                                <span class="line"></span>
+                                <span class="list_px" id="fl">按照商品分类排序</span>
+                                <span class="line"></span>
+                                <span class="list_px last list_cur" id="pt">按照平台排序</span>
+                                </div>
+                                @Html.Raw("<div class='list_show' id='sourceDiv'>");
+                            }
+                            else 
+                            {
+                                <div class="li_con">
+                                    <span class="list_px list_cur" id="zh">综合排序</span>
+                                <span class="line"></span>
+                                    <span class="list_px" id="fl">按照商品分类排序</span>
+                                <span class="line"></span>
+                                    <span class="list_px last" id="pt">按照平台排序</span>
+                                </div>
+                                @Html.Raw("<div class='list_show'>");
+                            }
+
+                            @if (ViewBag.OrderProductList != null)
+                            {
+                                //默认排序
+                                if (ViewBag.OrderType == 0)
+                                {
+                                    <div class="zhpx_table">
+                                        @foreach (var item in (IList<OrderProductDailyInfo>)ViewBag.OrderProductList)
+                                        {
+                                            <table class="zhpx">
+                                                <tbody>
+                                                    <tr>
+                                                        @if (@item.RowID <=10)
+                                                        { 
+                                                        <td class="td_top"><span>TOP@(item.RowID)</span></td>
+                                                        }
+                                                        else 
+                                                        {
+                                                            <td class="td_top"><span class="number">@item.RowID</span></td>
+                                                        }
+                                                        <td class="td_empty"></td>
+                                                        <td class="td_product"><a target="_blank" href="http://www.jxdyf.com/product/@(item.ProductID).html">@item.ChineseName</a></td>
+                                                        <td class="td_cjcount">成交件数：@item.OrderQuan  </td>
+                                                        <td class="td_cjcount">成交金额：¥@item.OrderAmount</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        }
+                                    </div>
+                                }
+
+                                if (ViewBag.OrderType == 1)//分类
+                                {
+                                   <ul class="spfl_ul">
+                                       @foreach (var item in (IList<JXProduct.Component.Model.ClassificationInfo>)ViewBag.CF_GetList)
+                                       {
+                                           string strName = item.ChineseName;//获取名称
+                                           int value = item.CFID;//获取值
+                                           if (value.ToString() == @ViewBag.CFID)
+                                           {
+                                               @Html.Raw("<li class='tag'>");
+                                           }
+                                           else
+                                           {
+                                               @Html.Raw("<li>");
+                                           }
+                                            @Html.Raw("<span class='tagcon' id=" + value + ">" + strName + "</span><em></em><span class='tra'></span>");
+                                            @Html.Raw("</li>")
+                                       }
+                                    </ul>
+                                      <div class="spfl_right">
+                                        <div class="spfl_table">
+                                            <div class="zhpx_table">
+                                                @foreach (var item in (IList<OrderProductDailyInfo>)ViewBag.OrderProductList)
+                                                {
+                                                    <table class="zhpx">
+                                                        <tbody>
+                                                            <tr>
+                                                                @if (@item.RowID <= 10)
+                                                                {
+                                                                    <td class="td_top"><span>TOP@(item.RowID)</span></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="td_top"><span class="number">@item.RowID</span></td>
+                                                                }
+                                                                <td class="td_empty"></td>
+                                                                <td class="td_product"><a target="_blank" href="http://www.jxdyf.com/product/@(item.ProductID).html">@item.ChineseName</a></td>
+                                                                <td class="td_cjcount">成交件数：@item.OrderQuan  </td>
+                                                                <td class="td_cjcount">成交金额：¥@item.OrderAmount</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                            </div>
+                                        </div>
+                                      </div>
+                                }
+
+                                if (ViewBag.OrderType == 2) 
+                                {
+                                    <ul class="spfl_ul">
+                                        @foreach (var  item in Enum.GetValues(typeof(OrderSource)))
+                                        {
+                                            string strName = Enum.GetName(typeof(OrderSource), item);//获取名称
+                                            int value= (int)item;//获取值
+                                            if (value.ToString() == (string)@ViewBag.SourceID)
+                                            {
+                                                @Html.Raw("<li class='tag'>");
+                                            }
+                                            else 
+                                            {
+                                                @Html.Raw("<li>");
+                                            }
+                                            @Html.Raw("<span class='tagcon' id=" + value + ">" + strName + "</span><em></em><span class='tra'></span>");
+                                            @Html.Raw("</li>");
+                                        }
+                                    </ul>
+                                 <div class="spfl_right">
+                                    <div class="spfl_table">
+                                        <div class="zhpx_table">
+                                            @foreach (var item in (IList<OrderProductDailyInfo>)ViewBag.OrderProductList)
+                                            {
+                                                <table class="zhpx">
+                                                    <tbody>
+                                                        <tr>
+                                                            @if (@item.RowID <= 10)
+                                                            {
+                                                                <td class="td_top"><span>TOP@(item.RowID)</span></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="td_top"><span class="number">@item.RowID</span></td>
+                                                            }
+                                                            <td class="td_empty"></td>
+                                                            <td class="td_product"><a target="_blank" href="http://www.jxdyf.com/product/@(item.ProductID).html">@item.ChineseName</a></td>
+                                                            <td class="td_cjcount">成交件数：@item.OrderQuan  </td>
+                                                            <td class="td_cjcount">成交金额：¥@item.OrderAmount</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            }
+                                        </div>
+                                    </div>
+                                  </div>
+                                }
+                                
+                            }
+                             <div class="general-pagin">
+                                @Html.Pager((PagedList<OrderProductDailyInfo>)ViewBag.PageList, new PagerOptions()
+                               {
+                               PageIndexParameterName = "pageIndex"
+                               ,
+                               ShowPageIndexBox = true
+                               ,
+                               PageIndexBoxType = PageIndexBoxType.DropDownList
+                               }
+                               , new { })
+                             </div>
+                          @Html.Raw("</div>")      
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

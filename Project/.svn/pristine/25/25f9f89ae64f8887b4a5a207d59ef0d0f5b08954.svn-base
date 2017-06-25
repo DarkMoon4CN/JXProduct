@@ -1,0 +1,92 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "意见反馈管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            om.roleMessageInit();
+        });
+    </script>
+}
+@section css {
+<link type="text/css" rel="stylesheet" href="~/css/new-style.css" />
+<link type="text/css" rel="stylesheet" href="~/css/right.css" />
+}
+
+
+<div class="right" style="width:95%">
+    @*<div class="person">
+        <span>@ViewBag.Greeting</span>
+    </div>*@
+    <div class="message">
+        <ul class="m_tab">
+            @if (ViewBag.Status == 0)
+            { 
+                <li class="hoverli"><a href="/OM/RoleMessageList?status=0"><span>待处理消息</span><em></em><span class="count">@ViewBag.Count</span></a></li>
+                <li><a href="/OM/RoleMessageList?status=1"><span>已处理消息</span><em></em></a></li>
+            }
+            else 
+            {
+                 <li><a href="/OM/RoleMessageList?status=0"><span>待处理消息</span><em></em><span class="count">@ViewBag.Count</span></a></li>
+                 <li class="hoverli"><a href="/OM/RoleMessageList?status=1"><span>已处理消息</span><em></em></a></li>
+            }
+        </ul>
+        <div class="message_detail">
+            @if (ViewBag.RoleMessagesInfoList != null)
+            {
+                IList<RoleMessagesInfo> roleMessagesInfoList = ViewBag.RoleMessagesInfoList;
+                foreach (var item in roleMessagesInfoList)
+                {
+                    <div class="detail_mk">
+                        <p><span class="span_r">@item.MessageID<a href="@item.Url">@item.Title</a></span>
+                        
+                        @if(item.RoleID <=40)
+                        { 
+                            if(item.Status==0)
+                            { 
+                                <span id="@item.MessageID" class="span_bj">标记为已处理</span>
+                            }
+                            else 
+                            {
+                                <span class="span_ycl">已处理</span>
+                            }
+                        }
+                        </p>
+                        <p><span class="shenghe">@item.Contents</span></p>
+                        <p class="shren">审核人：@item.Creator</p>
+                        <p class="shdate">@item.CreateTime</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="sid_top6">
+        <div class="pageW">
+            <div class="lPage">
+                <div class="lPageWrap">
+                    @Html.Pager((IPagedList<RoleMessagesInfo>)ViewBag.PageList,
+                                 new PagerOptions()
+                                 {
+                                     PageIndexParameterName = "pageIndex"
+                                     ,
+                                     ShowPageIndexBox = true
+                                     ,
+                                     PageIndexBoxType = PageIndexBoxType.DropDownList
+                                 }, new { })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="general-pagin">
+        <div>
+            <a disabled="disabled">首页</a>&nbsp;&nbsp;<a disabled="disabled">上一页</a>&nbsp;&nbsp;1&nbsp;&nbsp;<a data-pageindex="2" href="#?pageindex=2">2</a>&nbsp;&nbsp;<a data-pageindex="3" href="#?pageindex=3">3</a>&nbsp;&nbsp;<a data-pageindex="4" href="#?pageindex=4">4</a>&nbsp;&nbsp;<a data-pageindex="5" href="#?pageindex=5">5</a>&nbsp;&nbsp;<a data-pageindex="6" href="#?pageindex=6">6</a>&nbsp;&nbsp;<a data-pageindex="7" href="#?pageindex=7">...</a>&nbsp;&nbsp;<a data-pageindex="2" href="#?pageindex=2">下一页</a>&nbsp;&nbsp;<a data-pageindex="171" href="#?pageindex=171">尾页</a>&nbsp;&nbsp;
+        </div>
+    </div>*@
+</div>

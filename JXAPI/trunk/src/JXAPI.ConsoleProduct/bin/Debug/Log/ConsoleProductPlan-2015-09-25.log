@@ -1,0 +1,36 @@
+2015-09-25 12:41:43,373  [6096]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  From:JXSmsBase 数据库操作失败！原因:
+2015-09-25 12:55:01,562  [7480]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 15:13:39,103  [6636]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 15:13:47,270  [6636]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  <log4net.Error>Exception during StringFormat: 输入字符串的格式不正确。 <format>From:JXHealth 数据库操作失败！原因:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '0} FROM  {1} ORDER BY {2} DESC LIMIT 0,1' at line 1</format><args>{}</args></log4net.Error>
+2015-09-25 15:14:59,555  [11084]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 15:15:20,179  [11084]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 15:15:20
+2015-09-25 15:20:18,646  [7752]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 15:20:25,498  [7752]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 15:20:25
+2015-09-25 15:31:49,570  [6644]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 16:53:39,261  [6188]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 16:53:41,998  [6188]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 16:53:41
+2015-09-25 16:55:56,790  [11240]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 16:55:59,689  [11240]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 16:55:59
+2015-09-25 17:05:09,309  [11672]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:05:11,633  [11672]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:05:11
+2015-09-25 17:05:51,917  [5304]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:05:53,790  [5304]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:05:53
+2015-09-25 17:06:03,302  [6100]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:06:04,771  [6100]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:06:04
+2015-09-25 17:06:25,062  [9876]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:06:26,551  [9876]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:06:26
+2015-09-25 17:10:03,838  [11980]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:10:05,515  [11980]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:10:05
+2015-09-25 17:11:32,958  [12196]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 17:11:37,168  [12196]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 17:11:37
+2015-09-25 18:29:58,599  [11228]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  Sql server 数据库:KnowledgeLibraryArticle, 字段:ispush 无法匹配与Mysql表字段,请在配置web.config
+2015-09-25 18:29:59,789  [11228]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:29:59
+2015-09-25 18:31:28,079  [9260]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:31:28
+2015-09-25 18:37:20,751  [12220]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:37:20
+2015-09-25 18:40:20,658  [2068]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:40:20
+2015-09-25 18:43:59,565  [11712]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:43:59
+2015-09-25 18:46:52,161  [10552]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:46:52
+2015-09-25 18:49:51,722  [9204]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:49:51
+2015-09-25 18:52:28,075  [11444]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:52:28
+2015-09-25 18:53:58,295  [9260]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:53:58
+2015-09-25 18:54:10,778  [11652]  INFO   JXAPI.ConsoleProduct.SynPlan  [(null)]  -  开始执行 从KnowledgeLibraryArticle 至 healtharticle 数据同步开始 时间:2015/9/25 18:54:10

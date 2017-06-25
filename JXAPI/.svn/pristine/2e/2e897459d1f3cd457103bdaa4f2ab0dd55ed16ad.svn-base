@@ -1,0 +1,216 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class HeadLinesService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("health");
+        private static string list = "headLines/getHeadLinesForApp";
+        private static string get = "headLines/getHeadByID";
+        private static string add = "headLines/addHeadLines";
+        private static string update = "headLines/updateHeadLines";
+        private static string verify = "headLines/verifyHeadLines";
+
+        private static string addComment = "headLines/addHeadLinesComment";
+        private static string commentList = "headLines/getHeadAppComment";
+        private static string verifyComment = "headLines/verifyHeadLinesComment";
+
+        private static string getProductList = "headLines/getProductList";
+        private static string addHeadProduct = "headLines/addHeadProduct";
+        private static string updateHeadProduct = "headLines/updateHeadProduct";
+        private static string deleteHeadProduct = "headLines/deleteHeadProduct";
+
+        public static HeadLinesService Instance
+        {
+            get { return new HeadLinesService(); }
+        }
+
+        /// <summary>
+        /// 健康头条列表
+        /// </summary>
+        /// <param name="request">条件实体</param>
+        /// <returns></returns>
+        public HeadLinesListResponse List(HeadLinesListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, list, postData);
+        }
+
+        /// <summary>
+        /// 查询健康头条详细
+        /// </summary>
+        /// <param name="tipsId">ID</param>
+        /// <returns></returns>
+        public HeadLinesInfo Get(int headID)
+        {
+            HeadLinesRequest request = new HeadLinesRequest()
+            {
+                headID = headID
+            };
+            string postData = JsonHelper.GetJson(request);
+            HeadLinesResponse response = client.Execute(request, get, postData);
+            if (response != null && response.headLines != null)
+                return response.headLines;
+            return null;
+        }
+
+        /// <summary>
+        /// 健康头条实体
+        /// </summary>
+        /// <param name="info"> 实体信息</param>
+        /// <returns></returns>
+        public int Add(HeadLinesInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.count;
+            return 0;
+        }
+
+        /// <summary>
+        /// 编辑健康头条
+        /// </summary>
+        /// <param name="info">实体信息</param>
+        /// <returns></returns>
+        public bool Update(HeadLinesInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, update, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 审核健康头条
+        /// </summary>
+        /// <param name="headID">ID</param>
+        /// <param name="status">1:审核通过，2屏蔽</param>
+        /// <param name="changUser">操作人</param>
+        /// <returns></returns>
+        public bool Verify(int headID, int status, string changUser)
+        {
+            HeadLinesRequest request = new HeadLinesRequest()
+            {
+                headID = headID,
+                type = status,
+                updater = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            HeadLinesResponse response = client.Execute(request, verify, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 新增评论
+        /// </summary>
+        /// <param name="info">评论内容</param>
+        /// <returns></returns>
+        public bool AddComment(HeadLinesCommentInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, addComment, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 评论列表
+        /// </summary>
+        /// <param name="request">查询条件</param>
+        /// <returns></returns>
+        public HeadLinesCommentResponse CommentList(HeadLinesCommentRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, commentList, postData);
+        }
+
+        /// <summary>
+        /// 审核健康头条评论
+        /// </summary>
+        /// <param name="commentId">ID</param>
+        /// <param name="status">1:审核通过，2屏蔽</param>
+        /// <param name="changUser">操作人</param>
+        /// <returns></returns>
+        public bool VerifyComment(int commentId, int status, string changUser)
+        {
+            HeadLinesRequest request = new HeadLinesRequest()
+            {
+                headID = commentId,
+                type = status,
+                updater = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            HeadLinesResponse response = client.Execute(request, verifyComment, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 头条商品列表
+        /// </summary>
+        public HeadLinesProductResponse GetHeadProductList(HeadLinesProductRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, getProductList, postData);
+        }
+
+        /// <summary>
+        /// 添加头条商品
+        /// </summary>
+        public bool AddHeadProduct(HeadlinesProductInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, addHeadProduct, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 编辑头条商品
+        /// </summary>
+        public bool UpdateHeadProduct(HeadlinesProductInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, updateHeadProduct, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 删除头条商品
+        /// </summary>
+        /// <param name="headID">头条ID</param>
+        /// <param name="productID">商品ID</param>
+        public bool DeleteHeadProduct(int headID, int productID)
+        {
+            HeadlinesProductInfo info = new HeadlinesProductInfo() { headID = headID, productID = productID };
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, deleteHeadProduct, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+    }
+}

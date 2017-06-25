@@ -1,0 +1,138 @@
+namespace JXAPI.Component.SQLServerDAL
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Common;
+    using System.Data;
+    using Microsoft.Practices.EnterpriseLibrary.Data;
+    using System.Text;
+    using JXAPI.Component.Model;
+    using JXAPI.Component.DataAccess;
+    public class ProductDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        #region CURD
+
+        /// <summary>
+        /// 查询出所有
+        /// </summary>
+        /// <param name="recordCount"></param>
+        /// <returns></returns>
+        public List<ProductInfo> Product_Page(int startRow, int endRow)
+        {
+            List<ProductInfo> list = new List<ProductInfo>();
+            try
+            {
+                var sql = " SELECT * FROM  ";
+                sql += " ( SELECT ROW_NUMBER() OVER(order by productId) as pid,* FROM product ) as p  ";
+                sql += " WHERE p.pid BETWEEN  " + startRow + " AND " + endRow + "";
+                var cmd = dbr.GetSqlStringCommand(sql);
+
+                using (var read = dbr.ExecuteReader(cmd))
+                {
+                    while (read.Read())
+                    {
+                        list.Add(RecoverModel(read));
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return list;
+        }
+        public ProductInfo RecoverModel(IDataReader dataReader) 
+        {
+            ProductInfo productInfo = new ProductInfo();
+            productInfo.ProductID = dataReader["ProductID"].ToInt();
+            productInfo.ProductCode = dataReader["ProductCode"].ToString();
+            productInfo.ChineseName = dataReader["ChineseName"].ToString();
+            productInfo.SellingName = dataReader["SellingName"].ToString();
+            productInfo.CADN = dataReader["CADN"].ToString();
+            productInfo.LongName = dataReader["LongName"].ToString();
+            productInfo.LinkName = dataReader["LinkName"].ToString();
+            productInfo.LinkUrl = dataReader["LinkUrl"].ToString();
+            productInfo.PinyinName = dataReader["PinyinName"].ToString();
+            productInfo.CFID = dataReader["CFID"].ToInt();
+            productInfo.BrandID = dataReader["BrandID"].ToInt();
+            productInfo.ProductType = dataReader["ProductType"].ToShort();
+            productInfo.DrugType = dataReader["DrugType"].ToShort();
+            productInfo.ParameterType = dataReader["ParameterType"].ToShort();
+            productInfo.Type = dataReader["Type"].ToShort();
+            productInfo.DrugClassification = dataReader["DrugClassification"].ToShort();
+            productInfo.MarketPrice = dataReader["MarketPrice"].ToDecimal();
+            productInfo.TradePrice = dataReader["TradePrice"].ToDecimal();
+            productInfo.CostPrice = dataReader["CostPrice"].ToDecimal();
+            productInfo.MobilePrice = dataReader["MobilePrice"].ToDecimal();
+            productInfo.Images = dataReader["Images"].ToString();
+            productInfo.Instructions = dataReader["Instructions"].ToString();
+            productInfo.ActivityImages = dataReader["ActivityImages"].ToString();
+            productInfo.Description = dataReader["Description"].ToString();
+            productInfo.Specifications = dataReader["Specifications"].ToString();
+            productInfo.ValueList = dataReader["ValueList"].ToString();
+            productInfo.Manufacturer = dataReader["Manufacturer"].ToString();
+            productInfo.ManufacturerAddress = dataReader["ManufacturerAddress"].ToString();
+            productInfo.ApprovalNumber = dataReader["ApprovalNumber"].ToString();
+            productInfo.Origin = dataReader["Origin"].ToString();
+            productInfo.LargePacking = dataReader["LargePacking"].ToInt();
+            productInfo.Unit = dataReader["Unit"].ToString();
+            productInfo.Volume = dataReader["Volume"].ToString();
+            productInfo.Storage = dataReader["Storage"].ToString();
+            productInfo.Dosage = dataReader["Dosage"].ToString();
+            productInfo.Usage = dataReader["Usage"].ToInt();
+            productInfo.Abbreviation = dataReader["Abbreviation"].ToString();
+            productInfo.ContainMHJ = dataReader["ContainMHJ"].ToShort();
+            productInfo.IsFragile = dataReader["IsFragile"].ToShort();
+            productInfo.IsTaiKang = dataReader["IsTaiKang"].ToShort();
+            productInfo.IsDeluxe = dataReader["IsDeluxe"].ToShort();
+            productInfo.IsOdour = dataReader["IsOdour"].ToShort();
+            productInfo.IsProtection = dataReader["IsProtection"].ToShort();
+            productInfo.IsBasePowder = dataReader["IsBasePowder"].ToShort();
+            productInfo.IsYiBao = dataReader["IsYiBao"].ToShort();
+            productInfo.IsBasic = dataReader["IsBasic"].ToShort();
+            productInfo.IsRecommend = dataReader["IsRecommend"].ToShort();
+            productInfo.IsTop = dataReader["IsTop"].ToShort();
+            productInfo.IsImageDiff = dataReader["IsImageDiff"].ToShort();
+            productInfo.Actions = dataReader["Actions"].ToShort();
+            productInfo.Rank = dataReader["Rank"].ToShort();
+            productInfo.SellCount = dataReader["SellCount"].ToInt();
+            productInfo.Comments = dataReader["Comments"].ToInt();
+            productInfo.Favorite = dataReader["Favorite"].ToInt();
+            productInfo.PV = dataReader["PV"].ToInt();
+            productInfo.Sort = dataReader["Sort"].ToInt();
+            productInfo.ValidPeriod = dataReader["ValidPeriod"].ToDateTime();
+            productInfo.Status = dataReader["Status"].ToShort();
+            productInfo.Selling = dataReader["Selling"].ToShort();
+            productInfo.SellingTime = dataReader["SellingTime"].ToDateTime();
+            productInfo.Title = dataReader["Title"].ToString();
+            productInfo.Keywords = dataReader["Keywords"].ToString();
+            productInfo.MetaKeywords = dataReader["MetaKeywords"].ToString();
+            productInfo.MetaDescription = dataReader["MetaDescription"].ToString();
+            productInfo.Creator = dataReader["Creator"].ToString();
+            productInfo.CreateTime = dataReader["CreateTime"].ToDateTime();
+            productInfo.Updater = dataReader["Updater"].ToString();
+            productInfo.UpdateTime = dataReader["UpdateTime"].ToDateTime();
+           return productInfo;
+        }
+
+        public int Product_Count() 
+        {
+            int count = -1;
+            try
+            {
+                var sql = " SELECT COUNT(*) FROM Product ";
+                var cmd = dbr.GetSqlStringCommand(sql);
+                count = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+            }
+            catch (Exception ex) 
+            {
+
+            }
+            return count;
+        }
+        #endregion
+    }
+}

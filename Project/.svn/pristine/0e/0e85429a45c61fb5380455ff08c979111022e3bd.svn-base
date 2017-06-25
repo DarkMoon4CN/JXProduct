@@ -1,0 +1,100 @@
+﻿@using JXProduct.Component.Model
+@using JXProduct.Component.BLL
+@using JXProduct.Component.Enums
+@model JXProduct.AdminUI.Models.Product.RelatedModel
+@{
+    int productid = Model.ProductID;
+    int index;
+    int type = Model.RelatedType;
+    if (type == (int)RelatedType.大包装)
+    {
+        var list1 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.大包装);
+        index = 0;
+        <table class="table">
+            <tr class='bg'>
+                <th></th>
+                <th>商品ID</th>
+                <th class='tabWidth'>大包装名称</th>
+                <th>大包装价格</th>
+                <th>主商品数量</th>
+                <th> 操作</th>
+            </tr>
+            @foreach (var l in list1)
+            {
+                <tr>
+                    <td>大包装@(++index)</td>
+                    <td>@l.ChildProductID</td>
+                    <td class='colBlue'>@l.Name</td>
+                    <td class='cloRed'>￥<span>@l.ChildPrice</span></td>
+                    <td q="@l.Quantity"><span>@(l.Quantity)</span>盒</td>
+                    <td class='cz' index="index" relatedid="@l.RelatedID">
+                        <a href="#" name="edit">编辑</a>
+                        <a href="#" name="del">删除</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else if (type == (int)RelatedType.不同规格)
+    {
+        index = 0;
+        var list2 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.不同规格).OrderByDescending(t => { return t.ProductID == t.ChildProductID; }); ;
+        <table class="table">
+            <tr class='bg'>
+                <td></td>
+                <th>商品ID</th>
+                <th class='tabWidth'>商品名称</th>
+                <th>规格</th>
+                <th>前台展示名称</th>
+                <th>价格</th>
+                <th>操作</th>
+            </tr>
+            @foreach (var l in list2)
+            {
+                <tr>
+                    <td>@(index == 0 ? "主商品" : "子商品" + index)</td>
+                    <td>@l.ChildProductID</td>
+                    <td>@l.ChildName</td>
+                    <td>@l.Specifications</td>
+                    <td>@l.Name</td>
+                    <td>@l.ChildPrice</td>
+                    <td class='cz' relatedid="@l.RelatedID">
+                        @*<a href="#" name="update">编辑</a>*@
+                        <a href="#" name="del">删除</a>
+                    </td>
+                </tr>
+                index++;
+            }
+        </table>
+    }
+    else if (type == (int)RelatedType.最佳推荐)
+    {
+        var list3 = ProductRelatedBLL.Instance.ProductRelated_GetList(productid, RelatedType.最佳推荐).OrderByDescending(t => { return t.ProductID == t.ChildProductID; }); ;
+        index = 0;
+        <table class="taoCanZH table">
+            <thead>
+                <tr class='bg'>
+                    <th style="width:80px;"></th>
+                    <th>商品ID</th>
+                    <th class='tabWidth'>商品名称</th>
+                    <th>商品价格</th>
+                    <th> 操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var l in list3)
+                {
+                    <tr>
+                        <td>关联推荐@(++index)</td>
+                        <td>@l.ChildProductID</td>
+                        <td class='colBlue'>@l.ChildName</td>
+                        <td class='cloRed'>@l.ChildPrice</td>
+                        <td class='cz'>
+                            <a href="#" name="del" relatedid="@l.RelatedID">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

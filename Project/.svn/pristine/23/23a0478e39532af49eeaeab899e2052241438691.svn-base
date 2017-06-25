@@ -1,0 +1,105 @@
+﻿@using JXProduct.Component.Model
+@using Webdiyer.WebControls.Mvc;
+@model  IPagedList<BrandInfo>
+@{
+    ViewBag.Title = "品牌管理";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.brand.js"></script>
+}
+@using (Html.BeginForm("List", "brand", FormMethod.Get))
+{
+    <div class="floorHeader w">
+        <div class="fl"><span>品牌管理</span></div>
+    </div>
+}
+<div class="branManageCenter w">
+    <div class='clear'>
+        <div class="titleSelecWrap">
+            <div class="selecWrap cf1">
+                <span class='fl'>商品分类：</span>
+                <div class="imitationSelect fl">
+                    <div class="selectTitle">
+                        <span class='selectTitleLeft'>热销品牌</span>
+                        <span class='selectTitleRight'></span>
+                    </div>
+                    <div class="imitaSelectList">
+                        <ul>
+                            <li><a href="#" t="-1">热销品牌</a></li>
+                            <li><a href="#" t="-2">推荐品牌</a></li>
+                            @if (ViewBag.ClassificationInfoList != null)
+                            {
+                                foreach (var cf in ViewBag.ClassificationInfoList)
+                                {
+                                    <li><a href="#" t="@cf.CFID">@cf.ChineseName</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <input type="hidden" id="CFID" value="@ViewBag.SelectedClassId" />
+            </div>
+        </div>
+    </div>
+
+    <div class="alreadyAddBran">
+        <p class='addBranP'>已添加 @ViewBag.SelectedBrandsCount 个品牌！</p>
+        <div class="addBranBox">
+            <ul class='clear' id="selectedBrand">
+                @if (ViewBag.SelectedBrands != null)
+                {
+                    foreach (var item in ViewBag.SelectedBrands)
+                    {
+                        <li>
+                            <div class="addBranBoxTop">
+                                <img src="http://img.jxdyf.com/brand/@item.ImageLogo" alt="金象" />
+                            </div>
+                            <div class="addBranBoxBottom">@item.ChineseName</div>
+                            <a class='gb' id="@item.BrandID" href="javascript:;"></a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="allBranTab">
+            <span>全部品牌：</span>
+            @if (string.IsNullOrEmpty(ViewBag.OrderType) == true || ViewBag.OrderType == "SellCount")
+            {
+                <a class='active' href="#">按品牌商品种类数量排序</a>
+                <a href="/brand/list?cfid=@ViewBag.SelectedClassId&orderType=ProductCount">
+                    按品牌商品月平均销售量排名
+                </a>
+            }
+            else
+            {
+                <a href="/brand/list?cfid=@ViewBag.SelectedClassId&orderType=SellCount">按品牌商品种类数量排序</a>
+                <a class='active' href="#">按品牌商品月平均销售量排名</a>
+            }
+        </div>
+        <div class="addBranBox allAddBran">
+            <ul class='clear' id="AllAddBrand">
+                @if (ViewBag.BrandInfo != null)
+                {
+                    foreach (var item in ViewBag.BrandInfo)
+                    {
+                        <li>
+                            <div class="addBranBoxTop">
+                                <img src="http://img.jxdyf.com/brand/@item.ImageLogo" alt="金象" />
+                            </div>
+                            <div class="addBranBoxBottom">@item.ChineseName</div>
+                            <div class="beiMian" id="@item.BrandID">添 加</div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="lPage">
+        <div class="lPageWrap">
+            @Html.Pager((IPagedList<BrandInfo>)ViewBag.PageList,
+                new PagerOptions() { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList }
+                    , new { style = "float:right" })
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace JXUtil
+{
+    public class SqlUtil
+    {
+        /// <summary>
+        /// 检查输入的字符串是否符合注入Sql的规则,忽略“=”
+        /// </summary>
+        /// <param name="Input">待验证字符串</param>
+        /// <returns>true 表示符合注入规则，false表示不符合注入规则（非注入字符串）</returns>
+        public static string Injection(string inputSqlString)
+        {
+            string re = @"(select)|(insert)|(delete)|(count)|(create)|(drop)|(alter)|" +
+                 @"(like)|(\-\-)|(%)|(')|" +
+                 @"(drop)|(update)|( asc )|( mid | char )|( exec )|( or )|(declare)|(')|(dbcc)|(sp_)";
+
+            inputSqlString = Regex.Replace(inputSqlString, re, " ", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            inputSqlString = Regex.Replace(SqlUtil.Reverse(inputSqlString), re, " ", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+            return SqlUtil.Reverse(inputSqlString);
+        }
+        public static string Reverse(string source)
+        {
+            char[] temp = source.ToCharArray();
+            Array.Reverse(temp);
+
+            return new string(temp);
+        }
+    }
+}

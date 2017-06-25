@@ -1,0 +1,186 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@using JXUtil;
+@model  IPagedList<ProductInfo>
+@{
+    IPagedList<ProductInfo> paged = ViewBag.PagedList;
+    List<ProductComboInfo> comboProductList = ViewBag.comboProductList;
+    List<ProductActivityInfo> activityList = ViewBag.ActivityList;
+    List<ProductGiftInfo> giftList = ViewBag.GiftList;
+}
+<table class="table" id="productlist">
+    <thead>
+        <tr>
+            <th class="firstWidth"><a href="#" class="listNameW">商品名称</a></th>
+            <th><a href="javascript:;">审核状态</a></th>
+            <th><a href="javascript:;">市场价 </a></th>
+            <th><a href="javascript:;">会员价</a></th>
+            <th><a href="javascript:;">成本价</a></th>
+            <th><a href="javascript:;">库存</a></th>
+            <th><a href="javascript:;">基础信息</a></th>
+            <th><a href="javascript:;">商品详情</a></th>
+            <th><a href="javascript:;">标签关联</a></th>
+            <th class="lastWidth"><a href="javascript:;">活动</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var p in paged)
+            {
+                ProductActivityInfo act = activityList.FirstOrDefault(t => t.ProductID == p.ProductID) ?? new ProductActivityInfo();
+                ProductGiftInfo gift = giftList.FirstOrDefault(t => t.ProductID == p.ProductID) ?? new ProductGiftInfo();
+                <tr>
+                    <td colspan="10">
+                        <div class="operation fl">
+                            <ul class="clear" pid="@p.ProductID">
+                                <li><a href="#" name="istop" istop="@p.IsTop">[@(p.IsTop == 1 ? "已" : "")置顶]</a></li>
+                                <li><a href="#" name="isrecommend" isrecommend="@p.IsRecommend">[@(p.IsRecommend == 1 ? "已" : "")推荐]</a></li>
+                                <li><a href="#" name="activity" class="hd">[单品活动]</a></li>
+                                @if (p.Type != 2)
+                                {
+                                    <li><a href="/product/related?productid=@p.ProductID" name="related">[套餐/大包装/最佳推荐/规格关联]</a></li>
+                                    <li><a href="/product/paraprice?productid=@p.ProductID">[报价属性]</a></li>
+                                    <li><a href="#" name="tag" class="tag">[标签关联]</a></li>   
+                                }   
+                                else
+                                {
+                                    <li>[套餐/大包装/最佳推荐/规格关联]</li>
+                                    <li>[报价属性]</li>
+                                    <li>[标签关联]</li>
+                                }
+                                <li><a href="#" name="stock" class="kc">[商品库存]</a></li>
+                                <li><a href="#" name="eval" class="pl">[添加评论]</a></li>
+                                <li>@Html.ActionLink("[编辑商品]", "edit", new { productid = p.ProductID })</li>
+                            </ul>
+                            @Html.Raw(p.ImageDiff == 1 ? "<div class='bufu'></div>" : string.Empty)
+                        </div>
+                    </td>
+                </tr>
+                <tr class="commTableConet">
+                    <td>
+                        <div class="listBoxWrap clear">
+                            <div class="listBox listNameW">
+                                <div class="listCommTop clear">
+                                    @{
+                                        if (p.Type == 2)
+                                        {
+                                            <div class="taocan"></div>
+                                        }
+                                        else if (p.Type == 1)
+                                        {
+                                            <div class="dabaozhuang"></div>
+                                        }
+                                        else if (p.Type == 0)
+                                        {
+                                            <div class="danping"></div>
+                                        }
+                                    }
+                                    <div class="CommImg">
+                                        <a href="http://www.jxdyf.com/product/@(p.ProductID).html" target="_blank"><img src="@JXUtil.ImageHelper.GetDefaultImage(p.Images)" /></a>
+                                    </div>
+                                    <div class="xinxi">
+                                        <a href="http://www.jxdyf.com/product/@(p.ProductID).html" target="_blank">@p.ChineseName.SubStr(20)</a>
+                                        <p title="@p.Specifications">@p.Specifications.SubStr(15)</p>
+                                    </div>
+                                    <div class="listCommBottm fl">商品编号：@p.ProductID   金象码：@p.ProductCode</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>@p.StatusString</td>
+                    <td>@p.MarketPrice</td>
+                    <td>@p.TradePrice</td>
+                    <td>@p.CostPrice</td>
+                    <td>库存</td>
+                    <td>@(p.ValueList.Length < 5 ? "未" : "已")完善</td>
+                    <td>@(string.IsNullOrWhiteSpace(p.Description) ? "未" : "已")完善</td>
+                    <td>@(p.HasKeyword ? "已" : "未")关联</td>
+                    <td class="tl">@Html.Raw(JXProduct.Component.BLL.ProductActivityBLL.Instance.ProductActivity_Get(act))</td>
+                </tr>
+                if (p.Type == 2)
+                {
+                    var combolist = comboProductList.Where(t => t.ProductID == p.ProductID);
+                    foreach (var c in combolist)
+                    {
+                        <tr class="commTableConet">
+                            <td>
+                                <div class="listBoxWrap clear">
+                                    <div class="listBox listNameW">
+                                        <div class="listCommTop clear">
+                                            <div class="CommImg">
+                                                <a href="http://www.jxdyf.com/product/@(c.ProductID).html" target="_blank"><img src="@JXUtil.ImageHelper.GetDefaultImage(c.Images)" /></a>
+                                            </div>
+                                            <div class="xinxi">
+                                                <a href="http://www.jxdyf.com/product/@(c.ComboProductID).html" target="_blank" title="@c.ComboProductName">@c.ComboProductName.SubStr(20)</a>
+                                                <p>@c.Spec</p>
+                                            </div>
+                                            <div class="listCommBottm fl">商品编号：@c.ComboProductID   金象码：@c.ComboProductCode</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="9"></td>
+                        </tr>
+                    }
+                }
+                <tr>
+                    <td colspan="10" class="tableConSet">
+                        <div class="setCaoZuo clear">
+                            <div class="zpId"><span>赠品ID:</span><input type="text" name="giftID" old="@gift.ProductGiftID" value="@(gift.ProductGiftID > 0 ? gift.ProductGiftID.ToString() : "")"></div>
+                            <div class="setNumber">
+                                <span class="jian disActive">-</span>
+                                <input type="text" value="@(gift.Quantity)" name="quantity">
+                                <span class="jia">+</span>
+                            </div>
+                            <div class="baoYou">
+                                <label><input type="checkbox" name="isfreeship" @(act.IsFreeShip == 1 ? "checked='checked'" : "") />包邮</label>
+                            </div>
+                            <div class="selectSim">
+                                <span>上下架：</span>
+                                <div class="imitationSelect fl">
+                                    <div class="selectTitle">
+                                        <span class="selectTitleLeft"></span>
+                                        <span class="selectTitleRight"></span>
+                                    </div>
+                                    <div class="imitaSelectList">
+                                        <ul>@ViewBag.SellingSelect</ul>
+                                    </div>
+                                </div>
+                                @Html.Hidden("hidden_selling", p.Selling)
+                            </div>
+                            <div class="selectSim">
+                                <span>运营标示：</span>
+                                <div class="imitationSelect fl">
+                                    <div class="selectTitle">
+                                        <span class="selectTitleLeft">请选择</span>
+                                        <span class="selectTitleRight"></span>
+                                    </div>
+                                    <div class="imitaSelectList">
+                                        <ul>@ViewBag.ActionsSelect</ul>
+                                    </div>
+                                </div>
+                                @Html.Hidden("hidden_actions", p.Actions)
+                            </div>
+                            <div class="qz">
+                                <span>权重：</span>
+                                <input type="text" name="sort" value="@(p.Sort <1 ? "" : p.Sort.ToString())">
+                            </div>
+                            <div class="saveBtn">
+                                <a href="#" name="save" productid="@p.ProductID">保存</a>
+                            </div>
+                        </div>
+                        <div class="commKuCun">@gift.ProductGiftName</div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div class="lPage">
+    <div class="lPageWrap">
+        @Ajax.Pager(paged, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false },
+            new MvcAjaxOptions { OnSuccess = "product.init", UpdateTargetId = "tablelist", DataFormId = "form0" },
+            new { style = "float:right" }
+        )
+    </div>
+</div>

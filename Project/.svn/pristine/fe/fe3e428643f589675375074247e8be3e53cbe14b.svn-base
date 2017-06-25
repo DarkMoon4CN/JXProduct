@@ -1,0 +1,46 @@
+﻿using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.BLL
+{
+    public class ProductClassificationBLL
+    {
+        private ProductClassificationBLL() { }
+        private static ProductClassificationBLL _instance;
+        public static ProductClassificationBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ProductClassificationBLL());
+            }
+        }
+        private static readonly SQLServerDAL.ProductClassificationDAL dal = new SQLServerDAL.ProductClassificationDAL();
+
+        public List<ProductClassificationInfo> ProductClassification_GetList(int productid)
+        {
+            return dal.ProductClassification_GetList(productid);
+        }
+
+        /// <summary>
+        /// 添加商品分类
+        /// Description : 先删除在添加,如果有添加,则判断关键字是否存在,如果不存在,加入关键字表 keywordProduct
+        ///               以此实现商品同步
+        /// </summary>
+        /// <param name="productid">商品ID</param>
+        /// <param name="cflist">分类ID</param>
+        public bool ProductClassification_Insert(int productid, List<int> cflist)
+        {
+            if (productid > 0)
+            {
+                return dal.ProductClassification_Insert(productid, cflist);
+            }
+            return false;
+        }
+
+    }
+
+
+}

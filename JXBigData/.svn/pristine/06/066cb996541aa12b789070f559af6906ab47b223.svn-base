@@ -1,0 +1,68 @@
+﻿using JXBigData.Component.BLL;
+using JXBigData.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Webdiyer.WebControls.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class ProductTradeController : Controller
+    {
+        //
+        // GET: /ProductTrade/
+
+        public ActionResult List(int pageIndex = 1, int cfid = 0, int sourceID = 0, int orderType = 0, int TypeID = 0, string startTime = null, string endTime = null)
+        {
+            //orderType  0综合排序 1商品类别排序  2平台排序
+            int pageSize=40;//单页大小
+            int count = 0;//返回数据结果总数
+            string strWhere = string.Empty;
+            if (orderType == 1 && cfid==0) 
+            {
+                cfid = 1;
+                sourceID = 0;
+            }
+            if (orderType == 1 && cfid > 0)
+            {
+
+                //推算出一级分类
+                strWhere += " AND SUBSTRING(c.Path,1,"+cfid.ToString().Length+") = '"+cfid+"'";
+                sourceID = 0;
+                orderType = 1;
+            }
+            else if (orderType == 2)
+            {
+                strWhere += " AND d.Source = " + sourceID + " ";
+                cfid = 0;
+                orderType = 2;
+            }
+            OperationResult<IList<OrderProductDailyInfo>>  opResult=
+                              OrderProductDailyBLL.Instance.OrderProductDaily_GetList(pageIndex,pageSize,"",strWhere,out count);
+            ViewBag.OrderProductList = opResult.AppendData;
+            ViewBag.PageList = new PagedList<OrderProductDailyInfo>(opResult.AppendData, pageIndex, pageSize, count);
+            ViewBag.OrderType = orderType;
+            ViewBag.TypeID = TypeID;
+            ViewBag.CFID = cfid.ToString();
+            ViewBag.SourceID = sourceID.ToString();
+            ViewBag.StartTime = startTime;
+            ViewBag.EndTime = endTime;
+            if (cfid != 0)
+            {
+                ViewBag.CF_GetList = CF_GetList();
+            }
+            return View();
+        }
+
+
+        public IList<JXProduct.Component.Model.ClassificationInfo> CF_GetList() 
+        {
+            //用户获取分类一级列表
+            int count=0;
+            return JXProduct.Component.BLL.ClassificationBLL.Instance.Classification_GetList(1, int.MaxValue, " cfid asc ", " parentid=0", out count);
+        }
+    }
+}

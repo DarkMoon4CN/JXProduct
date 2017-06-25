@@ -1,0 +1,90 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "意见反馈管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@model JXProduct.AdminUI.Models.OM.RoleMessagesModel
+@section css {
+    <link href="~/Content/css/right.css" rel="stylesheet" />
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            om.roleMessageInit();
+        });
+    </script>
+}
+<div id="l-content-right">
+    <div class="right" style="width:95%">
+        <div class="person">
+            <span>@Model.Greeting</span>
+        </div>
+
+        <div class="message">
+            <ul class="m_tab">
+                @if (Model.Status == 0)
+                {
+                    <li class="hoverli"><a href="/OM/RoleMessageList?status=0"><span>待处理消息</span><em></em><span class="count" id="total">@Model.recordcount</span></a></li>
+                    <li><a href="/OM/RoleMessageList?status=1"><span>已处理消息</span><em></em></a></li>
+                }
+                else
+                {
+                    <li><a href="/OM/RoleMessageList?status=0"><span>待处理消息</span><em></em><span class="count">@Model.recordcount</span></a></li>
+                    <li class="hoverli"><a href="/OM/RoleMessageList?status=1"><span>已处理消息</span><em></em></a></li>
+                }
+            </ul>
+            <div class="message_detail">
+                @if (Model.Messages != null)
+                {
+                    foreach (var item in Model.Messages)
+                    {
+                        <div class="detail_mk">
+                            <p>
+                                <span class="span_r">@item.MessageID
+                                @{
+                                    switch(Model.RoleID)
+                                    {
+                                        case (int)JXProduct.Component.Enums.RoleType.商品信息:
+                                            item.Title ="【商品信息审核】"+item.Title;
+                                            break;
+                                        case (int)JXProduct.Component.Enums.RoleType.商品资质:
+                                            item.Title ="【商品资质审核】"+item.Title;
+                                            break;
+                                    }
+                                }
+                                    @if (item.Status == 1)
+                                    {
+                                        @Html.Raw(string.Format("<a  mid='{0}' href='{1}'>{2}</a>", item.MessageID, item.Url, item.Title))
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(string.Format("<a name='tourl' mid='{0}' href1='{1}'   href='javascript:void(0);' >{2}</a>", item.MessageID, item.Url, item.Title))
+                                    }
+                                </span>
+                                @if (item.RoleID <= 40)
+                                {
+                                    if (item.Status == 0)
+                                    {
+                                        <span id="@item.MessageID" class="span_bj">标记为已处理</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="span_ycl">已处理</span>
+                                    }
+                                }
+                            </p>
+                            <p><span class="shenghe">@Html.Raw(item.Contents)</span></p>
+                            <p class="shdate">@item.CreateTime</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="general-pagin">
+            @Html.Pager(Model.PagedList, new PagerOptions() { PageIndexParameterName = "pageIndex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList }, new { })
+        </div>
+    </div>
+</div>

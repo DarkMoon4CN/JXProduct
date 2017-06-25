@@ -1,0 +1,36 @@
+﻿using JXAPI.JXSdk.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
+
+namespace JXAPI.JXSdk.Response
+{
+    public class ShoppingCardValidateResponse : Venus.VenusClientResponse
+    {
+        [XmlElement("cardNo")]
+        public string cardNo{get;set;}
+
+        [XmlElement("cardPass")]
+        public string cardPass{get;set;}
+
+        [XmlElement("totalAmount")]
+        public decimal totalAmount{get;set;}
+
+        [XmlElement("remainingSum")]
+        public decimal remainingSum{get;set;}
+
+        [XmlElement("startTime")]
+        public long? startTime{get;set;}
+
+        [XmlElement("endTime")]
+        public long? endTime{get;set;}
+
+        [XmlElement("status")]
+        public int status{get;set;}
+
+        [XmlElement("error_response")]
+        public ErrorInfo error_response { get; set; }
+    }
+}

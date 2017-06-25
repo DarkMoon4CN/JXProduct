@@ -1,0 +1,65 @@
+
+$(function () {
+
+    // 右侧导航栏部分
+    var webBtn = true;
+    var appBtn = true;
+    $('.webClick').on('click', function () {
+        $('.yyList dl').hide();
+        if (webBtn) {
+
+            $('.lis_01 dl').show();
+            $('.webTitle .zt').html('+');
+            $(this).find('.zt').html('-')
+            $('.lis_01 dt').removeAttr('class', 'dtActive');
+        } else {
+            $('.webTitle .zt').html('+');
+            $('.yyList dl').hide();
+        }
+        webBtn = !webBtn;
+        appBtn = true
+    });
+    $('.appClick').on('click', function () {
+        if (appBtn) {
+            $('.webClick .zt').html('+');
+            $('.yunYGL dl').hide();
+            $(this).find('.zt').html('-');
+            $('.lis_03').find('dl,dd,dt').show();
+        } else {
+            $('.lis_03').find('dl,dd,dt').hide();
+        }
+        webBtn = true;
+        appBtn = !appBtn;
+    });
+    $('.lis_01 dt').on('click', function () {
+        $('.lis_01 dd').hide();
+        $('.lis_01 dt').removeAttr('class', 'dtActive');
+        $(this).attr('class', 'dtActive');
+        $(this).parent().find('dd').show();
+    });
+
+
+    $('.navClick a').on('click', function () {
+
+        $('.navClick a').removeAttr('class');
+        var sAtt = $(this).attr('data-attr');
+        sAtt = jQuery.parseJSON(sAtt);
+        $(this).attr('class', 'active');
+        $('#iframepage').attr({
+            'src': sAtt['src']
+        });
+    });
+
+
+    $('.yunYGL dd a').on('click', function () {
+        $('.yunYGL dd a').removeAttr('class');
+        var sAtt = $(this).attr('data-attr');
+        $(this).attr('class', 'active');
+        if (!sAtt) return;
+        sAtt = jQuery.parseJSON(sAtt);
+
+        $('#iframepage').attr({
+            'src': sAtt['src']
+        });
+    });
+});

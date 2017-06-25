@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Response;
+
+namespace JXAPI.JXSdk.Request
+{
+    public class HeadLinesRequest : Venus.IVenusRequest<HeadLinesResponse>
+    {
+        #region 参数
+        /// <summary>
+        /// 头条ID
+        /// </summary>
+        public int headID { get; set; }
+
+        /// <summary>
+        /// 审核 类型 1:审核通过，2屏蔽
+        /// </summary>
+        public int type { get; set; }
+
+        /// <summary>
+        /// 操作人
+        /// </summary>
+        public string updater { get; set; }
+        #endregion
+
+        #region ITopRequest Members
+        public string GetApiName()
+        {
+            return string.Empty;
+        }
+
+        public IDictionary<string, string> GetParameters()
+        {
+            return null;
+        }
+
+        public void Validate()
+        {
+            Venus.Utils.RequestValidator.ValidateRequired("headID", this.headID);
+        }
+        #endregion
+    }
+}

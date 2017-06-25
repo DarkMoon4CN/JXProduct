@@ -1,0 +1,335 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class SqlDAL
+    {
+        private static Database dbr_Product = JXProductData.Reader;
+        private static Database dbr_Marketing = JXMarketingData.Reader;
+        private static Database dbr_CouponBase = JXCouponBaseData.Reader;
+        private static Database dbr_YX = JXYXData.Reader;
+        private static Database dbr_Order = JXOrderData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(SqlDAL));
+        DatabaseType dbType_Update = DatabaseType.dbr_Product;
+        DatabaseType dbType_Add = DatabaseType.dbr_Product;
+        #region CURD
+
+        /// <summary>
+        /// 查询需要添加列表
+        /// </summary>
+        /// <param name="productID">ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetAddList(int ID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                switch (tableName.ToLower())
+                {
+                    case "coupon":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 AND EndTime>'2015-08-19'", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponbatch":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponchannel":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ChannelID > {0}  ORDER BY ChannelID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "coupontype":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND TypeID > {0}  ORDER BY TypeID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcard":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND CouponID > {0}  ORDER BY CouponID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcarddetail":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND CardDetailID > {0}  ORDER BY CardDetailID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "jxmarketingbrand":
+                        sqlCommand.Append(string.Format(@"SELECT m.BrandID,m.CFID,p.ChineseName,p.ImageLogo,p.Sort from JXMarketing.dbo.Brand as m
+                                                           inner join JXProduct.dbo.Brand p on m.BrandID = p.BrandID "));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "orderproducthistory-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProductHistory h inner join OrdersHistory o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderproducthistory-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProductHistory h inner join OrdersHistory o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+//                    case "orderproduct-before":
+//                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProduct h left join Orders o on h.OrderNO = o.OrderNO
+//                                                 where o.CreateTime < '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+//                        dbType_Add = DatabaseType.dbr_Order;
+//                        break;
+                    case "orderproduct-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProduct h inner join Orders o on h.OrderNO = o.OrderNO
+                                                where o.CreateTime>= '{1}' and o.CreateTime<'2015-08-20' and h.OrderProductID > {2}", pageSize, DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"), ID);
+                        sqlCommand.Append(" and o.OrderNO IN (1800010,1800022,1800024,1800025,1800026,1800027,1800028,1800029,1800030,1800031,1800032,1800052,1800060,1800061,1800062,1800063,1800065,1800066,1800067,1800068,1800069,1800079,1800080,1800081,1800082,1800083,1800084,1800085,1800112,1800117,1800118,1800119,1800139,1800140,1800156,1800157,1800158,1800159,1800265,1800266,1800267,1800268,1800269,1800728,1800749,1800750,1800751,1800752,1800777,1800778,1800779,1800780,1800781,1800782,1800783,1800784,1800785,1800786,1800792,1800793,1800794,1800795,1800796,1800797,1800798,1800799,1800800,1800801,1800802,1800803,1800804,1800805,1800806,1800807,1800808,1800809,1800810,1800811,1800812,1800813,1800814,1800816,1800820,1800821,1800860,1800861,1800862,1800864,1800865,1800866,1800867,1800868,1800869,1800870,1800871,1800872,1800873,1800874,1800883,1800884,1800887,1800888,1800889,1800890,1800891,1800892,1800893,1800894,1800895,1800896,1800897,1800898,1800899,1800906,1800907,1800908,1800909,1800910,1809108,1809109,1809110,1809111,1809112,1809113,1809114,1809115,1809116,1809117,1809118,1809119,1809120,1809121,1809122,1809123,1809124,1809125,1809126,1809127,1809128,1809129,1809130,1809131,1809132,1809133,1809134,1809135,1809136,1809137,1809138,1809139,1809140,1809141,1809142,1809143,1809144,1809145,1809146,1809147,1809148,1809149,1809150,1809151,1809152,1809153,1809154,1809155,1809156,1809157,1809161,1809162,1809163,1809164,1809165,1809166,1809167,1809168,1809169,1809170,1809171,1809172,1809173,1809174,1809175,1809176,1809177,1809178,1809179,1809180,1809181,1809182,1809183,1809184,1809185,1809186,1809187,1809188,1809189,1809190,1809191,1809192,1809193,1809194,1809195,1809196,1809197,1809198,1809199,1809200,1809202,1809203,1809204,1809205,1809206,1809207,1809208,1809209,1809210,1809211,1809212,1809213,1809214,1809224,1809225,1809226,1809227,1809228,1809229,1809230,1809231,1809232,1809233,1809234,1809235,1809236,1809237,1809238,1809239,1809240,1809241,1809242,1809243,1809244,1809245,1809246,1809247,1809248,1809249,1809250,1809251,1809252,1809253,1809254,1809255,1809256,1809257,1809258,1809259,1809260,1809261,1809262,1809263,1809264,1809265,1809266,1809267,1809268,1809269,1809270,1809271,1809272,1809273,1809274,1809275,1809276,1809277,1809278,1809279,1809280,1809281,1809282,1809283,1809284,1809285,1809286,1809287,1809288,1809289,1809290,1809291,1809292,1809293,1809294,1809295,1809296,1809297,1809298,1809299,1809300,1809301,1809302,1809303,1809304,1809305,1809306,1809307,1809308,1809309,1809310)");
+                        sqlCommand.Append("  ORDER BY h.OrderProductID");
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperateloghistory-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime as CreateTimeEx from OrderOperateLogHistory h left join OrdersHistory o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperateloghistory-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime as CreateTimeEx from OrderOperateLogHistory h left join OrdersHistory o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperatelog-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime as CreateTimeEx from OrderOperateLog h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperatelog-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime as CreateTimeEx from OrderOperateLog h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.LogID > {2}  ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+//                    case "orders-before":
+//                        sqlCommand.AppendFormat(@"select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+//                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+//                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+//                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+//                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+//                                                else 0 end from Orders as o where o.OrderID = t.OrderID) as status
+//                                                from Orders as t", pageSize);
+//                        sqlCommand.Append(" where t.OrderNO in(" + orderids + ")");
+//                        dbType_Add = DatabaseType.dbr_Order;
+//                        break;
+                    case "orders-after":
+                        sqlCommand.AppendFormat(@"select top {0} t.*,(select 
+	                                                case 
+		                                                when PaymentMethodID > 0 AND PayStatus = 0 then 0
+		                                                when OrderStatus NOT IN (11,16,12,13,14,15,17) AND (PaymentMethodID=0 OR (PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+		                                                when OrderStatus=17 and NOT EXISTS(SELECT 1 FROM OrderProduct where IsComment = 0 AND OrderID=t.OrderID) then 2
+		                                                when OrderStatus=17 and EXISTS(SELECT 1 FROM OrderProduct where IsComment = 1 AND OrderID=t.OrderID) then 3
+		                                                when OrderStatus  IN (11,16,12,13,14,15) then 4 else 0 
+	                                                end) as status
+                                                from Orders as t", pageSize);
+                        sqlCommand.AppendFormat(@"  where t.CreateTime >= '{0}' and t.CreateTime<'2015-08-20' and t.OrderNO > {1} ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "ordershistory-before":
+                        /*
+                        sqlCommand.AppendFormat(@" select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from ordershistory as o where o.OrderID = t.OrderID) as status
+                                                from ordershistory as t", pageSize);
+                        */
+                        sqlCommand.AppendFormat(@" select top {0} t.*,(
+                            select 
+	                            case 
+		                            when PaymentMethodID > 0 AND PayStatus = 0 then 0
+		                            when OrderStatus NOT IN (11,16,12,13,14,15,17) AND (PaymentMethodID=0 OR (PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+		                            when OrderStatus=17 THEN 3
+		                            when OrderStatus  IN (11,16,12,13,14,15) then 4	else 0 
+	                            end 
+                            ) as status
+                            from ordershistory as t", pageSize);
+                        sqlCommand.Append(string.Format(" where t.CreateTime < '{0}' and t.OrderNO > {1}  ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"),ID));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "ordershistory-after":
+                        sqlCommand.AppendFormat(@" select top {0} t.*,(
+                            select 
+	                            case 
+		                            when PaymentMethodID > 0 AND PayStatus = 0 then 0
+		                            when OrderStatus NOT IN (11,16,12,13,14,15,17) AND (PaymentMethodID=0 OR (PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+		                            when OrderStatus=17 THEN 3
+		                            when OrderStatus  IN (11,16,12,13,14,15) then 4	else 0 
+	                            end 
+                            ) as status
+                            from ordershistory as t", pageSize);
+                        sqlCommand.AppendFormat(@" where t.CreateTime >= '{0}' and t.OrderNO > {1} ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderlogistics":
+                        sqlCommand.Append(string.Format("select top {0} * FROM OrderLogistics WHERE LogisticsID > {1}  ORDER BY LogisticsID", pageSize, ID));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    default:
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Add)
+                {
+                    case DatabaseType.dbr_YX:
+                        var dbCommand1 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_CouponBase:
+                        var dbCommand2 = dbr_CouponBase.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_CouponBase.ExecuteDataSet(dbCommand2);
+                        break;
+                    case DatabaseType.dbr_Order:
+                        var dbCommand3 = dbr_Order.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Order.ExecuteDataSet(dbCommand3);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetAddList 查询需要添加的{0}表失败,ID:{1},异常信息:{2}", tableName, ID, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询需要更新的列表
+        /// </summary>
+        /// <param name="productInitID">需要更新的原始ID,即需要更新的最大ID</param>
+        /// <param name="productNowID">当前更新到的ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetUpdateList(int MaxID, int NowID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                switch (tableName.ToLower())
+                {
+                    case "coupon":
+                    case "couponbatch":
+                        sqlCommand.Append(string.Format(" AND ID > {0} AND ID <= {1} ORDER BY ID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponchannel":
+                        sqlCommand.Append(string.Format(" AND ChannelID > {0} AND ChannelID <= {1}  ORDER BY ChannelID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "coupontype":
+                        sqlCommand.Append(string.Format(" AND TypeID > {0} AND TypeID <= {1}  ORDER BY TypeID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcard":
+                        sqlCommand.Append(string.Format(" AND CouponID > {0} AND CouponID <= {1}  ORDER BY CouponID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcarddetail":
+                        sqlCommand.Append(string.Format(" AND CardDetailID > {0} AND CardDetailID <= {1}  ORDER BY CardDetailID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "searchkeyword":
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0} AND KeywordID <= {1}  ORDER BY KeywordID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_YX;
+                        break;
+                    default:
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Update)
+                {
+                    case DatabaseType.dbr_YX:
+                        var dbCommand1 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_CouponBase:
+                        var dbCommand2 = dbr_CouponBase.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_CouponBase.ExecuteDataSet(dbCommand2);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetUpdateList 查询需要更新的{0}表失败,ID:{0},异常信息:{1}", tableName, NowID, ex.Message);
+                return null;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 关键词列表
+        /// </summary>
+        /// <param name="strWhere">条件</param>
+        /// <returns></returns>
+        public DataTable Keyword_GetListForSearch(string strWhere)
+        {
+            string sqlCommand = "Keyword_GetListForSearch";
+            var dbCommand = dbr_Product.GetStoredProcCommand(sqlCommand);
+            dbr_Product.AddInParameter(dbCommand, "strWhere", DbType.String, strWhere);
+            DataSet dSet = dbr_Product.ExecuteDataSet(dbCommand);
+            return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+        }
+
+        /// <summary>
+        /// 搜索关键字
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SearchKeyword_GetListForSearch()
+        {
+            string sqlCommand = "SELECT KeywordID,Keywords AS ChineseName,'' AS PinyinName,ProductCount,4 AS TypeID FROM dbo.SearchKeyword";
+            var dbCommand = dbr_Marketing.GetSqlStringCommand(sqlCommand);
+            DataSet dSet = dbr_Marketing.ExecuteDataSet(dbCommand);
+            return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+        }
+
+        /// <summary>
+        /// 修改搜索关键词
+        /// <param name="related"></param>
+        /// <param name="salled">热销推荐（销量）</param>
+        /// <param name="recommend">精品推荐（毛利率）</param>
+        /// <param name="preferential">优惠推荐（折扣）</param>
+        /// <param name="hotSalled">金象热卖（折扣销量）</param>
+        /// <param name="keywordID"></param>
+        /// </summary>
+        public int Update_SearchKeyword(string related, string salled, string recommend, string preferential, string hotSalled,int productCount, int keywordID)
+        {
+            string sqlCommand = "UPDATE dbo.SearchKeyword SET Related=@Related, Salled=@Salled, Recommend=@Recommend, Preferential=@Preferential, HotSalled=@HotSalled, ProductCount=@productCount, UpdateTime=GETDATE() WHERE KeywordID=@KeywordID";
+            var dbCommand = dbr_Marketing.GetSqlStringCommand(sqlCommand);
+            dbr_Marketing.AddInParameter(dbCommand, "Related", DbType.String, related);
+            dbr_Marketing.AddInParameter(dbCommand, "Salled", DbType.String, salled);
+            dbr_Marketing.AddInParameter(dbCommand, "Recommend", DbType.String, recommend);
+            dbr_Marketing.AddInParameter(dbCommand, "Preferential", DbType.String, preferential);
+            dbr_Marketing.AddInParameter(dbCommand, "HotSalled", DbType.String, hotSalled);
+            dbr_Marketing.AddInParameter(dbCommand, "ProductCount", DbType.Int32, productCount);
+            dbr_Marketing.AddInParameter(dbCommand, "KeywordID", DbType.Int32, keywordID);
+            return dbr_Marketing.ExecuteNonQuery(dbCommand);
+        }
+
+        static string orderids = "2010500,2010247,2010249,2011206,2010251,2010302,2010514,2010248,2010501,2010502,2010503,2010504,2010505,2010506,2010507,2010508,2010509,2010263,2010265,2010266,2010267,2010268,2010274,2010599,2010281,2010601,2010603,2010606,2010607,2010662,2010663,2010664,2010665,2010666,2010688,2010689,2010693,2010694,2010695,2010698,2010700,2010250,2010252,2010262,2010269,2010270,2010271,2010272,2010273,2010275,2010276,2010277,2010278,2010279,2010769,2010282,2010293,2010775,2010777,2010783,2010254,2010255,2010257,2010256,2010258,2010377,2010382,2010383,2010445,2010472,2010485,2010497,2010790,2010802,2010253,2010264,2010289,2010290,2010291,2010304,2010305,2010795,2010797,2010799,2010801,2010811,2010813,2010284,2010285,2010286,2010287,2010288,2010292,2010294,2010295,2010296,2010297,2010298,2010300,2010301,2010303,2010323,2010324,2010325,2010326,2010327,2010330,2010331,2010333,2010334,2010336,2010341,2010343,2010344,2010345,2010449,2010454,2010455,2010459,2010460,2010463,2010464,2010474,2010259,2010260,2010261,2010409,2010412,2010416,2010422,2010427,2010477,2010482,2010483,2010484,2010496,2010391,2010405,2010461,2010462,2010510,2010511,2010512,2010513,2010515,2010280,2010306,2010363,2010424,2010425,2010428,2010429,2010431,2010432,2010433,2010434,2010283,2010369,2010407,2010426,2010299,2010307,2010894,2010308,2010337,2010338,2010340,2010378,2010430,2010435,2010388,2010390,2010392,2010393,2010394,2010395,2010396,2010397,2010398,2010408,2010410,2010411,2010419,2010421,2010423,2010309,2010365,2010367,2010368,2010375,2010348,2010413,2010415,2010439,2010440,2010442,2010443,2010465,2010468,2010371,2010373,2010374,2010376,2010379,2010380,2010381,2010384,2010385,2010386,2010387,2010332,2010370,2010372,2010399,2010402,2010403,2010417,2010418,2010420,2010438,2010310,2010311,2010312,2010313,2010314,2010315,2010316,2010317,2010318,2010319,2010320,2010321,2010322,2010328,2010329,2010335,2010339,2010342,2010353,2010356,2010357,2010358,2010359,2010360,2010361,2010362,2010364,2010366,2010414,2010436,2010437,2010346,2010389,2010400,2010401,2010404,2010406,2010347,2010349,2010350,2010351,2010352,2010354,2010355,2010441,2010452,2010453,2010456,2010458,2010473,2010475,2010476,2010448,2010450,2010451,2010444,2010446,2010447,2010457,2010479,2010488,2010489,2010494,2010495,2010498,2010499,2010466,2010467,2010469,2010470,2010471,2010478,2010480,2010481,2010486,2010487,2010490,2010491,2010492,2010493,2010667,2010677,2010800,2010803,2010804,2010812,2010722,2010673,2010708,2010714,2010715,2010716,2010717,2010718,2010719,2010723,2010669,2010671,2010682,2010767,2010770,2010782,2010785,2010786,2010787,2010788,2010789,2010791,2010792,2010793,2010696,2010697,2010699,2010701,2010702,2010703,2010705,2010706,2010707,2010724,2010779,2010807,2010831,2010832,2010833,2010835,2010836,2010837,2010848,2011192,2011198,2011205,2011211,2011203,2011208,2011209,2010728,2010729,2010733,2010736,2010742,2010746,2010755,2010756,2010758,2010771,2010778,2010805,2010806,2010808,2010809,2010810,2010781,2010784,2010817,2010823,2010725,2010726,2010727,2010741,2010745,2010749,2010757,2010759,2010762,2010763,2010765,2010766,2010768,2011199,2011200,2011201,2011202,2010753,2010772,2010773,2010774,2010780,2010814,2010820,2010849,2010851,2010852,2010855,2010857,2010870,2010816,2010825,2010856,2010878,2010880,2010885,2010819,2010822,2010826,2010827,2010829,2010830,2010840,2010846,2010850,2010815,2010818,2010821,2010824,2010828,2010853,2010888,2010854,2010869,2010890,2010891,2010858,2010859,2010860,2010861,2010862,2010866,2010867,2010868,2010872,2010873,2010876,2010863,2010865,2010871,2010874,2010875,2010877,2010879,2010864,2010881,2010882,2010883,2010884,2010886,2010887,2010889,2010892,2010965,2010993,2010997,2010998,2010999,2011000,2011002,2011004,2011014,2011098,2011173,2010990,2010996,2011007,2011033,2010991,2010992,2010995,2011029,2011030,2011041,2011042,2011043,2011044,2011047,2011048,2011049,2011050,2011095,2011096,2011097,2011099,2011128,2011129,2011133,2011135,2011136,2011145,2011156,2011157,2011162,2011163,2011176,2011187,2011069,2011070,2011071,2011072,2011074,2011075,2011076,2011077,2011078,2011088,2011091,2011188,2011189,2011190,2011013,2011045,2011046,2011081,2011082,2011083,2011084,2011085,2011087,2011090,2011092,2011093,2011017,2011018,2011019,2011020,2011021,2011023,2011028,2011031,2011034,2011036,2011037,2011038,2011079,2011080,2011086,2011089,2011116,2011039,2011068,2011073,2011137,2011100,2011101,2011102,2011140,2011148,2011149,2011150,2011160,2011051,2011052,2011054,2011055,2011056,2011057,2011058,2011059,2011060,2011064,2011065,2011066,2011067,2011053,2011104,2011106,2011107,2011108,2011109,2011110,2011111,2011114,2011117,2011118,2011142,2011164,2011130,2011169,2011122,2011124,2011126,2011127,2011177,2011178,2011181,2011131,2011132,2011134,2011139,2011141,2011146,2011158,2011161,2011165,2011166,2011167,2011168,2011170,2011171,2011175,2011179,2011191,2011119,2011120,2011138,2011147,2011151,2011152,2011153,2011154,2011155,2011182,2011183,2011184,2011121,2011123,2011125,2011159,2011185,2011186,2011144,2011172,2011174,2011180,2010152,2010153,2010154,2010155,2010156,2010159,2010161,2010163,2010164,2010165,2010166,2010169,2010170,2010171,2010172,2010174,2010176,2010177,2010178,2010200,2010201,2010203,2010206,2010207,2010208,2010210,2010211,2010212,2010221,2010223,2010180,2010181,2010182,2010184,2010185,2010186,2010187,2010188,2010189,2010195,2010197,2010205,2010157,2010204,2010234,2010236,2010238,2010158,2010196,2010198,2010199,2010179,2010219,2010214,2010215,2010216,2010217,2010218,2010245,2010246,2010145,2010147,2010148,2010151,2010960,2010961,2010962,2010963,2010966,2010967,2010968,2010970,2010971,2010987,2010989,2011194,2011195,2011197,2010096,2010097,2010114,2010125,2010127,2010141,2010150,2010168,2010183,2010224,2010241,2010098,2010115,2010116,2010192,2010160,2010209,2010162,2010100,2010110,2010112,2010113,2010117,2010118,2010120,2010121,2010122,2010123,2010124,2010126,2010129,2010133,2010134,2010140,2010142,2010143,2010144,2010099,2010191,2010230,2010232,2010242,2010243,2010244,2010091,2010104,2010173,2010190,2010193,2010194,2010202,2010213,2010220,2010222,2010225,2010226,2010227,2010228,2010229,2010231,2010233,2010516,2010527,2010568,2010569,2010570,2010571,2010572,2010573,2010575,2010588,2010528,2010581,2010532,2010535,2010542,2010604,2010609,2010610,2010611,2010612,2010613,2010614,2010616,2010617,2010618,2010619,2010537,2010582,2010583,2010584,2010600,2010683,2010743,2010517,2010518,2010519,2010520,2010547,2010608,2010685,2010686,2010709,2010710,2010711,2010712,2010713,2010543,2010546,2010643,2010721,2010529,2010531,2010538,2010544,2010621,2010622,2010747,2010752,2010776,2010794,2010796,2010798,2010620,2010623,2010624,2010625,2010626,2010627,2010629,2010630,2010631,2010632,2010633,2010634,2010635,2010637,2010638,2010639,2010640,2010651,2010653,2010656,2010668,2010678,2010687,2010730,2010731,2010732,2010734,2010735,2010737,2010738,2010739,2010740,2010744,2010748,2010750,2010751,2010754,2010760,2010761,2010550,2010720,2010764,2010834,2010838,2010839,2010841,2010842,2010843,2010844,2010845,2010847,2010536,2010545,2010574,2010576,2010577,2010578,2010579,2010580,2010615,2010628,2010641,2010642,2010645,2010646,2010647,2010648,2010649,2010522,2010523,2010525,2010530,2010534,2010539,2010548,2010549,2010670,2010672,2010674,2010675,2010676,2010679,2010533,2010540,2010541,2010551,2010552,2010554,2010555,2010556,2010557,2010558,2010559,2010560,2010591,2010592,2010593,2010594,2010595,2010596,2010597,2010598,2010521,2010524,2010526,2010553,2010585,2010586,2010587,2010589,2010590,2010636,2010644,2010650,2010652,2010654,2010655,2010657,2010658,2010659,2010660,2010661,2010561,2010562,2010563,2010564,2010565,2010566,2010567,2010602,2010605,2010680,2010681,2010684,2010690,2010691,2010692,2010704,2010906,2011005,2011022,2011024,2011025,2011026,2011027,2010908,2010910,2010915,2011012,2011015,2011016,2011032,2011035,2011040,2011061,2011062,2011063,2011115,2010937,2010938,2010939,2011103,2011105,2011113,2011143,2010893,2010895,2010896,2010897,2010898,2010899,2010916,2010955,2010902,2010947,2010907,2010919,2010923,2010924,2010969,2010973,2010976,2010977,2010978,2010979,2010980,2010981,2010982,2010983,2010985,2010986,2010988,2010964,2010925,2010926,2010927,2010928,2010929,2010930,2010931,2010932,2010940,2010950,2010953,2010900,2010901,2010903,2010972,2010975,2010909,2010911,2010917,2010933,2010934,2010935,2010936,2010974,2010984,2010994,2011001,2011003,2011006,2011008,2011009,2011010,2011011,2010904,2010905,2010941,2010942,2010943,2010944,2010945,2010946,2010948,2010949,2010951,2010952,2010954,2010956,2010957,2010958,2010959,2010912,2010913,2010914,2010918,2010920,2010921,2010922,2011112,2011193,2011196,2011212,2011204,2011210,2011207,2010235,2010239,2010086,2010105,2010111,2010119,2010130,2010131,2010132,2010135,2010136,2010138,2010139,2010085,2010090,2010093,2010095,2010107,2010128,2011094,2010102,2010103,2010106,2010108,2010109,2010167,2010175,2010237,2010240,2010092,2010137,2010146,2010084,2010087,2010088,2010089,2010094,2010101,2010149";
+    }
+
+    enum DatabaseType
+    {
+        dbr_Product = 1,
+        dbr_Marketing,
+        dbr_CouponBase,
+        dbr_YX,
+        dbr_Order,
+        dbr_Sql_Order,
+    }
+}

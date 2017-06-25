@@ -1,0 +1,52 @@
+﻿using JXAPI.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public partial class CouponMySqlDAL
+    {
+        /// <summary>
+        /// 查询出所有将要过期的优惠券 
+        /// </summary>
+        /// <param name="numberHour">过期天数</param>
+        /// <returns></returns>
+        public IList<CouponMySqlInfo> CouponMySql_GetAll(int numberHour)
+        {
+            IList<CouponMySqlInfo> couponInfoList = new List<CouponMySqlInfo>();
+            string sql = string.Empty;
+            sql += " SELECT * FROM  Coupon ";
+            sql += " WHERE  IsUsed=1 AND EndTime<'{0}' AND UID>0 ";
+            sql = string.Format(sql, DateTime.Now.AddHours(numberHour));
+            DbCommand cmd = dbr.GetSqlStringCommand(sql);
+            using (IDataReader dataReader = dbr.ExecuteReader(cmd))
+            {
+                while (dataReader.Read())
+                {
+                    couponInfoList.Add(RecoverModel(dataReader));
+                }
+            }
+            return couponInfoList;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复CouponMySqlInfo对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        public CouponMySqlInfo RecoverModel(IDataReader dataReader)
+        {
+            CouponMySqlInfo couponInfo = new CouponMySqlInfo();
+            couponInfo.ID = dataReader["ID"].ToInt();
+            couponInfo.UID = dataReader["UID"].ToInt();
+            couponInfo.UserName = dataReader["UserName"].ToString();
+            couponInfo.CouponCode = dataReader["CouponCode"].ToString();
+            couponInfo.EndTime = dataReader["EndTime"].ToDateTime();
+            return couponInfo;
+        }
+    }
+}

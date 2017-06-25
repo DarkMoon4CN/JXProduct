@@ -1,0 +1,176 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Xml;
+using System.Data.SqlTypes;
+using System.Data.Common;
+using JXAPI.Component.Model;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class OrdersSqlDAL
+    {
+        private static Database dbr = JXThirdPartyData.Reader;
+        private static Database dbw = JXThirdPartyData.Writer;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrdersSqlDAL));
+
+        /// <summary>
+        /// 查询待处理订单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetList(string id, string createTime, int start, int pageSize, string tableName, int status = 0)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                switch (tableName.ToLower())
+                {
+                    case "orders":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE StatusChangTime>'{1}' AND OrderSource IN (0,3,4,10) AND OrderStatus IN (11,16,15,6,9,10) ORDER BY OrderID", tableName, createTime));
+                        break;
+                    case "orderlogistics":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID='{1}' ORDER BY CreateTime", tableName, id));
+                        break;
+                    case "orderoperatelog":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID='{1}'", tableName, id));
+                        if (status > 0)
+                        {
+                            sqlCommand.Append(string.Format(" AND NewStatus={0}", status));
+                        }
+                        sqlCommand.Append(" ORDER BY CreateTime");
+                        break;
+                }
+                DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetList 查询：{0} ID:{1} 异常信息:{2}", tableName, id, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询三方运单号
+        /// </summary>
+        /// <param name="ThirdOrderId">三方单号</param>
+        /// <returns></returns>
+        public string GetOrderIDByThirdOrderID(string thirdOrderID)
+        {
+            string orderId = string.Empty;
+            string sqlCommand = "SELECT OrderID FROM Orders WHERE ThirdOrderID = @ThirdOrderID";
+            DbCommand dbCommand = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(dbCommand, "ThirdOrderID", DbType.String, thirdOrderID);
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                if (dataReader.Read())
+                {
+                    orderId = dataReader["OrderID"].ToString();
+                }
+            }
+            return orderId;
+        }
+
+        /// <summary>
+        /// 新增订单
+        /// </summary>
+        /// <param name="OrderXML">订单数据XML</param>
+        /// <param name="Result">添加状态</param>
+        internal void Orders_InsertByXML(string OrderXML, out int Result)
+        {
+            string sqlCommand = "Orders_InsertByXML";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "OrderXML", DbType.String, OrderXML);
+            dbw.AddOutParameter(dbCommand, "Result", DbType.Int16, 4);
+            dbw.ExecuteNonQuery(dbCommand);
+
+            //  返回参数
+            Result = int.Parse(dbw.GetParameterValue(dbCommand, "Result").ToString());
+        }
+
+        /// <summary>
+        /// 更新订单 指定列的值
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="colName">列名</param>
+        /// <param name="colValue">列值</param>
+        /// <returns>true、false</returns>
+        internal bool Orders_Update(string orderId, string[] colName, object[] colValue)
+        {
+            string sSQL = " Update Orders set ";
+            for (int i = 0; i < colName.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(colName[i]))
+                {
+                    Type colType = colValue[i].GetType();
+                    if (colType == Type.GetType("System.Int16") ||
+                        colType == Type.GetType("System.Int32") ||
+                        colType == Type.GetType("System.Int64") ||
+                        colType == Type.GetType("System.Decimal") ||
+                        colType == Type.GetType("System.Float"))
+                        sSQL += string.Format("{0}={1},", colName[i], colValue[i]);
+                    else
+                        sSQL += string.Format("{0}='{1}',", colName[i], colValue[i]);
+                }
+            }
+            sSQL = sSQL.Remove(sSQL.Length - 1, 1);
+            sSQL += string.Format(" WHERE OrderID='{0}'", orderId);
+
+            return dbr.ExecuteNonQuery(CommandType.Text, sSQL) == 1 ? true : false;
+        }
+
+        /// <summary>
+        /// 订单状态修改
+        /// </summary>
+        /// <param name="log">状态日志内容</param>
+        /// <param name="disposeType">修改类型，1=支付状态，2=订单状态</param>
+        /// <returns>返回：0=成功，1=失败，其他自定义错误</returns>
+        internal string Orders_Dispose(OrderOperateLogInfo log, int disposeType)
+        {
+            string sqlCommand = "Orders_Dispose";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.String, log.OrderID);
+            dbw.AddInParameter(dbCommand, "UID", DbType.String, log.UID);
+            dbw.AddInParameter(dbCommand, "UserType", DbType.String, log.UserType);
+            dbw.AddInParameter(dbCommand, "UserName", DbType.String, log.UserName);
+            dbw.AddInParameter(dbCommand, "DisposeID", DbType.String, log.NewStatus);
+            dbw.AddInParameter(dbCommand, "DisposeType", DbType.String, disposeType);
+            dbw.AddInParameter(dbCommand, "Remarks", DbType.String, log.Content);
+            dbw.AddOutParameter(dbCommand, "Error", DbType.String, 100);
+            dbw.ExecuteNonQuery(dbCommand);
+
+            //  返回参数
+            return dbw.GetParameterValue(dbCommand, "Error").ToString();
+        }
+
+        /// <summary>
+        /// 添加订单操作日志
+        /// </summary>
+        /// <param name="ool">实体</param>
+        /// <returns>返回数据：0=成功，1=失败，其它自定义消息</returns>
+        public string OrderOperateLog_Insert(OrderOperateLogInfo ool)
+        {
+            string sqlCommand = "OrderOperateLog_Insert";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.String, ool.OrderID);
+            dbw.AddInParameter(dbCommand, "UID", DbType.Int32, ool.UID);
+            dbw.AddInParameter(dbCommand, "UserType", DbType.Int32, ool.UserType);
+            dbw.AddInParameter(dbCommand, "UserName", DbType.String, ool.UserName);
+            dbw.AddInParameter(dbCommand, "OldStatus", DbType.Int32, ool.OldStatus);
+            dbw.AddInParameter(dbCommand, "NewStatus", DbType.Int32, ool.NewStatus);
+            dbw.AddInParameter(dbCommand, "Tittle", DbType.String, ool.Tittle);
+            dbw.AddInParameter(dbCommand, "Remarks", DbType.String, ool.Content);
+            dbw.AddOutParameter(dbCommand, "Error", DbType.String, 100);
+
+            dbw.ExecuteNonQuery(dbCommand);
+            return dbw.GetParameterValue(dbCommand, "Error").ToString();
+        }
+    }
+}

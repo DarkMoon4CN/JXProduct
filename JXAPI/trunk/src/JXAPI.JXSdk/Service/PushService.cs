@@ -1,0 +1,94 @@
+﻿using JXAPI.JXSdk.Config;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    /// <summary>
+    /// 消息推送
+    /// </summary>
+    public  class PushService
+    {
+        public static readonly SecureConfigSection upLoadConfig = SecureConfigSection.Instance;
+        public static PushService Instance
+        {
+            get { return new PushService(); }
+        }
+
+        public JsonResultObject PushMessage(PushMessageRequest req) 
+        {
+            var result = new JsonResultObject();
+            var collection = upLoadConfig.Secures;
+            string jsonStr = string.Empty;
+            string pushUrl = collection["push"].URL;
+            //  请求
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(pushUrl);
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
+            httpWebRequest.Method = "POST";
+
+            string data = "method=" + req.Method;
+            data += "&channelID=" + req.ChannelID;
+
+            if (req.PushType != null && req.PushType != "") 
+            {
+                data += "&pushType=" + req.PushType;
+            }
+            if (req.TargetList != null && req.TargetList != "") 
+            {
+                data += "&targetList="+req.TargetList;            
+            }
+            if (req.Content != null && req.Content != "") 
+            {
+                data += "&content=" + req.Content;
+            }
+            if (req.TypeID != null && req.TypeID != "")
+            {
+                data += "&TypeID=" + req.TypeID;
+            }
+            if (req.Creator != null && req.Creator != "")
+            {
+                data += "&creator=" + req.Creator;
+            }
+            if (req.DataID != null && req.DataID != "") 
+            {
+                data += "&dataID=" + req.DataID;
+            }
+            if (req.Url != null && req.Url != "") 
+            {
+                data += "&url="+req.Url;
+            }
+            data += "&template=" + req.Template;
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(data);
+            httpWebRequest.ContentLength = bytes.Length;
+            Stream requestStream = httpWebRequest.GetRequestStream();
+            requestStream.Write(bytes, 0, bytes.Length);
+            requestStream.Flush();
+            requestStream.Close();
+           
+            //  响应
+            try
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                string responseContent = streamReader.ReadToEnd();
+                httpWebResponse.Close();
+                streamReader.Close();
+                httpWebRequest.Abort();
+                httpWebResponse.Close();
+                result = JsonHelper.ConvertToObj<JsonResultObject>(responseContent);
+            }
+            catch
+            {
+                result.status = false;
+                result.msg = "推送消息失败，网络连接失败！";
+            }
+            return result;
+        }
+    }
+}

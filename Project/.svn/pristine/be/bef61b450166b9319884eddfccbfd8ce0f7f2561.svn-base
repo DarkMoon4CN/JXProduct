@@ -1,0 +1,666 @@
+namespace JXProduct.Component.SQLServerDAL
+{
+    using JXProduct.Component.DataAccess;
+    using JXProduct.Component.Model;
+    using Microsoft.Practices.EnterpriseLibrary.Data;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Common;
+
+    internal class ProductDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        #region CURD
+
+        /// <summary>
+        /// Product_Insert Method
+        /// </summary>
+        /// <param name="ProductInfo">Product object</param>
+        /// <returns></returns>
+        //public int Product_Insert(ProductInfo info)
+        //{
+        //    string sqlCommand = "Product_Insert";
+        //    DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+        //    dbw.AddOutParameter(cmd, "ProductID", DbType.Int32, 4);
+        //    dbw.AddInParameter(cmd, "ProductCode", DbType.String, info.ProductCode);
+        //    dbw.AddInParameter(cmd, "ChineseName", DbType.String, info.ChineseName);
+        //    dbw.AddInParameter(cmd, "CADN", DbType.String, info.CADN);
+        //    dbw.AddInParameter(cmd, "SellingName", DbType.String, info.SellingName);
+        //    dbw.AddInParameter(cmd, "LongName", DbType.String, info.LongName);
+        //    dbw.AddInParameter(cmd, "LinkName", DbType.String, info.LinkName);
+        //    dbw.AddInParameter(cmd, "LinkUrl", DbType.String, info.LinkUrl);
+        //    dbw.AddInParameter(cmd, "BrandID", DbType.Int32, info.BrandID);
+        //    dbw.AddInParameter(cmd, "ProductType", DbType.Int16, info.ProductType);
+        //    dbw.AddInParameter(cmd, "DrugType", DbType.Int16, info.DrugType);
+        //    dbw.AddInParameter(cmd, "ParameterType", DbType.Int16, info.ParameterType);
+        //    dbw.AddInParameter(cmd, "Type", DbType.Int16, info.Type);
+        //    dbw.AddInParameter(cmd, "DrugClassification", DbType.Int16, info.DrugClassification);
+        //    dbw.AddInParameter(cmd, "Specifications", DbType.String, info.Specifications);
+        //    dbw.AddInParameter(cmd, "ManufacturerID", DbType.Int32, info.ManufacturerID);
+        //    dbw.AddInParameter(cmd, "ApprovalNumber", DbType.String, info.ApprovalNumber);
+        //    dbw.AddInParameter(cmd, "Origin", DbType.Int16, info.Origin);
+        //    dbw.AddInParameter(cmd, "LargePacking", DbType.Int32, info.LargePacking);
+        //    dbw.AddInParameter(cmd, "Unit", DbType.String, info.Unit);
+        //    dbw.AddInParameter(cmd, "Volume", DbType.String, info.Volume);
+        //    dbw.AddInParameter(cmd, "Storage", DbType.Int16, info.Storage);
+        //    dbw.AddInParameter(cmd, "Dosage", DbType.String, info.Dosage);
+        //    dbw.AddInParameter(cmd, "Usage", DbType.Int16, info.Usage);
+        //    dbw.AddInParameter(cmd, "Abbreviation", DbType.String, info.Abbreviation);
+        //    dbw.AddInParameter(cmd, "ContainMHJ", DbType.Int16, info.ContainMHJ);
+        //    dbw.AddInParameter(cmd, "IsFragile", DbType.Int16, info.IsFragile);
+        //    dbw.AddInParameter(cmd, "IsTaiKang", DbType.Int16, info.IsTaiKang);
+        //    dbw.AddInParameter(cmd, "IsDeluxe", DbType.Int16, info.IsDeluxe);
+        //    dbw.AddInParameter(cmd, "IsOdour", DbType.Int16, info.IsOdour);
+        //    dbw.AddInParameter(cmd, "IsProtection", DbType.Int16, info.IsProtection);
+        //    dbw.AddInParameter(cmd, "IsBasePowder", DbType.Int16, info.IsBasePowder);
+        //    dbw.AddInParameter(cmd, "IsYiBao", DbType.Int16, info.IsYiBao);
+        //    dbw.AddInParameter(cmd, "IsBasic", DbType.Int16, info.IsBasic);
+        //    dbw.AddInParameter(cmd, "IsRecommend", DbType.Int16, info.IsRecommend);
+        //    dbw.AddInParameter(cmd, "IsTop", DbType.Int16, info.IsTop);
+        //    dbw.AddInParameter(cmd, "Sort", DbType.Int32, info.Sort);
+        //    dbw.AddInParameter(cmd, "Status", DbType.Int16, info.Status);
+        //    dbw.AddInParameter(cmd, "Creator", DbType.String, info.Creator);
+        //    dbw.AddInParameter(cmd, "CreateTime", DbType.DateTime, info.CreateTime);
+        //    dbw.ExecuteNonQuery(cmd);
+        //    return dbw.GetParameterValue(cmd, "ProductID").ToInt();
+        //}
+
+
+        /// <summary>
+        /// Product_Insert Method		
+        /// </summary>
+        /// <param name="ProductInfo">Product object</param>
+        /// <returns></returns>
+        public int Product_AddNew(ProductInfo productInfo)
+        {
+            string sqlCommand = "Product_AddNew";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddOutParameter(dbCommand, "ProductID", DbType.Int32, 4);
+            dbw.AddInParameter(dbCommand, "ProductCode", DbType.String, productInfo.ProductCode);
+            dbw.AddInParameter(dbCommand, "ChineseName", DbType.String, productInfo.ChineseName);
+            dbw.AddInParameter(dbCommand, "CADN", DbType.String, productInfo.CADN);
+            dbw.AddInParameter(dbCommand, "SellingName", DbType.String, productInfo.SellingName);
+            dbw.AddInParameter(dbCommand, "LongName", DbType.String, productInfo.LongName);
+            dbw.AddInParameter(dbCommand, "LinkName", DbType.String, productInfo.LinkName);
+            dbw.AddInParameter(dbCommand, "LinkUrl", DbType.String, productInfo.LinkUrl);
+            dbw.AddInParameter(dbCommand, "EnglishName", DbType.String, productInfo.EnglishName);
+            dbw.AddInParameter(dbCommand, "PinyinName", DbType.String, productInfo.PinyinName);
+            dbw.AddInParameter(dbCommand, "CFID", DbType.Int32, productInfo.CFID);
+            dbw.AddInParameter(dbCommand, "BrandID", DbType.Int32, productInfo.BrandID);
+            dbw.AddInParameter(dbCommand, "ProductType", DbType.Int16, productInfo.ProductType);
+            dbw.AddInParameter(dbCommand, "DrugType", DbType.Int16, productInfo.DrugType);
+            dbw.AddInParameter(dbCommand, "ParameterType", DbType.Int16, productInfo.ParameterType);
+            dbw.AddInParameter(dbCommand, "Type", DbType.Int16, productInfo.Type);
+            dbw.AddInParameter(dbCommand, "DrugClassification", DbType.Int16, productInfo.DrugClassification);
+            dbw.AddInParameter(dbCommand, "MarketPrice", DbType.Decimal, productInfo.MarketPrice);
+            dbw.AddInParameter(dbCommand, "TradePrice", DbType.Decimal, productInfo.TradePrice);
+            dbw.AddInParameter(dbCommand, "CostPrice", DbType.Decimal, productInfo.CostPrice);
+            dbw.AddInParameter(dbCommand, "MobilePrice", DbType.Decimal, productInfo.MobilePrice);
+            dbw.AddInParameter(dbCommand, "Images", DbType.String, productInfo.Images);
+            dbw.AddInParameter(dbCommand, "Instructions", DbType.String, productInfo.Instructions);
+            dbw.AddInParameter(dbCommand, "Promotion", DbType.String, productInfo.Promotion);
+            dbw.AddInParameter(dbCommand, "Description", DbType.String, productInfo.Description);
+            dbw.AddInParameter(dbCommand, "Specifications", DbType.String, productInfo.Specifications);
+            dbw.AddInParameter(dbCommand, "ValueList", DbType.String, productInfo.ValueList);
+            dbw.AddInParameter(dbCommand, "ManufacturerID", DbType.Int32, productInfo.ManufacturerID);
+            dbw.AddInParameter(dbCommand, "ApprovalNumber", DbType.String, productInfo.ApprovalNumber);
+            dbw.AddInParameter(dbCommand, "Origin", DbType.Int16, productInfo.Origin);
+            dbw.AddInParameter(dbCommand, "LargePacking", DbType.Int32, productInfo.LargePacking);
+            dbw.AddInParameter(dbCommand, "BuyLimit", DbType.Int32, productInfo.BuyLimit);
+            dbw.AddInParameter(dbCommand, "Unit", DbType.String, productInfo.Unit);
+            dbw.AddInParameter(dbCommand, "Volume", DbType.String, productInfo.Volume);
+            dbw.AddInParameter(dbCommand, "Storage", DbType.Int16, productInfo.Storage);
+            dbw.AddInParameter(dbCommand, "Dosage", DbType.String, productInfo.Dosage);
+            dbw.AddInParameter(dbCommand, "Usage", DbType.Int16, productInfo.Usage);
+            dbw.AddInParameter(dbCommand, "Abbreviation", DbType.String, productInfo.Abbreviation);
+            dbw.AddInParameter(dbCommand, "ContainMHJ", DbType.Int16, productInfo.ContainMHJ);
+            dbw.AddInParameter(dbCommand, "IsFragile", DbType.Int16, productInfo.IsFragile);
+            dbw.AddInParameter(dbCommand, "IsTaiKang", DbType.Int16, productInfo.IsTaiKang);
+            dbw.AddInParameter(dbCommand, "IsDeluxe", DbType.Int16, productInfo.IsDeluxe);
+            dbw.AddInParameter(dbCommand, "IsOdour", DbType.Int16, productInfo.IsOdour);
+            dbw.AddInParameter(dbCommand, "IsProtection", DbType.Int16, productInfo.IsProtection);
+            dbw.AddInParameter(dbCommand, "IsBasePowder", DbType.Int16, productInfo.IsBasePowder);
+            dbw.AddInParameter(dbCommand, "IsYiBao", DbType.Int16, productInfo.IsYiBao);
+            dbw.AddInParameter(dbCommand, "IsBasic", DbType.Int16, productInfo.IsBasic);
+            dbw.AddInParameter(dbCommand, "IsRecommend", DbType.Int16, productInfo.IsRecommend);
+            dbw.AddInParameter(dbCommand, "IsTop", DbType.Int16, productInfo.IsTop);
+            dbw.AddInParameter(dbCommand, "IsImageDiff", DbType.Int16, productInfo.IsImageDiff);
+            dbw.AddInParameter(dbCommand, "Actions", DbType.Int16, productInfo.Actions);
+            dbw.AddInParameter(dbCommand, "Rank", DbType.Int16, productInfo.Rank);
+            dbw.AddInParameter(dbCommand, "SellCount", DbType.Int32, productInfo.SellCount);
+            dbw.AddInParameter(dbCommand, "Comments", DbType.Int32, productInfo.Comments);
+            dbw.AddInParameter(dbCommand, "Favorite", DbType.Int32, productInfo.Favorite);
+            dbw.AddInParameter(dbCommand, "PV", DbType.Int32, productInfo.PV);
+            dbw.AddInParameter(dbCommand, "Sort", DbType.Int32, productInfo.Sort);
+            dbw.AddInParameter(dbCommand, "ValidPeriod", DbType.DateTime, productInfo.ValidPeriod);
+            dbw.AddInParameter(dbCommand, "Status", DbType.Int16, productInfo.Status);
+            dbw.AddInParameter(dbCommand, "Selling", DbType.Int16, productInfo.Selling);
+            dbw.AddInParameter(dbCommand, "SellingTime", DbType.DateTime, productInfo.SellingTime);
+            dbw.AddInParameter(dbCommand, "Title", DbType.String, productInfo.Title);
+            dbw.AddInParameter(dbCommand, "Keywords", DbType.String, productInfo.Keywords);
+            dbw.AddInParameter(dbCommand, "MetaKeywords", DbType.String, productInfo.MetaKeywords);
+            dbw.AddInParameter(dbCommand, "MetaDescription", DbType.String, productInfo.MetaDescription);
+            dbw.AddInParameter(dbCommand, "Creator", DbType.String, productInfo.Creator);
+            dbw.AddInParameter(dbCommand, "CreateTime", DbType.DateTime, productInfo.CreateTime);
+            dbw.ExecuteNonQuery(dbCommand);
+            return int.Parse(dbw.GetParameterValue(dbCommand, "ProductID").ToString());
+        }
+
+        /// <summary>
+        /// Product_Update Method
+        /// </summary>
+        /// <param name="ProductInfo">Product object</param>
+        /// <returns>true:成功 false:失败</returns>
+        public bool Product_Update(ProductInfo info)
+        {
+            string sqlCommand = "Product_Update";
+            DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, info.ProductID);
+            dbw.AddInParameter(cmd, "ProductCode", DbType.String, info.ProductCode);
+            dbw.AddInParameter(cmd, "ChineseName", DbType.String, info.ChineseName);
+            dbw.AddInParameter(cmd, "CADN", DbType.String, info.CADN);
+            dbw.AddInParameter(cmd, "SellingName", DbType.String, info.SellingName);
+            dbw.AddInParameter(cmd, "LongName", DbType.String, info.LongName);
+            dbw.AddInParameter(cmd, "LinkName", DbType.String, info.LinkName);
+            dbw.AddInParameter(cmd, "LinkUrl", DbType.String, info.LinkUrl);
+            dbw.AddInParameter(cmd, "EnglishName", DbType.String, info.EnglishName);
+            dbw.AddInParameter(cmd, "PinyinName", DbType.String, info.PinyinName);
+            dbw.AddInParameter(cmd, "CFID", DbType.Int32, info.CFID);
+            dbw.AddInParameter(cmd, "BrandID", DbType.Int32, info.BrandID);
+            dbw.AddInParameter(cmd, "ProductType", DbType.Int16, info.ProductType);
+            dbw.AddInParameter(cmd, "DrugType", DbType.Int16, info.DrugType);
+            dbw.AddInParameter(cmd, "ParameterType", DbType.Int16, info.ParameterType);
+            dbw.AddInParameter(cmd, "Type", DbType.Int16, info.Type);
+            dbw.AddInParameter(cmd, "DrugClassification", DbType.Int16, info.DrugClassification);
+            dbw.AddInParameter(cmd, "MarketPrice", DbType.Decimal, info.MarketPrice);
+            dbw.AddInParameter(cmd, "TradePrice", DbType.Decimal, info.TradePrice);
+            dbw.AddInParameter(cmd, "CostPrice", DbType.Decimal, info.CostPrice);
+            dbw.AddInParameter(cmd, "MobilePrice", DbType.Decimal, info.MobilePrice);
+            dbw.AddInParameter(cmd, "Images", DbType.String, info.Images);
+            dbw.AddInParameter(cmd, "Instructions", DbType.String, info.Instructions);
+            dbw.AddInParameter(cmd, "Promotion", DbType.String, info.Promotion);
+            dbw.AddInParameter(cmd, "Description", DbType.String, info.Description);
+            dbw.AddInParameter(cmd, "Specifications", DbType.String, info.Specifications);
+            dbw.AddInParameter(cmd, "ValueList", DbType.String, info.ValueList);
+            dbw.AddInParameter(cmd, "ManufacturerID", DbType.Int32, info.ManufacturerID);
+            dbw.AddInParameter(cmd, "ApprovalNumber", DbType.String, info.ApprovalNumber);
+            dbw.AddInParameter(cmd, "Origin", DbType.Int16, info.Origin);
+            dbw.AddInParameter(cmd, "LargePacking", DbType.Int32, info.LargePacking);
+            dbw.AddInParameter(cmd, "BuyLimit", DbType.Int32, info.BuyLimit);
+            dbw.AddInParameter(cmd, "Unit", DbType.String, info.Unit);
+            dbw.AddInParameter(cmd, "Volume", DbType.String, info.Volume);
+            dbw.AddInParameter(cmd, "Storage", DbType.Int16, info.Storage);
+            dbw.AddInParameter(cmd, "Dosage", DbType.String, info.Dosage);
+            dbw.AddInParameter(cmd, "Usage", DbType.Int16, info.Usage);
+            dbw.AddInParameter(cmd, "Abbreviation", DbType.String, info.Abbreviation);
+            dbw.AddInParameter(cmd, "ContainMHJ", DbType.Int16, info.ContainMHJ);
+            dbw.AddInParameter(cmd, "IsFragile", DbType.Int16, info.IsFragile);
+            dbw.AddInParameter(cmd, "IsTaiKang", DbType.Int16, info.IsTaiKang);
+            dbw.AddInParameter(cmd, "IsDeluxe", DbType.Int16, info.IsDeluxe);
+            dbw.AddInParameter(cmd, "IsOdour", DbType.Int16, info.IsOdour);
+            dbw.AddInParameter(cmd, "IsProtection", DbType.Int16, info.IsProtection);
+            dbw.AddInParameter(cmd, "IsBasePowder", DbType.Int16, info.IsBasePowder);
+            dbw.AddInParameter(cmd, "IsYiBao", DbType.Int16, info.IsYiBao);
+            dbw.AddInParameter(cmd, "IsBasic", DbType.Int16, info.IsBasic);
+            dbw.AddInParameter(cmd, "IsRecommend", DbType.Int16, info.IsRecommend);
+            dbw.AddInParameter(cmd, "IsTop", DbType.Int16, info.IsTop);
+            dbw.AddInParameter(cmd, "IsImageDiff", DbType.Int16, info.IsImageDiff);
+            dbw.AddInParameter(cmd, "Actions", DbType.Int16, info.Actions);
+            dbw.AddInParameter(cmd, "Rank", DbType.Int16, info.Rank);
+            dbw.AddInParameter(cmd, "SellCount", DbType.Int32, info.SellCount);
+            dbw.AddInParameter(cmd, "Comments", DbType.Int32, info.Comments);
+            dbw.AddInParameter(cmd, "Favorite", DbType.Int32, info.Favorite);
+            dbw.AddInParameter(cmd, "PV", DbType.Int32, info.PV);
+            dbw.AddInParameter(cmd, "Sort", DbType.Int32, info.Sort);
+            dbw.AddInParameter(cmd, "ValidPeriod", DbType.DateTime, info.ValidPeriod);
+            dbw.AddInParameter(cmd, "Status", DbType.Int16, info.Status);
+            dbw.AddInParameter(cmd, "Selling", DbType.Int16, info.Selling);
+            dbw.AddInParameter(cmd, "SellingTime", DbType.DateTime, info.SellingTime);
+            dbw.AddInParameter(cmd, "Title", DbType.String, info.Title);
+            dbw.AddInParameter(cmd, "Keywords", DbType.String, info.Keywords);
+            dbw.AddInParameter(cmd, "MetaKeywords", DbType.String, info.MetaKeywords);
+            dbw.AddInParameter(cmd, "MetaDescription", DbType.String, info.MetaDescription);
+            dbw.AddInParameter(cmd, "Updater", DbType.String, info.Updater);
+            dbw.AddInParameter(cmd, "UpdateTime", DbType.DateTime, info.UpdateTime);
+            dbw.ExecuteNonQuery(cmd);
+            return true;
+        }
+
+        /// <summary>
+        /// Product_Get Method
+        /// </summary>
+        /// <param name="productID">Product Main ID</param>
+        /// <returns>ProductInfo get from Product table.</returns>
+        public ProductInfo Product_Get(int productID)
+        {
+            ProductInfo info = null;
+
+            string sqlCommand = "Product_Get";
+            DbCommand cmd = dbr.GetStoredProcCommand(sqlCommand);
+            dbr.AddInParameter(cmd, "ProductID", DbType.Int32, productID);
+
+            using (IDataReader read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    info = RecoverModel(read);
+                }
+            }
+
+            return info;
+        }
+
+        /// <summary>
+        /// Product_Delete Method
+        /// </summary>
+        /// <param name="productID">Product Main ID</param>
+        /// <returns>true:成功 false:失败</returns>
+        public bool Product_Delete(int productID)
+        {
+            string sqlCommand = "Product_Delete";
+            DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, productID);
+
+            dbw.ExecuteNonQuery(cmd);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Product_GetList Method
+        /// </summary>
+        /// <param name="pageIndex">起始页码</param>
+        /// <param name="pageSize">每页数据数</param>
+        /// <param name="orderType">设置排序，'':没有排序要求 0：主键升序 1：主键降序 字符串：用户自定义排序规则 如：‘SubmitTime DESC , ID DESC’</param>
+        /// <param name="strWhere">查询条件(注意: 不要加 WHERE)</param>
+        /// <param name="recordCount">总记录数</param>
+        /// <returns>A Generic List of ProductInfo</returns>
+        public IList<ProductInfo> Product_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            IList<ProductInfo> infoList = new List<ProductInfo>();
+
+            string sqlCommand = "Product_GetList";
+            DbCommand cmd = dbr.GetStoredProcCommand(sqlCommand);
+
+            dbr.AddInParameter(cmd, "PageIndex", DbType.Int32, pageIndex);
+            dbr.AddInParameter(cmd, "PageSize", DbType.Int32, pageSize);
+            dbr.AddInParameter(cmd, "OrderType", DbType.String, orderType);
+            dbr.AddInParameter(cmd, "StrWhere", DbType.String, strWhere);
+            dbr.AddOutParameter(cmd, "RecordCount", DbType.Int32, 4);
+
+            using (IDataReader read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    infoList.Add(RecoverModel(read));
+                }
+            }
+
+            recordCount = dbr.GetParameterValue(cmd, "RecordCount").ToInt();
+
+            return infoList;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复Product对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        private ProductInfo RecoverModel(IDataReader read)
+        {
+            ProductInfo info = new ProductInfo();
+
+            info.ProductID = read["ProductID"].ToInt();
+            info.ProductCode = read["ProductCode"].ToString();
+            info.ChineseName = read["ChineseName"].ToString();
+            info.CADN = read["CADN"].ToString();
+            info.SellingName = read["SellingName"].ToString();
+            info.LongName = read["LongName"].ToString();
+            info.LinkName = read["LinkName"].ToString();
+            info.LinkUrl = read["LinkUrl"].ToString();
+            info.PinyinName = read["PinyinName"].ToString();
+            info.CFID = read["CFID"].ToInt();
+            info.CFPath = read["CFPath"].ToString();
+            info.BrandID = read["BrandID"].ToInt();
+            info.BrandName = read["BrandName"].ToString();
+            info.ProductType = read["ProductType"].ToShort();
+            info.DrugType = read["DrugType"].ToShort();
+            info.ParameterType = read["ParameterType"].ToShort();
+            info.Type = read["Type"].ToShort();
+            info.DrugClassification = read["DrugClassification"].ToShort();
+            info.MarketPrice = read["MarketPrice"].ToDecimal();
+            info.TradePrice = read["TradePrice"].ToDecimal();
+            info.CostPrice = read["CostPrice"].ToDecimal();
+            info.MobilePrice = read["MobilePrice"].ToDecimal();
+            info.Images = read["Images"].ToString();
+            info.Instructions = read["Instructions"].ToString();
+            info.Promotion = read["Promotion"].ToString();
+            info.Description = read["Description"].ToString();
+            info.Specifications = read["Specifications"].ToString();
+            info.ValueList = read["ValueList"].ToString();
+            info.ManufacturerID = read["ManufacturerID"].ToInt();
+            info.ManufacturerName = read["ManufacturerName"].ToString();
+            info.ApprovalNumber = read["ApprovalNumber"].ToString();
+            info.Origin = read["Origin"].ToShort();
+            info.LargePacking = read["LargePacking"].ToInt();
+            info.BuyLimit = read["BuyLimit"].ToInt();
+            info.Unit = read["Unit"].ToString();
+            info.Volume = read["Volume"].ToString();
+            info.Storage = read["Storage"].ToShort();
+            info.Dosage = read["Dosage"].ToString();
+            info.Usage = read["Usage"].ToShort();
+            info.Abbreviation = read["Abbreviation"].ToString();
+            info.ContainMHJ = read["ContainMHJ"].ToShort();
+            info.IsFragile = read["IsFragile"].ToShort();
+            info.IsTaiKang = read["IsTaiKang"].ToShort();
+            info.IsDeluxe = read["IsDeluxe"].ToShort();
+            info.IsOdour = read["IsOdour"].ToShort();
+            info.IsProtection = read["IsProtection"].ToShort();
+            info.IsBasePowder = read["IsBasePowder"].ToShort();
+            info.IsYiBao = read["IsYiBao"].ToShort();
+            info.IsBasic = read["IsBasic"].ToShort();
+            info.IsRecommend = read["IsRecommend"].ToShort();
+            info.IsTop = read["IsTop"].ToShort();
+            info.IsImageDiff = read["IsImageDiff"].ToShort();
+            info.Actions = read["Actions"].ToShort();
+            info.Rank = read["Rank"].ToShort();
+            info.SellCount = read["SellCount"].ToInt();
+            info.Comments = read["Comments"].ToInt();
+            info.Favorite = read["Favorite"].ToInt();
+            info.PV = read["PV"].ToInt();
+            info.Sort = read["Sort"].ToInt();
+            info.ValidPeriod = read["ValidPeriod"].ToDateTime();
+            info.Status = read["Status"].ToShort();
+            info.Selling = read["Selling"].ToShort();
+            info.SellingTime = read["SellingTime"].ToDateTime();
+            info.Title = read["Title"].ToString();
+            info.Keywords = read["Keywords"].ToString();
+            info.MetaKeywords = read["MetaKeywords"].ToString();
+            info.MetaDescription = read["MetaDescription"].ToString();
+            info.Creator = read["Creator"].ToString();
+            info.CreateTime = read["CreateTime"].ToDateTime();
+            info.Updater = read["Updater"].ToString();
+            info.UpdateTime = read["UpdateTime"].ToDateTime();
+
+            return info;
+        }
+
+        #endregion CURD
+
+        #region 编辑 价格
+
+        public bool Product_PriceEdit(int productid, decimal marketprice, decimal tradeprice, decimal mobileprice, string updater)
+        {
+            var sql = "Product_PriceEdit";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, productid);
+            dbw.AddInParameter(cmd, "MarketPrice", DbType.Decimal, marketprice);
+            dbw.AddInParameter(cmd, "TradePrice", DbType.Decimal, tradeprice);
+            dbw.AddInParameter(cmd, "MobilePrice", DbType.Decimal, mobileprice);
+            dbw.AddInParameter(cmd, "Updater", DbType.String, updater);
+
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+
+        #endregion
+
+        #region 快速编辑
+
+        /// <summary>
+        /// 商品快速编辑
+        /// </summary>
+        /// <returns>1成功 0失败</returns>
+        internal bool Product_QuickEdit(QuickEditModel model)
+        {
+            var sql = "Product_QuickEdit";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, model.ProductID);
+            dbw.AddInParameter(cmd, "ProductGiftID", DbType.Int32, model.ProductGiftID);
+            dbw.AddInParameter(cmd, "ProductGiftCount", DbType.Int32, model.ProductGiftCount);
+            dbw.AddInParameter(cmd, "IsFreeShip", DbType.Int16, model.IsFreeShip);
+            dbw.AddInParameter(cmd, "IsTop", DbType.Int16, model.Istop);
+            dbw.AddInParameter(cmd, "IsRecommend", DbType.Int16, model.IsRecommend);
+            dbw.AddInParameter(cmd, "Selling", DbType.Int16, model.Selling);
+            dbw.AddInParameter(cmd, "Actions", DbType.Int16, model.Actions);
+            dbw.AddInParameter(cmd, "Sort", DbType.Int32, model.Sort);
+            dbw.AddInParameter(cmd, "Creator", DbType.String, model.Creator);
+
+            var result = dbw.ExecuteScalar(cmd).ToShort();
+            return result > 0;
+        }
+
+        #endregion 快速编辑
+
+        #region 说明书
+
+        internal bool Product_SaveInstructions(ProductInstructionsInfo info)
+        {
+            var sql = "ProductInstructions_Save";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, info.ProductID);
+            dbw.AddInParameter(cmd, "ChineseName", DbType.String, info.ChineseName);
+            dbw.AddInParameter(cmd, "CADN", DbType.String, info.CADN);
+            dbw.AddInParameter(cmd, "EnglishName", DbType.String, info.EnglishName);
+            dbw.AddInParameter(cmd, "PinyinName", DbType.String, info.PinyinName);
+            dbw.AddInParameter(cmd, "Element", DbType.String, info.Element);
+            dbw.AddInParameter(cmd, "Character", DbType.String, info.Character);
+            dbw.AddInParameter(cmd, "Efficacy", DbType.String, info.Efficacy);
+            dbw.AddInParameter(cmd, "Specifications", DbType.String, info.Specifications);
+            dbw.AddInParameter(cmd, "Dosage", DbType.String, info.Dosage);
+            dbw.AddInParameter(cmd, "UntowardEffect", DbType.String, info.UntowardEffect);
+            dbw.AddInParameter(cmd, "Taboo", DbType.String, info.Taboo);
+            dbw.AddInParameter(cmd, "Attention", DbType.String, info.Attention);
+            dbw.AddInParameter(cmd, "Gravida", DbType.String, info.Gravida);
+            dbw.AddInParameter(cmd, "Children", DbType.String, info.Children);
+            dbw.AddInParameter(cmd, "Old", DbType.String, info.Old);
+            dbw.AddInParameter(cmd, "DDIs", DbType.String, info.DDIs);
+            dbw.AddInParameter(cmd, "OverDose", DbType.String, info.OverDose);
+            dbw.AddInParameter(cmd, "Pharmacology", DbType.String, info.Pharmacology);
+            dbw.AddInParameter(cmd, "DMPK", DbType.String, info.DMPK);
+            dbw.AddInParameter(cmd, "Storage", DbType.String, info.Storage);
+            dbw.AddInParameter(cmd, "Package", DbType.String, info.Package);
+            dbw.AddInParameter(cmd, "Weight", DbType.String, info.Weight);
+            dbw.AddInParameter(cmd, "Validity", DbType.String, info.Validity);
+            dbw.AddInParameter(cmd, "CarriedStard", DbType.String, info.CarriedStard);
+            dbw.AddInParameter(cmd, "ApprovalNumber", DbType.String, info.ApprovalNumber);
+            dbw.AddInParameter(cmd, "ApprovedDate", DbType.String, info.ApprovedDate);
+            dbw.AddInParameter(cmd, "RevisionDate", DbType.String, info.RevisionDate);
+            dbw.AddInParameter(cmd, "Manufacturer", DbType.String, info.Manufacturer);
+            dbw.AddInParameter(cmd, "ManufacturerAddress", DbType.String, info.ManufacturerAddress);
+            return dbw.ExecuteNonQuery(cmd) > 0;
+        }
+
+        public ProductInstructionsInfo Product_GetInstructions(int productid)
+        {
+            var sql = "SELECT * FROM ProductInstructions WHERE productid =" + productid.ToString();
+            var cmd = dbr.GetSqlStringCommand(sql);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                if (read.Read())
+                {
+                    return ConvertInstructionsInfo(read);
+                }
+            }
+            return null;
+        }
+        private ProductInstructionsInfo ConvertInstructionsInfo(IDataReader read)
+        {
+            var info = new ProductInstructionsInfo();
+            info.ProductID = int.Parse(read["ProductID"].ToString());
+            info.ChineseName = read["ChineseName"].ToString();
+            info.CADN = read["CADN"].ToString();
+            info.EnglishName = read["EnglishName"].ToString();
+            info.PinyinName = read["PinyinName"].ToString();
+            info.Element = read["Element"].ToString();
+            info.Character = read["Character"].ToString();
+            info.Efficacy = read["Efficacy"].ToString();
+            info.Specifications = read["Specifications"].ToString();
+            info.Dosage = read["Dosage"].ToString();
+            info.UntowardEffect = read["UntowardEffect"].ToString();
+            info.Taboo = read["Taboo"].ToString();
+            info.Attention = read["Attention"].ToString();
+            info.Gravida = read["Gravida"].ToString();
+            info.Children = read["Children"].ToString();
+            info.Old = read["Old"].ToString();
+            info.DDIs = read["DDIs"].ToString();
+            info.OverDose = read["OverDose"].ToString();
+            info.Pharmacology = read["Pharmacology"].ToString();
+            info.DMPK = read["DMPK"].ToString();
+            info.Storage = read["Storage"].ToString();
+            info.Package = read["Package"].ToString();
+            info.Weight = read["Weight"].ToString();
+            info.Validity = read["Validity"].ToString();
+            info.CarriedStard = read["CarriedStard"].ToString();
+            info.ApprovalNumber = read["ApprovalNumber"].ToString();
+            info.ApprovedDate = read["ApprovedDate"].ToString();
+            info.RevisionDate = read["RevisionDate"].ToString();
+            info.Manufacturer = read["Manufacturer"].ToString();
+            info.ManufacturerAddress = read["ManufacturerAddress"].ToString();
+            return info;
+        }
+        #endregion
+
+        #region 审核
+
+        public List<ProductAuditInfo> ProductAudit_Get(string productIDs)
+        {
+            var sql = string.Format("SELECT * FROM ProductAudit pa WHERE pa.ProductID in ({0})", productIDs);
+            var cmd = dbr.GetSqlStringCommand(sql);
+            var list = new List<ProductAuditInfo>();
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    list.Add(new ProductAuditInfo()
+                    {
+                        ProductID = read["ProductID"].ToInt(),
+                        Type = read["Type"].ToShort(),
+                        Status = read["Status"].ToShort(),
+                        Remarks = read["Remarks"].ToString(),
+                        Creator = read["Creator"].ToString(),
+                        CreateTime = read["CreateTime"].ToDateTime()
+                    });
+                }
+            }
+            return list;
+        }
+        public bool ProductAudit_Save(ProductAuditInfo info)
+        {
+            var sql = "ProductAudit_Save";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "@productID", DbType.Int32, info.ProductID);
+            dbw.AddInParameter(cmd, "@t", DbType.Int16, info.Type);
+            dbw.AddInParameter(cmd, "@s", DbType.Int16, info.Status);
+            dbw.AddInParameter(cmd, "@Remarks", DbType.String, info.Remarks);
+            dbw.AddInParameter(cmd, "Creator", DbType.String, info.Creator);
+            //dbw.AddInParameter(cmd, "CreateTime", DbType.DateTime, info.CreateTime);
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+
+        #endregion
+
+        #region 商品编辑 - 获取关联商品信息
+
+        public List<ProductSimpleInfo> Product_Relateds(int BrandID, string ChineseName)
+        {
+            var sql = "Product_Relateds";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "BrandID", DbType.Int32, BrandID);
+            dbr.AddInParameter(cmd, "ChineseName", DbType.String, ChineseName);
+            var list = new List<ProductSimpleInfo>();
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    list.Add(new ProductSimpleInfo()
+                    {
+                        ProductID = read["ProductID"].ToInt(),
+                        ProductCode = read["ProductCode"].ToString(),
+                        ChineseName = read["ChineseName"].ToString(),
+                        CADN = read["CADN"].ToString(),
+                        Specifications = read["Specifications"].ToString(),
+                    });
+                }
+            }
+            return list;
+        }
+
+        //public List<ProductSimpleInfo.ProductPropInfo> Product_GetProps(string productids)
+        //{
+        //    var sql = "SELECT ppv.PropType, ppv.PropValue FROM ProductPropValue AS ppv WHERE ppv.ProductID in(" + productids + ")";
+        //    var cmd = dbr.GetSqlStringCommand(sql);
+        //    var list = new List<ProductSimpleInfo.ProductPropInfo>();
+        //    using (var read = dbr.ExecuteReader(cmd))
+        //    {
+        //        while (read.Read())
+        //        {
+        //            list.Add(new ProductSimpleInfo.ProductPropInfo()
+        //            {
+        //                ProductID = read["ProductID"].ToInt(),
+        //                PropType = read["PropType"].ToShort(),
+        //                PropValue = read["PropValue"].ToString()
+        //            });
+        //        }
+        //    }
+        //    return list;
+        //}
+
+        #endregion
+
+        #region 检查金象码是否存在
+
+        public bool CheckProductCode(string productcode)
+        {
+            var sql = "SELECT * FROM Product AS p WHERE p.ProductCode IN ( SELECT fs.f FROM dbo.F_split('" + productcode + "',',') AS fs )";
+            var cmd = dbr.GetSqlStringCommand(sql);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                if (read.Read())
+                {
+                    return read["ProductID"].ToInt() > 0;
+                }
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region 添加商品的供应商
+
+        internal bool Product_SaveSupplier(int productid, int supplierID, string supplierName)
+        {
+            var sql = "ProductSupplier_Save";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, productid);
+            dbw.AddInParameter(cmd, "SupplierID", DbType.Int32, supplierID);
+            dbw.AddInParameter(cmd, "SupplierName", DbType.String, supplierName);
+            dbw.ExecuteNonQuery(cmd);
+            return true;
+        }
+
+        #endregion
+
+        public Dictionary<int, string> Product_GetSupplier()
+        {
+            var dic = new Dictionary<int, string>();
+            var sql = "SELECT s.supplierID ,s.name FROM Supplier AS s";
+            var cmd = dbr.GetSqlStringCommand(sql);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    dic.Add(read["SupplierID"].ToInt(), read["Name"].ToString());
+                }
+            }
+            return dic;
+        }
+    }
+}

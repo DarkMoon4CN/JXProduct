@@ -1,0 +1,84 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class OrdersSqlBLL
+    {
+        private static readonly OrdersSqlDAL dal = new OrdersSqlDAL();
+
+        public static OrdersSqlBLL Instance
+        {
+            get
+            {
+                return new OrdersSqlBLL();
+            }
+        }
+
+        /// <summary>
+        /// 查询待处理订单
+        /// </summary>
+        /// <returns></returns>
+        public System.Data.DataTable GetList(string id, string createTime, int start, int pageSize, string tableName, int status = 0)
+        {
+            return dal.GetList(id, createTime, start, pageSize, tableName, status);
+        }
+
+        /// <summary>
+        /// 查询三方运单号
+        /// </summary>
+        /// <param name="ThirdOrderId">三方单号</param>
+        /// <returns></returns>
+        public string GetOrderIDByThirdOrderID(string thirdOrderID)
+        {
+            return dal.GetOrderIDByThirdOrderID(thirdOrderID);
+        }
+
+        /// <summary>
+        /// 新增订单
+        /// </summary>
+        /// <param name="OrderXML">订单数据XML</param>
+        /// <param name="Result">添加状态</param>
+        public void Orders_InsertByXML(string OrderXML, out int Result)
+        {
+            dal.Orders_InsertByXML(OrderXML, out Result);
+        }
+
+        /// <summary>
+        /// 更新订单 指定列的值
+        /// </summary>
+        /// <param name="orderID">订单号</param>
+        /// <param name="colName">列名</param>
+        /// <param name="colValue">列值</param>
+        /// <returns>true、false</returns>
+        public bool Orders_Update(string orderID, string[] colName, object[] colValue)
+        {
+            return dal.Orders_Update(orderID, colName, colValue);
+        }
+
+        /// <summary>
+        /// 订单状态修改
+        /// </summary>
+        /// <param name="log">状态日志内容</param>
+        /// <param name="disposeType">修改类型，1=支付状态，2=订单状态</param>
+        /// <returns>返回：0=成功，1=失败，其他自定义错误</returns>
+        public string Orders_Dispose(OrderOperateLogInfo log, int disposeType)
+        {
+            return dal.Orders_Dispose(log, disposeType);
+        }
+
+        /// <summary>
+        /// 订单日志
+        /// </summary>
+        /// <param name="ool"></param>
+        /// <returns></returns>
+        public string OrderOperateLog_Insert(OrderOperateLogInfo ool)
+        {
+            return dal.OrderOperateLog_Insert(ool);
+        }
+    }
+}

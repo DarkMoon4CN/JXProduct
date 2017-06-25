@@ -1,0 +1,184 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public partial class CouponMySqlDAL 
+    {
+        private static Database dbw = JXCouponBaseMySqlData.Writer;
+        private static Database dbr = JXCouponBaseMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(CouponMySqlDAL));
+
+        #region MySql 优惠券表相关操作
+
+
+        /// <summary>
+        /// 查询优惠券最大ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxCouponID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from coupon order by ID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxCouponID 获取优惠券最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        /// <summary>
+        /// 更新优惠券
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateCoupon(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into coupon ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}',{2},{3},'{4}','{5}','{6}','{7}',{8},{9},'{10}','{11}',{12},'{13}','{14}','{15}',{16},'{17}',{18},'{19}')",
+                                                dr["ID"].ToInt(), dr["BatchID"].ToString().Replace("\'", "\""), dr["ChannelID"].ToInt(), dr["TypeID"].ToInt(), dr["CouponCode"].ToString().Replace("\'", "\"")
+                                                , dr["CouponPass"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["StartTime"].ToString()) ? "null" : dr["StartTime"], string.IsNullOrEmpty(dr["EndTime"].ToString()) ? "null" : dr["EndTime"], dr["HasSend"].ToShort()
+                                                , dr["UID"].ToInt(), dr["UserName"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["UseTime"].ToString()) ? "null" : dr["UseTime"], dr["IsUsed"].ToShort()
+                                                , string.IsNullOrEmpty(dr["CreateTime"].ToString()) ? "null" : dr["CreateTime"], dr["Creator"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["CheckTime"].ToString()) ? "null" : dr["CheckTime"], dr["CheckCount"].ToShort()
+                                                , string.IsNullOrEmpty(dr["ActivationTime"].ToString()) ? "null" : dr["ActivationTime"], dr["Staus"].ToShort(), dr["Remark"].ToString().Replace("\'", "\""));
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'", "null"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateCoupon 更新优惠券表失败,优惠券ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["BatchID"], productTable.Rows[productTable.Rows.Count - 1]["BatchID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 添加优惠券
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool AddCoupon(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into coupon ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}',{2},{3},'{4}','{5}','{6}','{7}',{8},{9},'{10}','{11}',{12},'{13}','{14}','{15}',{16},'{17}',{18},'{19}')",
+                                     dr["ID"].ToInt(), dr["BatchID"].ToString().Replace("\'", "\""), dr["ChannelID"].ToInt(), dr["TypeID"].ToInt(), dr["CouponCode"].ToString().Replace("\'", "\"")
+                                     , dr["CouponPass"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["StartTime"].ToString()) ? "null" : dr["StartTime"], string.IsNullOrEmpty(dr["EndTime"].ToString()) ? "null" : dr["EndTime"], dr["HasSend"].ToShort()
+                                     , dr["UID"].ToInt(), dr["UserName"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["UseTime"].ToString()) ? "null" : dr["UseTime"], dr["IsUsed"].ToShort()
+                                     , string.IsNullOrEmpty(dr["CreateTime"].ToString()) ? "null" : dr["CreateTime"], dr["Creator"].ToString().Replace("\'", "\""), string.IsNullOrEmpty(dr["CheckTime"].ToString()) ? "null" : dr["CheckTime"], dr["CheckCount"].ToShort()
+                                     , string.IsNullOrEmpty(dr["ActivationTime"].ToString()) ? "null" : dr["ActivationTime"], dr["Staus"].ToShort(), dr["Remark"].ToString().Replace("\'", "\""));
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'","null"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddCoupon 添加优惠券失败,优惠券ID：{0}-{1},异常信息:{2}", productTable.Rows[0]["BatchID"], productTable.Rows[productTable.Rows.Count - 1]["BatchID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+
+        private string parmsKey = string.Format(@"ID,BatchID,ChannelID,TypeID, CouponCode,CouponPass,StartTime,EndTime,HasSend,UID,UserName,UseTime,IsUsed,CreateTime,
+                                                Creator,CheckTime,CheckCount,ActivationTime,Staus,Remark");
+    }
+}

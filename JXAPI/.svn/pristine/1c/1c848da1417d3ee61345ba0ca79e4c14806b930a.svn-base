@@ -1,0 +1,469 @@
+namespace JXAPI.Component.SQLServerDAL
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Common;
+    using System.Data;
+    using Microsoft.Practices.EnterpriseLibrary.Data;
+    using System.Text;
+    using JXAPI.Component.Model;
+    using JXAPI.Component.DataAccess;
+    using log4net;
+    using JXAPI.Common.Utils;
+    public class ProductDAL
+    {
+        private static Database dbr_Product = JXProductData.Reader;
+        private static Database dbr_Marketing = JXMarketingData.Reader;
+        private static Database dbr_YX = JXYXData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(ProductDAL));
+        DatabaseType dbType_Update = DatabaseType.dbr_Product;
+        DatabaseType dbType_Add = DatabaseType.dbr_Product;
+
+        #region CURD
+
+        /// <summary>
+        /// 查询需要添加列表
+        /// </summary>
+        /// <param name="productID">ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetAddList(int ID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0}", pageSize));
+                string updateTimeStr = string.Empty;
+                if (!string.IsNullOrEmpty(updateTime))
+                {
+                    updateTimeStr = string.Format(" AND UpdateTime >= '{0}' ",updateTime);
+                }
+                switch (tableName.ToLower())
+                {
+                    case "product":
+                    case "jxorderproduct":
+                        sqlCommand.Append(string.Format(@" p.*,m.Manufacturer,b.ChineseName AS BrandName,ISNULL((SELECT SUM(UsableStock) FROM ProductStock WHERE ProductCode=p.ProductCode),0) AS Stock 
+                                                           FROM Product AS p LEFT JOIN Manufacturer AS m ON m.ManuID=p.ManufacturerID LEFT JOIN Brand AS b ON b.BrandID=p.BrandID WHERE 1=1 "));
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND p.UpdateTime >= '{0}' ", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND p.ProductID > {0}  ORDER BY p.ProductID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productactivity":
+                        sqlCommand.AppendFormat(@"a.*,p.ProductCode,p.MarketPrice,p.TradePrice,p.MobilePrice,p.CostPrice FROM 
+                                                 ProductActivity as a left join Product as p on a.ProductID = p.ProductID where 1=1 ");
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND a.UpdateTime >= '{0}' ", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND a.ProductID > {0}  ORDER BY a.ProductID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productclassification":
+                        sqlCommand.Append(string.Format(" * FROM ProductClassification WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productcombo":
+                        sqlCommand.Append(string.Format(" * FROM ProductCombo WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productgift":
+                        sqlCommand.Append(string.Format(" * FROM ProductGift WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productparameterprice":
+                        sqlCommand.Append(string.Format(" * FROM ProductParameterPrice WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ParaPriceID > {0}  ORDER BY ParaPriceID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productrelated":
+                    case "jxorderproductrelated":
+                        sqlCommand.Append(string.Format(" * FROM ProductRelated WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND RelatedID > {0}  ORDER BY RelatedID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productstock":
+                        sqlCommand.Append(string.Format(" * FROM ProductStock WHERE 1=1 "));
+                        sqlCommand.Append(string.Format(" AND ChangeTime >= '{0}' ", updateTime));
+                        sqlCommand.Append(string.Format(" AND StockID > {0}  ORDER BY StockID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "manufacter":
+                        sqlCommand.Append(string.Format(" * FROM Manufacturer WHERE 1=1 "));
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND LastUpdateTime >= '{0}'", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND ManuID > {0}  ORDER BY ManuID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productevaluation":
+                        sqlCommand.Append(string.Format(" * FROM ProductEvaluation WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND EvaluationID > {0}  ORDER BY EvaluationID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "productquestion":
+                        sqlCommand.Append(string.Format(" * FROM ProductQuestion WHERE 1=1 "));
+                       // sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND QuestionID > {0}  ORDER BY QuestionID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "classificationparametertoprice":
+                        sqlCommand.Append(string.Format(" * FROM ClassificationParameterToPrice WHERE 1=1 "));
+                       // sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND CFParaPriceID > {0}  ORDER BY CFParaPriceID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "brand":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  AND BrandID > {1}  ORDER BY BrandID", tableName,ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "classification":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND CFID > {0}  ORDER BY CFID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "keyword":
+                        sqlCommand.Append(string.Format("  * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0}  ORDER BY KeywordID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "keywordproduct":
+                         sqlCommand.AppendFormat(@" * from {0} as p where exists 
+                                                  (select k.KeywordID from Keyword as k where k.KeywordID = p.KeywordID ", tableName);
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.AppendFormat(@" and k.UpdateTime >= '{0}'", updateTime);
+                        }
+                        sqlCommand.AppendFormat(@"  ) AND p.RelationID > {0}  ORDER BY p.RelationID", ID);
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "keywordrelation":
+                        sqlCommand.AppendFormat(@" * from {0} as r where exists 
+                                                  (select k.KeywordID from Keyword as k where k.KeywordID = r.KeywordID ", tableName);
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.AppendFormat(@" and k.UpdateTime >= '{0}'", updateTime);
+                        }
+                        sqlCommand.AppendFormat(@"  ) AND r.ID > {0} ORDER BY r.ID", ID);
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "activity":
+                        sqlCommand.Append(string.Format("  * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ActID > {0}  ORDER BY ActID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "activityrule":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND RuleID > {0}  ORDER BY RuleID", ID));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "sale":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND SaleID > {0}  ORDER BY SaleID", ID));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "productall":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND AllID > {0}  ORDER BY AllID", ID));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "promotion":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND PromotionID > {0}  ORDER BY PromotionID", ID));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "expressnews":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND NewsID > {0}  ORDER BY NewsID", ID));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "searchkeyword":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0}  ORDER BY KeywordID", ID));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "jxyxproduct":
+                        sqlCommand.Append(string.Format(" * FROM product WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ProductID > {0} ORDER BY ProductID", ID));
+                        dbType_Add = DatabaseType.dbr_YX;
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Add)
+                {
+                    case DatabaseType.dbr_Product:
+                        var dbCommand1 = dbr_Product.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Product.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_Marketing:
+                        var dbCommand2 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Marketing.ExecuteDataSet(dbCommand2);
+                        break;
+                    case DatabaseType.dbr_YX:
+                        var dbCommand3 = dbr_YX.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand3);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch(Exception ex)
+            {
+                myLog.ErrorFormat("GetAddProductList 查询需要添加的{0}表失败,ID:{1},异常信息:{2}", tableName,ID, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询需要更新的列表
+        /// </summary>
+        /// <param name="productInitID">需要更新的原始ID,即需要更新的最大ID</param>
+        /// <param name="productNowID">当前更新到的ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetUpdateList(int MaxID, int NowID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0}", pageSize));
+                string updateTimeStr = string.Empty;
+                if (!string.IsNullOrEmpty(updateTime))
+                {
+                    updateTimeStr = string.Format(" AND UpdateTime >= '{0}' ", updateTime);
+                }
+                switch (tableName.ToLower())
+                {
+                    case "product":
+                    case "jxorderproduct":
+                        sqlCommand.Append(string.Format(@" p.*,m.Manufacturer,b.ChineseName AS BrandName,ISNULL((SELECT SUM(UsableStock) FROM ProductStock WHERE ProductCode=p.ProductCode),0) AS Stock 
+                                                           FROM Product AS p LEFT JOIN Manufacturer AS m ON m.ManuID=p.ManufacturerID LEFT JOIN Brand AS b ON b.BrandID=p.BrandID WHERE 1=1 "));
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND p.UpdateTime >= '{0}' ", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND p.ProductID > {0} AND p.ProductID <= {1} ORDER BY p.ProductID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productactivity":
+                        sqlCommand.AppendFormat(@"a.*,p.ProductCode,p.MarketPrice,p.TradePrice,p.MobilePrice,p.CostPrice FROM 
+                            ProductActivity as a left join Product as p on a.ProductID = p.ProductID where 1=1 ");
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND a.UpdateTime >= '{0}' ", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND a.ProductID > {0} AND a.ProductID <= {1} ORDER BY a.ProductID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productclassification":
+                        sqlCommand.Append(string.Format(" * FROM ProductClassification WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0} AND ID <= {1} ORDER BY ID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productcombo":
+                        sqlCommand.Append(string.Format(" * FROM ProductCombo WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0} AND ID <= {1} ORDER BY ID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productgift":
+                        sqlCommand.Append(string.Format(" * FROM ProductGift WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ID > {0} AND ID <= {1} ORDER BY ID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productparameterprice":
+                        sqlCommand.Append(string.Format(" * FROM ProductParameterPrice WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ParaPriceID > {0} AND ParaPriceID <= {1} ORDER BY ParaPriceID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productrelated":
+                    case "jxorderproductrelated":
+                        sqlCommand.Append(string.Format(" * FROM ProductRelated WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND RelatedID > {0} AND RelatedID <= {1} ORDER BY RelatedID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productstock":
+                        sqlCommand.Append(string.Format(" * FROM ProductStock WHERE 1=1 "));
+                        sqlCommand.Append(string.Format(" AND ChangeTime >= '{0}' ", updateTime));
+                        sqlCommand.Append(string.Format(" AND StockID > {0} AND StockID <= {1} ORDER BY StockID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "manufacter":
+                        sqlCommand.Append(string.Format(" * FROM Manufacturer WHERE 1=1 "));
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.Append(string.Format(" AND LastUpdateTime >= '{0}'", updateTime));
+                        }
+                        sqlCommand.Append(string.Format(" AND ManuID > {0} AND ManuID <= {1} ORDER BY ManuID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productevaluation":
+                        sqlCommand.Append(string.Format(" * FROM ProductEvaluation WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND EvaluationID > {0} AND EvaluationID <= {1} ORDER BY EvaluationID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "productquestion":
+                        sqlCommand.Append(string.Format(" * FROM ProductQuestion WHERE 1=1 "));
+                        //sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND QuestionID > {0} AND QuestionID <= {1} ORDER BY QuestionID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "classificationparametertoprice":
+                        sqlCommand.Append(string.Format(" * FROM ClassificationParameterToPrice WHERE 1=1 "));
+                        //sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND CFParaPriceID > {0} AND CFParaPriceID <= {1} ORDER BY CFParaPriceID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "brand":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1   AND BrandID > {1} AND BrandID <= {2} ORDER BY BrandID", tableName, NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "classification":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND CFID > {0} AND CFID <= {1} ORDER BY CFID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "keyword":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0} AND KeywordID <= {1} ORDER BY KeywordID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "keywordproduct":
+                        sqlCommand.AppendFormat(@" * from {0} as p where exists 
+                                                  (select k.KeywordID from Keyword as k where k.KeywordID = p.KeywordID ", tableName);
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.AppendFormat(@" and k.UpdateTime >= '{0}'", updateTime);
+                        }
+                        sqlCommand.AppendFormat(@"  ) AND p.RelationID > {0} AND p.RelationID <= {1} ORDER BY p.RelationID", NowID, MaxID);
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "keywordrelation":
+                        sqlCommand.AppendFormat(@" * from {0} as r where exists 
+                                                  (select k.KeywordID from Keyword as k where k.KeywordID = r.KeywordID ", tableName);
+                        if (!string.IsNullOrEmpty(updateTime))
+                        {
+                            sqlCommand.AppendFormat(@" and k.UpdateTime >= '{0}'", updateTime);
+                        }
+                        sqlCommand.AppendFormat(@"  ) AND r.ID > {0} AND r.ID <= {1} ORDER BY r.ID", NowID, MaxID);
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "activity":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ActID > {0} AND ActID <= {1} ORDER BY ActID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "activityrule":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND RuleID > {0} AND RuleID <= {1} ORDER BY RuleID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Product;
+                        break;
+                    case "sale":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND SaleID > {0} AND SaleID <= {1} ORDER BY SaleID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Marketing;
+                        break;
+                    case "productall":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND AllID > {0} AND AllID <= {1} ORDER BY AllID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Marketing;
+                        break;
+                    case "promotion":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND PromotionID > {0} AND PromotionID <= {1} ORDER BY PromotionID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Marketing;
+                        break;
+                    case "expressnews":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1 ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND NewsID > {0} AND NewsID <= {1} ORDER BY NewsID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Marketing;
+                        break;
+                    case "searchkeyword":
+                        sqlCommand.Append(string.Format(" * FROM {0} WHERE 1=1  ", tableName));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0} AND KeywordID <= {1}  ORDER BY KeywordID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_Marketing;
+                        break;
+                    case "jxyxproduct":
+                        sqlCommand.Append(string.Format(" * FROM product WHERE 1=1 "));
+                        sqlCommand.Append(updateTimeStr);
+                        sqlCommand.Append(string.Format(" AND ProductID > {0} AND ProductID <= {1} ORDER BY ProductID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_YX;
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Update)
+                {
+                    case DatabaseType.dbr_Product:
+                        var dbCommand1 = dbr_Product.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Product.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_Marketing:
+                        var dbCommand2 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Marketing.ExecuteDataSet(dbCommand2);
+                        break;
+                    case DatabaseType.dbr_YX:
+                        var dbCommand3 = dbr_YX.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand3);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch(Exception ex)
+            {
+                myLog.ErrorFormat("GetUpdateProductList 查询需要更新的{0}表失败,ID:{0},异常信息:{1}", tableName,NowID, ex.Message);
+                return null;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 商品列表
+        /// </summary>
+        /// <param name="strWhere">条件</param>
+        /// <returns></returns>
+        public DataTable Product_ListForSearch(string strWhere)
+        {
+            string sqlCommand = "Product_GetListForSearch";
+            DbCommand dbCommand = dbr_Product.GetStoredProcCommand(sqlCommand);
+            dbr_Product.AddInParameter(dbCommand, "strWhere", DbType.String, strWhere);
+            DataSet dSet = dbr_Product.ExecuteDataSet(dbCommand);
+            return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+        }
+    }
+}

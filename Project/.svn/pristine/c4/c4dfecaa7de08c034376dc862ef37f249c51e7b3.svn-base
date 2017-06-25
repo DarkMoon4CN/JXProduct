@@ -1,0 +1,4 @@
+﻿//common fun
+String.prototype.isnum = function () {
+    return /^[0-9]*$/.test(this);
+};

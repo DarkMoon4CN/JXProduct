@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "关键词管理";
+}
+@section css{
+    <link href="~/js/layer/skin/layer.css" rel="stylesheet" />
+    <style>
+        .active { background: #ebebeb; color: #000; font-weight: bold; }
+    </style>
+}
+@section script{
+    <script src="~/js/jx.classification.js"></script>
+    <script>
+        $(function () {
+            common.scroll();
+            classification.init();
+            section.init();
+        });
+    </script>
+}
+<div id='wrap' class='w'>
+    <div class="classMain">
+        <div class="classMainNav clear">
+            <span class='active'>疾病标签</span>
+            <span>商品种类</span>
+        </div>
+        <div class='MainWrap section' style="display:block;">
+            <div class="content">
+                <div class="minContern">
+                    <div id="section1" class="mianDetailsWrap">
+                        <div class='detailsTitle'>
+                            <span class='title'>一级科室</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'>
+                            <ul class='clear'>
+                                @{
+                                    IList<JXProduct.Component.Model.SectionInfo> sectionlist = ViewBag.SectionList;
+                                    foreach (var sec in sectionlist)
+                                    {
+                                        <li><a href="#" sectionid="@sec.SectionID">@sec.SectionName</a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="section2" class="mianDetailsWrap">
+                        <div class='detailsTitle'>
+                            <span class='title'>二级科室</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'>
+                            <ul class='clear'></ul>
+                        </div>
+                        <div class='editor hide'>
+                            <a class='add' href="javascript:;"></a>
+                            <a class='edi' href="javascript:;"></a>
+                            <div class='addText'>新增</div>
+                            <div class='ediText'>编辑</div>
+                        </div>
+                    </div>
+                    <div id="section3" class="mianDetailsWrap mianNoMargin">
+                        <div class='detailsTitle'>
+                            <span class='title'>科室关键词</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'><ul class='clear'></ul></div>
+                        <div class='editor hide'>
+                            <a class='add' href="javascript:;"></a>
+                            <a class='edi' href="javascript:;"></a>
+                            <div class='addText'>新增</div>
+                            <div class='ediText'>编辑</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='MainWrap cf'>
+            <div class="content">
+                <div class="minContern">
+                    <div id="cf1" class="mianDetailsWrap">
+                        <div class='detailsTitle'>
+                            <span class='title'>一级分类</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'>
+                            <ul class='clear'>
+                                @{
+                                    List<JXProduct.Component.Model.ClassificationInfo> cflist = ViewBag.CFList;
+                                    foreach (var cf in cflist)
+                                    {
+                                        <li><a href="#" cfid="@cf.CFID">@cf.ChineseName</a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="cf2" class="mianDetailsWrap">
+                        <div class='detailsTitle'>
+                            <span class='title'>二级分类</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'>
+                            <ul class='clear'></ul>
+                        </div>
+                        <div class='editor hide'>
+                            <a class='add' href="javascript:;"></a>
+                            <a class='edi' href="javascript:;"></a>
+                            <div class='addText'>新增</div>
+                            <div class='ediText'>编辑</div>
+                        </div>
+                    </div>
+                    <div id="cf3" class="mianDetailsWrap mianNoMargin">
+                        <div class='detailsTitle'>
+                            <span class='title'>分类关键词</span>
+                            <span class='clickBtn'></span>
+                        </div>
+                        <div class='detailsList'>
+                            <ul class='clear'></ul>
+                        </div>
+                        <div class='editor hide'>
+                            <a class='add' href="javascript:;"></a>
+                            <a class='edi' href="javascript:;"></a>
+                            <div class='addText'>新增</div>
+                            <div class='ediText'>编辑</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

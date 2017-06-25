@@ -1,0 +1,200 @@
+﻿using log4net;
+using log4net.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Configuration;
+
+namespace JXAPI.ConsoleMysqlPlan
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            log4net.Config.XmlConfigurator.Configure();
+            MySqlUpdateManager.CompleteEvent += new Action<string>(MySqlUpdateComplete);
+
+            #region 读配置文件
+            UpdateTimeSpan = GetAppSettingsValue("UpdateTimeSpan");
+            double timeSpan = 0;
+            if (!Double.TryParse(UpdateTimeSpan, out timeSpan))
+            {
+                Console.WriteLine("配置文件中商品更新时间间隔配置错误，请重新配置");
+                Console.WriteLine("请按任意键结束");
+                Console.ReadKey(true);
+                return;
+            }
+            if (timeSpan < 0)
+            {
+                UpdateTime = string.Empty;
+            }
+            else
+            {
+                UpdateTime = System.DateTime.Now.AddMinutes(-timeSpan).ToString();
+            }
+            UpdateMaxCountStr = GetAppSettingsValue("UpdateMaxCount");
+            if (!Int32.TryParse(UpdateMaxCountStr, out UpdateMaxCount)
+                  || UpdateMaxCount < 100 || UpdateMaxCount > 500)
+            {
+                Console.WriteLine("批量更新区间在100到 500之间,请重新配置");
+                Console.WriteLine("请按任意键结束");
+                Console.ReadKey(true);
+                return;
+            }
+            #endregion
+
+            InitTableList();
+
+            if (tableList != null)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("MySql数据库更新开始...");
+                for (int i = 0; i < tableList.Count; i++)
+                {
+                    Thread updateThread = new Thread(new ParameterizedThreadStart(OnStartUpdateMySqlTables)) { IsBackground = true };
+                    updateThread.Name = "MySql-" + tableList[i];
+                    updateThread.Start(tableList[i]);
+                }
+            }
+
+            Console.ReadKey(true);
+        }
+
+        private static void OnStartUpdateMySqlTables(object obj)
+        {
+            var tableName = obj as string;
+            switch (tableName)
+            {
+                case "Coupon"://JXCouponBaseData
+                    MySqlUpdateManager.CouponUpdate(tableName);
+                    break;
+                case "CouponBatch":
+                    MySqlUpdateManager.CouponBatchUpdate(tableName);
+                    break;
+                case "CouponChannel":
+                    MySqlUpdateManager.CouponChannelUpdate(tableName);
+                    break;
+                case "CouponType":
+                    MySqlUpdateManager.CouponTypeUpdate(tableName);
+                    break;
+                case "CouponShoppingCard":
+                    MySqlUpdateManager.CouponShoppingCardUpdate(tableName);
+                    break;
+                case "CouponShoppingCardDetail":
+                    MySqlUpdateManager.CouponShoppingCardDetailUpdate(tableName);
+                    break;
+                case "Users":
+                    MySqlUpdateManager.MySqlUpdateUsers(tableName, "users");
+                    break;
+                case "UsersBase":
+                    MySqlUpdateManager.MySqlUpdateUsers(tableName, "usersbase");
+                    break;
+                case "UsersReceiver":
+                    MySqlUpdateManager.MySqlUpdateUsers(tableName, "receiver");
+                    break;
+                case "UsersScore":
+                    MySqlUpdateManager.MySqlUpdateUsers(tableName, "score");
+                    break;
+                case "UsersAccount":
+                    MySqlUpdateManager.MySqlUpdateUsers(tableName, "account");
+                    break;
+                case "JXMarketingBrand":
+                    MySqlUpdateManager.JXMarketingBrandUpdate(tableName); ;   //JXMarketing.dbo.Brand
+                    break;
+                case "orderproducthistory-before":
+                case "orderproduct-before":
+                    MySqlUpdateManager.OrderProductHistoryUpdate(tableName);
+                    break;
+                case "orderproducthistory-after":
+                case "orderproduct-after":
+                    MySqlUpdateManager.OrderProductUpdate(tableName);
+                    break;
+                case "orderoperateloghistory-before":
+                case "orderoperatelog-before":
+                    MySqlUpdateManager.OrderOperateLogHistoryUpdate(tableName);
+                    break;
+                case "orderoperateloghistory-after":
+                case "orderoperatelog-after":
+                    MySqlUpdateManager.OrderOperateLogUpdate(tableName);
+                    break;
+                case "orders-after":
+                case "ordershistory-after":
+                    MySqlUpdateManager.OrdersUpdate(tableName);
+                    break;
+                case "orders-before":
+                case "ordershistory-before":
+                    MySqlUpdateManager.OrdersHistoryUpdate(tableName);
+                    break;
+                case "OrderLogistics":
+                    MySqlUpdateManager.OrderLogisticsUpdate(tableName);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static void MySqlUpdateComplete(string message)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(message);
+            }
+        }
+
+        public static string GetAppSettingsValue(string key)
+        {
+            return ConfigurationManager.AppSettings[key] ?? string.Empty;
+        }
+
+        /// <summary>
+        /// 初始加载MySql中需要更新数据的表
+        /// </summary>
+        private static void InitTableList()
+        {
+            if(tableList != null)
+            {
+                //tableList.Add("Users");             //  用户表
+                //tableList.Add("UsersBase");         //  用户表基础信息
+                //tableList.Add("UsersReceiver");     //  用户接收者表
+                //tableList.Add("UsersScore");        //  用户积分表
+                //tableList.Add("UsersAccount");      //  用户账户表
+
+                /*
+                tableList.Add("Coupon");            //  优惠券
+                tableList.Add("CouponBatch");
+                tableList.Add("CouponChannel");
+                tableList.Add("CouponType");
+                tableList.Add("CouponShoppingCard");
+                tableList.Add("CouponShoppingCardDetail");
+                */
+
+                //tableList.Add("JXMarketingBrand");
+                #region 订单特殊处理表 分3个月前和3个月后
+                //tableList.Add("orderoperatelog-before");
+                //tableList.Add("orderoperatelog-after");
+
+                //tableList.Add("orderproducthistory-before");        //  OrderProductHistory
+                //tableList.Add("ordershistory-before");              //  OrdersHistory
+
+                //tableList.Add("orderproducthistory-after");         //  OrderProduct
+                tableList.Add("orderproduct-after");                //  OrderProduct
+
+                //tableList.Add("orders-after");                      //  Orders
+                //tableList.Add("ordershistory-after");             //  Orders
+                #endregion
+
+                //tableList.Add("OrderLogistics");
+            }
+        }
+
+        public static readonly IList<string> tableList = new List<string>();
+        public static int UpdateMaxCount = 0;
+        public static string UpdateMaxCountStr = string.Empty;
+        public static string UpdateTime = string.Empty;
+        public static string UpdateTimeSpan = string.Empty;
+
+    }
+}

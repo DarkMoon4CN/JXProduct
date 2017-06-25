@@ -1,0 +1,171 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Enums;
+@using JXAPI.JXSdk.Domain;
+@using JXAPI.JXSdk.Service;
+@using JXAPI.JXSdk.Request;
+@using JXAPI.JXSdk.Response;
+@using JXAPI.JXSdk.Utils;
+@{
+    ViewBag.Title = "意见反馈管理";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            om.feedBackInit();
+        });
+    </script>
+}
+@section css {
+   <link href="~/css/fenbu.css" rel="stylesheet" />
+    
+}
+        <div class="right1">
+            <div class="tp_1">
+                <p><span>意见反馈管理</span></p>
+            </div>
+
+            <div class="addNoticeTab1">
+                <div class="selecWrap cf1">
+                    <span class='fl'>日期：</span>
+                    <div class="imitationSelect fl" id="sTimeDiv">
+                        @if (ViewBag.STime != "null")
+                    {
+                    <input type="text" id="sTime" class="thun_feedBack" value="@ViewBag.STime" onfocus="WdatePicker({lang:'zh-cn'})" />
+                    }
+                    else
+                    {
+                    <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                    }
+                    </div>
+                </div>
+                <div class="selecWrap cf1">
+                    <span class='fl'></span>
+                    <div class="imitationSelect fl" id="eTimeDiv">
+                        @if (ViewBag.ETime != "null")
+                    {
+                    <input type="text" id="eTime" class="thun_feedBack" value="@ViewBag.ETime" onfocus="WdatePicker({lang:'zh-cn'})" />
+                    }
+                    else
+                    {
+                    <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                    }
+                    </div>
+                </div>
+                <div class="selecWrap cf1" id="sourceType" style="margin-left:10px;">
+                    &nbsp;&nbsp;<span class='fl'>来源：</span>
+                    <div class="imitationSelect fl">
+                        <div class="selectTitle">
+                            <span class='selectTitleLeft'>请选择</span>
+                            <span class="selectTitleRight"></span>
+                        </div>
+                        <div class="imitaSelectList">
+                            <ul>
+                                <li><a href="#" t="-1">请选择</a></li>
+                                <li><a href="#" t="0">web</a></li>
+                                <li><a href="#" t="1">m</a></li>
+                                <li><a href="#" t="2">ios</a></li>
+                                <li><a href="#" t="3">andriod</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <input type="hidden" id="sourceTypeKey" value="@ViewBag.SourceType" />
+                </div>
+                <div class="selecWrap cf1" id="statusType">
+                    <span class='fl'>排序：</span>
+                    <div class="imitationSelect fl">
+                        <div class="selectTitle">
+                            <span class='selectTitleLeft'>请选择</span>
+                            <span class="selectTitleRight"></span>
+                        </div>
+                        <div class="imitaSelectList">
+                            <ul>
+                                <li><a href="#" t="-1">请选择</a></li>
+                                <li><a href="#" t="0">未回复</a></li>
+                                <li><a href="#" t="1">已回复</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <input type="hidden" id="statusTypeKey" value="@ViewBag.StatusType" />
+                </div>
+                <div class="cent_feedBack">
+                    <button class="btn_feedBack">确定</button>
+                </div>
+            </div>
+
+                <div class="top41" style="backgound:red">
+                    <div class="addNoticeTab1">
+                        <table id="dataTemplate">
+                            @if (ViewBag.FeedBackInfoList == null || ViewBag.FeedBackInfoList.Count == 0)
+                            {
+                                <tr><td colspan="7" style="text-align:left;border:0"><p>没有相关意见反馈</p></td></tr>
+                            }
+                            else 
+                            {
+                            <tr>
+                                <th width="150">日期</th>
+                                <th width="80">用户名</th>
+                                <th width="80">联系方式</th>
+                                <th width="50">来源</th>
+                                <th width="320">反馈内容</th>
+                                <th width="320">客服回复</th>
+                                <th width="100">操作</th>
+                            </tr>
+
+                            if (ViewBag.FeedBackInfoList != null)
+                            {
+                                for (int i = 0; i < ViewBag.FeedBackInfoList.Count; i++)
+                                {
+                                    FeedBackInfo feedBackInfo = ViewBag.FeedBackInfoList[i];
+                                    <tr id="@i">
+                                <td>@ConvertDataTimeHelper.ConvertLongDateTime(@feedBackInfo.createTime)</td>
+                                <td>@feedBackInfo.userName</td>
+                                <td>@feedBackInfo.contact</td>
+                                <td>
+                                    @if (feedBackInfo.channel != null)
+                                            {
+                                                try
+                                                {
+                                        @Enum.GetName(typeof(SourceType), int.Parse(feedBackInfo.channel));
+                                                }
+                                                catch
+                                                {
+                                        @feedBackInfo.channel;
+                                                }
+                                             }
+                            </td>
+                            <td>@feedBackInfo.contents</td>
+                            <td>@feedBackInfo.replyContents</td>
+                            <td class="caozuo">
+                                <a href="javascript:void(0);" id="cc_@feedBackInfo.feedBackId">查看</a>
+                                <a href="javascript:void(0);" id="hf_@feedBackInfo.feedBackId">回复</a>
+                                <a href="javascript:void(0);" id="sc_@feedBackInfo.feedBackId">删除</a>
+                            </td>
+                        </tr>
+                                }
+                            }
+                        }
+                        </table>
+                    </div>
+                </div>
+                <div class="sid_top6">
+                    <div class="pageW">
+                        <div class="lPage">
+                            <div class="lPageWrap">
+                                @Html.Pager((IPagedList<JXAPI.JXSdk.Domain.FeedBackInfo>)ViewBag.PageList,
+                                 new PagerOptions()
+                                 {
+                                     PageIndexParameterName = "pageIndex"
+                                     ,
+                                     ShowPageIndexBox = true
+                                     ,
+                                     PageIndexBoxType = PageIndexBoxType.DropDownList
+                                 }, new { })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>

@@ -1,0 +1,55 @@
+﻿@model JXProduct.AdminUI.Models.Classification.ClassificationEditModel
+@section css{
+    <style>
+        body { background-color:#fff;}
+        .popup-dropDown-b ul{ max-height:280px; overflow-y:auto;}
+        .popup-dropDown-b  { max-height:320px; }
+    </style>
+}
+@section js{
+    <script src="~/Content/layer/layer.js"></script>
+    <script src="~/Content/js/jquery.validate.js"></script>
+    <script src="~/Content/js/jx.cf.js"></script>
+    <script>
+        $(function () { cf.edit() });
+    </script>
+}
+@{
+    Layout = "~/Views/Shared/_DefaultWin.cshtml";
+    var type = Model.ParentID > 0 ? "新增" : "编辑";
+}
+<div class="popupGeneral class-width">
+    <div class="popupGeneral-h">
+        <span>
+            @type 
+            @if (Model.ParentID > 0)
+            {
+                @:(父标签:@Model.ParentChineseName)
+            }
+        </span>
+    </div>
+    <div class="popupGeneral-c popup-class">
+        <form id="form1">
+            <div class="popup-title">
+                <span class="xingRed">* </span>
+                @(type)项名称：
+            </div>
+            <div class="popup-dropDown">
+                <div class="popup-dropDown-t">
+                    <input name="ChineseName" type="text" value="@Model.ChineseName" placeholder="请输入内容" />
+                </div>
+                <div class="popup-dropDown-b"></div>
+            </div>
+            <div class="confirm class-popup-confirm">
+                @Html.HiddenFor(t => t.CFID)
+                @Html.HiddenFor(t => t.ParentID)
+                @Html.HiddenFor(t=>t.ParentChineseName)
+                <a href="#" name="add">@(type)</a>
+                <a href="#" name="cancel" class="closewin_p">取消</a>
+                <p class="gou hide r1"><span></span><i>成功标签添加</i></p>
+                <p class="xingRed info-ico hide r2"><span></span><i>对不起此分类下已存在添加项！</i></p>
+                <p class="info-ico hide r3"><span></span><i>标签过长，最多支持8个汉字、24个英文字母和数字</i></p>
+            </div>
+        </form>
+    </div>
+</div>

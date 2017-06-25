@@ -1,0 +1,71 @@
+﻿using System;
+using System.Configuration;
+using System.IO;
+using System.Web;
+using JXMarketing.ConfigComponent;
+
+namespace JXUtil
+{
+    public class UploadImageHelper
+    {
+        static ImagesConfig imagesSection = ConfigurationManager.GetSection("images") as ImagesConfig;
+
+        /// <summary>
+        /// 图片地址
+        /// </summary>
+        /// <param name="filename">图片名称</param>
+        /// <returns></returns>
+        public static string GetImageUrl(string filename)
+        {
+            if (!string.IsNullOrEmpty(filename))
+                return string.Format("{0}{1}", imagesSection.MarketingImage.URL, filename);
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 图片上传
+        /// </summary>
+        /// <param name="file">上传控件</param>
+        /// <param name="extend">logo/banner</param>
+        public static string UploadImage(HttpPostedFileBase file, string extend)
+        {
+            string result = string.Empty;
+            try
+            {
+                if (file.ContentLength == 0)
+                {
+                    return "图片不能为空";
+                }
+                string ext = file.FileName.Substring(file.FileName.LastIndexOf(".")).ToLower();
+                if (!imagesSection.Rules.Contains(ext))
+                {
+                    return "图片格式不正确";
+                }
+
+                string name = Guid.NewGuid().ToString("N").ToUpper();
+                string imgPath = string.Empty;
+                if (file.ContentLength > imagesSection.MarketingImage.Size * 1024)
+                {
+                    return "图片太大，请压缩后上传";
+                }
+                if (extend != "")
+                {
+                    imgPath = extend + "-" + name + ext;
+                }
+                else
+                {
+                    imgPath = name + ext;
+                }
+                string filePath = imagesSection.MarketingImage.SavePath + imagesSection.MarketingImage.FileName + "\\" + imgPath;
+                file.SaveAs(filePath);
+
+                result = imgPath.Replace("\\", "/");
+            }
+            catch
+            {
+                result = "上传图片失败";
+            }
+            return result;
+        }
+    }
+}

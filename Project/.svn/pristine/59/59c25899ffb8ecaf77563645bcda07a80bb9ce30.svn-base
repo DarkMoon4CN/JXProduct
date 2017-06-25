@@ -1,0 +1,152 @@
+﻿using JXProduct.Component.DataAccess;
+using JXProduct.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class ActivityRuleDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        public int ActivityRule_Insert(ActivityRuleInfo rule)
+        {
+            string sqlCommand = "ActivityRule_Insert";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddOutParameter(dbCommand, "RuleID", DbType.Int32, 4);
+            dbw.AddInParameter(dbCommand, "ActID", DbType.Int32, rule.ActID);
+            dbw.AddInParameter(dbCommand, "Amount", DbType.Decimal, rule.Amount);
+            dbw.AddInParameter(dbCommand, "Quantity", DbType.Int32, rule.Quantity);
+            dbw.AddInParameter(dbCommand, "DiscountAmount", DbType.Decimal, rule.DiscountAmount);
+            dbw.AddInParameter(dbCommand, "Discount", DbType.Decimal, rule.Discount);
+            dbw.AddInParameter(dbCommand, "ProductID", DbType.String, rule.ProductID);
+            dbw.AddInParameter(dbCommand, "CouponBatchNo", DbType.String, rule.CouponBatchNo);
+            dbw.AddInParameter(dbCommand, "CreateTime", DbType.DateTime, rule.CreateTime);
+            dbw.AddInParameter(dbCommand, "Creator", DbType.String, rule.Creator);
+            dbw.AddInParameter(dbCommand, "Status", DbType.Int16, rule.Status);
+
+            dbw.ExecuteNonQuery(dbCommand);
+            return int.Parse(dbw.GetParameterValue(dbCommand, "RuleID").ToString());
+        }
+
+        /// <summary>
+        /// ActivityRule_Update Method
+        /// </summary>
+        /// <param name="ActivityRuleInfo">ActivityRule object</param>
+        /// <returns>true:成功 false:失败</returns>
+        public bool ActivityRule_Update(ActivityRuleInfo rule)
+        {
+            string sqlCommand = "ActivityRule_Update";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "RuleID", DbType.Int32, rule.RuleID);
+            dbw.AddInParameter(dbCommand, "ActID", DbType.Int32, rule.ActID);
+            dbw.AddInParameter(dbCommand, "Amount", DbType.Decimal, rule.Amount);
+            dbw.AddInParameter(dbCommand, "Quantity", DbType.Int32, rule.Quantity);
+            dbw.AddInParameter(dbCommand, "DiscountAmount", DbType.Decimal, rule.DiscountAmount);
+            dbw.AddInParameter(dbCommand, "Discount", DbType.Decimal, rule.Discount);
+            dbw.AddInParameter(dbCommand, "ProductID", DbType.String, rule.ProductID);
+            dbw.AddInParameter(dbCommand, "CouponBatchNo", DbType.String, rule.CouponBatchNo);
+            dbw.AddInParameter(dbCommand, "Updater", DbType.String, rule.Updater);
+            dbw.AddInParameter(dbCommand, "UpdateTime", DbType.DateTime, rule.UpdateTime);
+            dbw.AddInParameter(dbCommand, "Status", DbType.Int16, rule.Status);
+
+            dbw.ExecuteNonQuery(dbCommand);
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// ActivityRule_Delete Method
+        /// </summary>
+        /// <param name="ruleID">ActivityRule Main ID</param>
+        /// <returns>true:成功 false:失败</returns>	
+        public bool ActivityRule_Delete(int ruleID)
+        {
+            string sqlCommand = "ActivityRule_Delete";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "RuleID", DbType.Int32, ruleID);
+            dbw.ExecuteNonQuery(dbCommand);
+
+            return true;
+        }
+
+
+        //public ActivityRuleInfo ActivityRule_Get(int ruleID)
+        //{
+        //    var sql = "ActivityRule_Get";
+        //    var cmd = dbr.GetStoredProcCommand(sql);
+        //    dbr.AddInParameter(cmd, "RuleID", DbType.Int32, ruleID);
+
+        //    using (var read = dbr.ExecuteReader(cmd))
+        //    {
+        //        if (read.Read())
+        //        {
+        //            return RecoverModel(read);
+        //        }
+        //    }
+        //    return null;
+        //}
+
+        /// <summary>
+        /// 获取活动下的所有规则
+        /// </summary>
+        public IList<ActivityRuleInfo> ActivityRule_GetList(int actid)
+        {
+            var rules = new List<ActivityRuleInfo>();
+
+            string sqlCommand = "ActivityRule_GetList";
+            var cmd = dbr.GetStoredProcCommand(sqlCommand);
+
+            dbr.AddInParameter(cmd, "actID", DbType.Int32, actid);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    rules.Add(RecoverModel(read));
+                }
+            }
+            return rules;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复ActivityRule对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        private ActivityRuleInfo RecoverModel(IDataReader read)
+        {
+            var rule = new ActivityRuleInfo();
+            rule.RuleID = read["RuleID"].ToInt();
+            rule.ActID = read["ActID"].ToInt();
+            rule.Amount = read["Amount"].ToDecimal();
+            rule.Quantity = read["Quantity"].ToInt();
+            rule.DiscountAmount = read["DiscountAmount"].ToDecimal();
+            rule.Discount = read["Discount"].ToDecimal();
+            rule.ProductID = read["ProductID"].ToString();
+            rule.ProductGiftName = read["ProductGiftName"].ToString();
+            rule.CouponBatchNo = read["CouponBatchNo"].ToString();
+            rule.Creator = read["Creator"].ToString();
+            rule.CreateTime = read["CreateTime"].ToDateTime();
+            rule.Updater = read["Updater"].ToString();
+            rule.UpdateTime = read["UpdateTime"].ToDateTime();
+            rule.Status = read["Status"].ToShort();
+            rule.ActType = read["ActType"].ToShort();
+
+            if (rule.ActType == (int)Enums.ProductActivity.满折 || rule.ActType == (int)Enums.ProductActivity.折扣)
+            {
+                rule.Discount = rule.Discount * 10;
+            }
+
+            return rule;
+        }
+    }
+}

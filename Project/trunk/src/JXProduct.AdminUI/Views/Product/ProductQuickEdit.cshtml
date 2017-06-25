@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "快速编辑";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css{
+    <link href="~/css/jquery.autocomplete.css" rel="stylesheet" />
+    <style>
+        .informa-two .every-one-info { margin-left: 0px; width: 95%; }
+        .descinfo .spInputWrap input { height: 100px; vertical-align: top; word-break: break-all; word-wrap: break-word; }
+        .spInputWrap textarea { margin-left: 150px; width: 70%; height: 100px; }
+    </style>
+}
+@section js{
+    <script src="~/Content/js/jquery.validate.js"></script>
+    <script src="~/Content/js/jx.product.js"></script>
+    <script src="~/js/base.autocomplete.js"></script>
+    <script>
+        var productid = 0;
+        $(function () {
+            var $reload = $('#reload');
+            var $selling = $('input[name=selling]');
+            var $productlist = $('select[name=ProductList]');
+            var $group = $('select[name=group]');
+            var $content = $('.single-center');
+
+            $reload.on('click', function () {
+                quick.search(4, true, $group.val());
+                return false;
+            });
+
+            var manufacturuers;
+            $.get("/product/getmanufacturer", function (result) {
+                var datas = result.data;
+                manufacturuers = datas;
+            });
+
+            var quick = {};
+            quick.save = function () {
+                $("button.save").on('click', function () {
+                    $form.submit();
+                });
+                var $form = $('#formproduct');
+                $form.validate({
+                    errorPlacement: function (error, element) { error.insertAfter(element); },
+                    submitHandler: function () {
+                        $.ajax({
+                            type: "POST", url: "/product/editinstructions", data: $form.serialize(), dataType: "json", success: function (result) {
+                                if (result.status) {
+                                    jx.alert("编辑成功!");
+                                    $content.empty();
+                                    $productlist.find('option:selected').remove().val(0);
+                                } else {
+                                    jx.error("编辑失败!");
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                });
+            }
+            quick.search = function (cfid, selling, groupid) {
+                $productlist.find("option").slice(1).remove();
+                var data = { cfid: cfid, selling: selling, groupid: groupid };
+                $.ajax({
+                    type: "POST",
+                    url: "/product/search",
+                    data: data,
+                    dataType: "json",
+                    success: function (result) {
+                        if (result && result.status) {
+                            var arr = [];
+                            for (var i = 0 ; i < result.data.length; i++) {
+                                arr.push('<option value=' + result.data[i].ProductID + '>' + result.data[i].ChineseName + '</option>');
+                            }
+                            $productlist.append(arr.join(''));
+                        }
+                    }
+                });
+            }
+            quick.bindCompelete = function () {
+                var $m = $('input[name=Manufacturer]');
+                var $maddrss = $('input[name=ManufacturerAddress]');
+                var $zipcode = $('input[name=ZipCode]');
+                var $fax = $('input[name=Fax]');
+                var $url = $('input[name=Url]');
+                var $tel = $('input[name=Tel]');
+                var $hidden_m = $m.prev();
+                $m.autocomplete(manufacturuers, {
+                    formatItem: function (row, i, max) {
+                        return "<table width='400px'><tr><td align='left'>" + row.mname + "</td><td align='right'></td></tr></table>";
+                    },
+                    formatMatch: function (row, i, max) {
+                        return row.mname.toString();
+                    }
+                }).result(function (event, data, formatted) {
+                    $hidden_m.val(data.mid);
+                    $maddrss.val(data.maddress);
+                    $zipcode.val(data.zipcode);
+                    $fax.val(data.fax);
+                    $tel.val(data.tel);
+                    $url.val(data.url);
+                });
+            }
+            quick.selectProduct = function () {
+                $group.change(function () {
+                    quick.search(4, true, $(this).val());
+                });
+                $productlist.change(function () {
+                    quick.loadproductinfo($(this));
+                });
+            }
+            quick.selectProduct();
+            quick.search(4, true, 0);
+            quick.loadproductinfo = function ($this) {
+                var $next = $reload.next();
+                if ($next.length > 0)
+                    $next.remove();
+                var chinesename = $this.find("option:selected").text();
+                var pid = $this.val();
+                pid = parseInt(pid);
+                if (pid > 0) {
+                    $reload.after('<span>商品名称：<a href="http://www.jxdyf.com/product/' + pid + '.html" target="_blank">' + chinesename + '</a></span>');
+                    if (!isNaN(pid) && pid > 0) {
+                        productid = pid;
+                        $content.load('/product/editinstructions?productid=' + pid, function () {
+                            productedit.common();
+                            productedit.keyword();
+                            quick.save();
+                            quick.bindCompelete();
+                        });
+                    }
+                } else {
+                    $content.empty();
+                }
+            }
+        });
+
+    </script>
+}
+<div id="l-content-right">
+    <div class="single-product-h"><a href="/product/list"><i></i><span>返回上一页</span></a></div>
+    <div class="container" style="margin-top:20px;">
+        <div class="row">
+            <form class="form-horizontal">
+                <div class=" form-group">
+                    <label class="col-sm-1 control-label">商品分类：</label>
+                    <label class="col-sm-1 control-label">中西药品</label>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">产品列表：</label>
+                    <div class="col-xs-1">
+                        <select class="form-control" name="group">
+                            <option value="0">组</option>
+                            <option value="1">A</option>
+                            <option value="2">B</option>
+                            <option value="3">C</option>
+                            <option value="4">D</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        <select class="form-control" name="ProductList">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-default" id="reload">重新加载</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="single-center authority-informa">
+    </div>
+</div>

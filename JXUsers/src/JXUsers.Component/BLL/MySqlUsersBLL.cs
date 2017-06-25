@@ -1,0 +1,21 @@
+﻿using JXUsers.Component.IBLL;
+using JXUsers.Component.Model.ResultModel;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXUsers.Component.BLL
+{
+    public class MySqlUsersBLL:IMySqlUsersBLL
+    {
+        private static readonly JXUsers.Component.MySqlDAL.MySqlUsersDAL dal = new JXUsers.Component.MySqlDAL.MySqlUsersDAL();
+
+        public OperationResult<IList<UsersInfo>> Users_GetUserByParms(string mobile, string phone, string trueName, int userID, int isJoinMoblie = 1)
+        {
+            return dal.Users_GetUserByParms(mobile,phone,trueName,userID,isJoinMoblie);
+        }
+
+    }
+}

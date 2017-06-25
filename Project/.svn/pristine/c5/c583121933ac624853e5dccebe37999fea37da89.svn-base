@@ -1,0 +1,32 @@
+﻿using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.BLL
+{
+    public class AuditStuffEmailBLL
+    {
+        private AuditStuffEmailBLL() { }
+        private static AuditStuffEmailBLL _instance;
+        public static AuditStuffEmailBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new AuditStuffEmailBLL());
+            }
+        }
+
+        private static readonly SQLServerDAL.AuditStuffEmailDAL dal = new SQLServerDAL.AuditStuffEmailDAL();
+        public List<AuditStuffEmailInfo> GetList()
+        {
+            return dal.GetList();
+        }
+
+        public AuditStuffEmailInfo Insert(AuditStuffEmailInfo info)
+        {
+            return dal.Insert(info);
+        }
+    }
+}

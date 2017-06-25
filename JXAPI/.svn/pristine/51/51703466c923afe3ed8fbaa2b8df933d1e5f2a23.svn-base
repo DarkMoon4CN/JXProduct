@@ -1,0 +1,295 @@
+﻿using com.igetui.api.openservice;
+using com.igetui.api.openservice.igetui;
+using com.igetui.api.openservice.igetui.template;
+using com.igetui.api.openservice.payload;
+using JXAPI.Component.BLL;
+using JXAPI.Component.Enums;
+using JXAPI.Component.Model;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using JXAPI.QueuePush.BLL;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.QueuePush
+{
+    public class Push
+    {
+        #region 个推参数
+        private static string APPID = "gorAbOpJHb7DknzkVhx8W6";                     //您应用的AppId
+        private static string APPKEY = "hkwvC1Ld0kAOKscmVkYaj8";                    //您应用的AppKey
+        private static string MASTERSECRET = "5OQ8fqJEOd6e6fAHfflPA1";              //您应用的MasterSecret 
+        private static string HOST = "http://sdk.open.api.igexin.com/apiex.htm";    //HOST：OpenService接口地址
+        #endregion
+
+        private static ILog myLog = log4net.LogManager.GetLogger(typeof(Push));
+
+        public void PushStart() 
+        {
+            Environment.SetEnvironmentVariable("needDetails", "true");
+            log4net.Config.XmlConfigurator.Configure();
+            myLog.InfoFormat("执行开始！时间:{0}", System.DateTime.Now);
+            TimingPush();
+            myLog.InfoFormat("执行完毕！时间:{0}", System.DateTime.Now);
+            myLog.InfoFormat("===========================================");
+        }
+        #region 推送实际逻辑
+        public void TimingPush()
+        {
+            //获取数据库中所有等待推送的数据
+            List<PushMessageInfo> pushMessageInfoList = MobilePushBLL.Instance.MobilePush_GetList();
+            myLog.InfoFormat("推送信息总条数:{0}", pushMessageInfoList.Count.ToString());
+            for (int i = 0; i < pushMessageInfoList.Count; i++)
+            {
+                PushMessageInfo pushMessageInfo = pushMessageInfoList[i];
+                try
+                {
+                    if (pushMessageInfo.PushCount > 5)
+                    {
+                        myLog.InfoFormat("推送数据已失败5次 推送ID：{0}", pushMessageInfo.PushID);
+                        return;
+                    }
+                    if (pushMessageInfo.PushType == "app" || string.IsNullOrEmpty(pushMessageInfo.PushType) == true)
+                    {
+                        //推送所有用户（app下）
+                        pushMessageToApp(pushMessageInfo);
+                    }
+                    else
+                    {
+                        //推送1-n个用户
+                        PushMessageToList(pushMessageInfo);
+                    }
+                    pushMessageInfo.Status = 1;
+                }
+                catch (Exception e)
+                {
+                    //推送异常,数据推pushCount计数
+                    myLog.InfoFormat("异常：{0}", e.Message);
+                    pushMessageInfo.Status = 0;
+                }
+                pushMessageInfo.PushCount += 1;
+
+                //修改推送后数据库数据 Status 为 1 表示已推送 0表示未推送
+                //推送次数超过5此将不再推送
+                MobilePushBLL.Instance.UpdateMobilePush(pushMessageInfo);
+            }
+        }
+        #endregion
+
+        #region 向某个app应用内发送
+        /// <summary>
+        /// 向 某个app应用 内全部发送(所有开关无效)
+        /// </summary>
+        /// <param name="pushMessageInfo"></param>
+        public void pushMessageToApp(PushMessageInfo pushMessageInfo)
+        {
+            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
+            string content = pushMessageInfo.Contents;
+            string title = string.Empty;
+            //为接收者组织数据
+            var transmissionContent =
+                        new
+                        {
+                            Template = pushMessageInfo.Template,
+                            Content = pushMessageInfo.Contents,
+                            Url = pushMessageInfo.Url,
+                            Section = pushMessageInfo.TypeID + "/" + pushMessageInfo.Section,
+                            NodeId = pushMessageInfo.DataID
+                        };
+            string jsonContent = JsonHelper.ConvertToJson(transmissionContent);
+            myLog.InfoFormat("推送内容：{0}", jsonContent);
+            if (pushMessageInfo.TypeID != 0)
+            {
+                title = Enum.GetName(typeof(SectionSecondType), pushMessageInfo.Section);
+            }
+            //透传模板
+            TransmissionTemplate template = TransmissionTemplateDemo(content, title, jsonContent);
+            template.TransmissionType = "2";
+            template.TransmissionContent = jsonContent; //透传内容
+            AppMessage message = new AppMessage();
+            message.IsOffline = true;
+            message.OfflineExpireTime = 1000 * 3600 * 12;
+            message.Data = template;
+
+            //账号APPID
+            List<string> appIdList = new List<string>();
+            appIdList.Add(APPID);
+
+            //推送手机的类型 
+            List<string> phoneTypeList = new List<string>();
+            phoneTypeList.Add("ANDROID");
+            phoneTypeList.Add("IOS");
+
+            message.AppIdList = appIdList;
+            message.PhoneTypeList = phoneTypeList;
+            string pushResult = push.pushMessageToApp(message);
+            myLog.InfoFormat("推送结果：{0}", pushResult);
+        }
+        #endregion
+
+        #region 多人发送 个推信息
+        /// <summary>
+        /// 1-多人发送 个推信息
+        /// </summary>
+        /// <param name="pushMessageInfo"></param>
+        private static void PushMessageToList(PushMessageInfo pushMessageInfo)
+        {
+            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
+            string content = pushMessageInfo.Contents;
+            string title = string.Empty;
+            var transmissionContent =
+            new
+            {
+                Template = pushMessageInfo.Template,
+                Content = pushMessageInfo.Contents,
+                Url = pushMessageInfo.Url,
+                Section = pushMessageInfo.TypeID + "/" + pushMessageInfo.Section,
+                NodeId = pushMessageInfo.DataID
+            };
+
+            string jsonContent = JsonHelper.ConvertToJson(transmissionContent);
+            ListMessage message = new ListMessage();
+            if (pushMessageInfo.TypeID != 0)
+            {
+                title = Enum.GetName(typeof(SectionSecondType), pushMessageInfo.Section);
+            }
+            //透传模板
+            TransmissionTemplate template = TransmissionTemplateDemo(content, title, jsonContent);
+            template.TransmissionType = "2";    //应用启动类型，1：强制应用启动 2：等待应用启动
+            template.TransmissionContent = jsonContent;  //透传内容
+            message.IsOffline = true;
+            message.OfflineExpireTime = 1000 * 3600 * 12;
+            message.Data = template;
+            //设置接收者
+            List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
+
+            if (pushMessageInfo.TargetList.IndexOf(",") == -1)
+            {
+                pushMessageInfo.TargetList += ",";
+            }
+            string[] targets = pushMessageInfo.TargetList.Split(',');
+            for (int i = 0; i < targets.Length; i++)
+            {
+                if (targets[i] != null && targets[i] != string.Empty && targets[i] != "")
+                {
+                    com.igetui.api.openservice.igetui.Target target = new com.igetui.api.openservice.igetui.Target();
+                    target.appId = APPID;
+                    target.alias = targets[i];
+
+                    #region 判定是否允许推送，并向java接口写入推送信息
+                    MessagesAddBLL pushBLL = new MessagesAddBLL();
+                    MessagesAddRequest maRequest = new MessagesAddRequest();
+                    maRequest.creator = "推送程序";
+                    maRequest.userID = Convert.ToInt32(target.alias);
+                    maRequest.status = 0;
+                    if (pushMessageInfo.Template == 1)
+                    {
+                        maRequest.contents = pushMessageInfo.Contents;
+                    }
+                    else
+                    {
+                        maRequest.contents = pushMessageInfo.Url;
+                    }
+                    if (pushMessageInfo.TypeID != 0)
+                    {
+                        maRequest.typeID = pushMessageInfo.TypeID;
+                    }
+                    //IOS 数据判定开关
+                    if (pushMessageInfo.ChannelID == 1 || pushMessageInfo.ChannelID == 0)
+                    {
+                        NotifyConfigGetBLL notifyConfigGetBLL = new NotifyConfigGetBLL();
+                        NotifyConfigGetRequest request = new NotifyConfigGetRequest();
+                        request.userID = maRequest.userID;
+                        request.userPlatform = 3;
+                        NotifyConfigGetResponse ncgResponse = notifyConfigGetBLL.NotityConfigGet(request);
+                        //转化为2进制字符串后换算出是否推送
+                        string allStatus = Convert.ToString(ncgResponse.notifyConfig.notifySwitch, 2);
+                        int t = ncgResponse.notifyConfig.notifySwitch & maRequest.typeID - 1;
+                        myLog.Info(maRequest.userID + "跳过推送，java接口描述内没有权限！");
+                        //包含用户已有权限+不存在的用户！
+                        if (t == 0)
+                        {
+                            pushBLL.MessagesAdd(maRequest);
+                            targetList.Add(target);
+                        }
+                    }
+                    else //Android
+                    {
+                        pushBLL.MessagesAdd(maRequest);
+                        targetList.Add(target);
+                    }
+
+                    #endregion
+                }
+            }
+            if (targetList == null || targetList.Count == 0)
+            {
+                return;
+            }
+            string contentId = push.getContentId(message);
+            string pushResult = push.pushMessageToList(contentId, targetList);
+        }
+        #endregion
+
+        #region 线上使用透传模板
+        /// <summary>
+        /// 透传 正式使用
+        /// </summary>
+        /// <returns></returns>
+        public static TransmissionTemplate TransmissionTemplateDemo(string content, string title, string jsonContent)
+        {
+            TransmissionTemplate template = new TransmissionTemplate();
+            template.AppId = APPID;
+            template.AppKey = APPKEY;
+
+            //APN高级推送
+            APNPayload apnpayload = new APNPayload();
+            DictionaryAlertMsg alertMsg = new DictionaryAlertMsg();
+            alertMsg.Body = "Body";
+            alertMsg.ActionLocKey = "ActionLocKey";
+            alertMsg.LocKey = content;
+            alertMsg.addLocArg("LocArg");
+            alertMsg.LaunchImage = "LaunchImage";
+            //IOS8.2支持字段
+            alertMsg.Title = "Title";
+            alertMsg.TitleLocKey = title;
+            alertMsg.addTitleLocArg("TitleLocArg");
+            apnpayload.AlertMsg = alertMsg;
+            apnpayload.Badge = 10;
+
+            apnpayload.Sound = "test1.wav";
+            apnpayload.addCustomMsg("payload", jsonContent);
+            template.setAPNInfo(apnpayload);
+            return template;
+        }
+        #endregion
+
+        #region 用于普通发送个推信息
+        /// <summary>
+        ///  用于普通发送个推信息
+        /// </summary>
+        /// <returns></returns>
+        public static NotificationTemplate NotificationTemplateDemo()
+        {
+            NotificationTemplate template = new NotificationTemplate();
+            template.AppId = APPID;
+            template.AppKey = APPKEY;
+            template.Title = "lm在测试上传";         //通知栏标题
+            template.Text = "lm在测试上传";          //通知栏内容
+            template.Logo = "";                      //通知栏显示本地图片
+            template.LogoURL = "";                   //通知栏显示网络图标
+
+            template.TransmissionType = "1";          //应用启动类型，1：强制应用启动  2：等待应用启动
+            template.TransmissionContent = "请填写透传内容";   //透传内容
+
+            template.IsRing = true;                //接收到消息是否响铃，true：响铃 false：不响铃
+            template.IsVibrate = true;               //接收到消息是否震动，true：震动 false：不震动
+            template.IsClearable = true;             //接收到消息是否可清除，true：可清除 false：不可清除
+            return template;
+        }
+        #endregion
+    }
+}

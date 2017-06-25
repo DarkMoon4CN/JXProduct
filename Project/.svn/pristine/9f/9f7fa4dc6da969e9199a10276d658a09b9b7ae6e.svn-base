@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Model
+{
+    /*************
+     * 
+     *  1. 资质审核信息,根据code判断分类 code 类似于搜索主键
+     *  2. 针对某个产品可以自定义分类
+     *  3. 分类下可以有二级菜单 
+     * 
+     * ************/
+    public class QualificationInfo
+    {
+        public QualificationInfo()
+        {
+            this.StartDate = DateTime.Now;
+            this.EndDate = DateTime.Now;
+            this.CreateTime = DateTime.Now;
+            this.ProductID = 0;
+            this.ManufacturerID = 0;
+            this.Status = 0;
+        }
+
+        /// <summary>
+        ///资质id
+        /// </summary>
+        public int QualificationID { get; set; }
+
+        /// <summary>
+        /// 代码 001-006 代表分类  100 供应商资质, 101产品资质 ,102 自定义产品资质
+        /// </summary>
+        public string Code { get; set; }
+        /// <summary>
+        ///类型 0 供应商资质   1 供应商经营资质   2 商品资质  
+        /// </summary>
+        public short Type { get; set; }
+
+        /// <summary>
+        ///资质名称
+        /// </summary>
+        public string ChineseName { get; set; }
+
+        /// <summary>
+        /// 父标签
+        /// </summary>
+        public int ParentID { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Sort { get; set; }
+
+
+
+
+        /**************************************************************/
+        /// <summary>
+        /// 自增长ID  商品资质可以自己添加需要的资质种类
+        /// </summary>
+        /// <typeparam name="?"></typeparam>
+        /// <param name="?"></param>
+        /// <returns></returns>
+        public int PQID { get; set; }
+   
+        /// <summary>
+        ///企业ID
+        /// </summary>
+        public int ManufacturerID { get; set; }
+
+        /// <summary>
+        ///商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        ///图片路径
+        /// </summary>
+        public string Image { get; set; }
+
+        /// <summary>
+        ///证件编号
+        /// </summary>
+        public string Number { get; set; }
+
+        /// <summary>
+        ///发证时间
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        ///结束时间
+        /// </summary>
+        public DateTime EndDate { get; set; }
+
+        /// <summary>
+        ///保存时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        ///审核状态  0 未处理  1 已处理
+        /// </summary>
+        public short Status { get; set; }
+    }
+}

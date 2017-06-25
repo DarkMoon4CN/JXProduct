@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Security;
+
+namespace JXAPI.Common.Utils
+{
+    public class ImageHelper
+    {
+        /// <summary>
+        /// 默认路径
+        /// &#10;http://img.jxdyf.com/product/
+        /// </summary>
+        private const string defaultPath = "http://img.jxdyf.com/product/";
+
+        /// <summary>
+        /// 默认空图片
+        /// &#10;http://img.jxdyf.com/picture.jpg
+        /// </summary>
+        private const string emptyImage = "http://img.jxdyf.com/picture.jpg";
+
+
+        #region 水印/缩率图  AddWaterMart+CreateResizeImage
+
+        // 给图片添加水印
+        public static string AddWaterMart(string sourImaName, string wartMarkFile, int width = 740, int height = 740)
+        {
+            if (!File.Exists(sourImaName))
+            {
+                throw new ArgumentException("输入的文件不存在");
+            }
+            if (String.IsNullOrEmpty(wartMarkFile) || !File.Exists(wartMarkFile))
+            {
+                return sourImaName;
+            }
+
+            System.Drawing.Image image = System.Drawing.Image.FromFile(sourImaName);
+            Bitmap water = new Bitmap(wartMarkFile);
+
+            using (Graphics g = Graphics.FromImage(image))
+            {
+
+                System.Drawing.Imaging.ImageAttributes imageAttributes = new System.Drawing.Imaging.ImageAttributes();
+
+                //用矩阵设置水印图片透明度
+                float[][] colorMatrixElements = { 
+                       new float[] {0.3f,  0.0f,  0.0f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.3f,  0.0f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.3f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.0f,  0.3f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.0f,  0.0f, 0.3f}
+                };
+
+                System.Drawing.Imaging.ColorMatrix wmColorMatrix = new System.Drawing.Imaging.ColorMatrix(colorMatrixElements);
+
+                imageAttributes.SetColorMatrix(wmColorMatrix, System.Drawing.Imaging.ColorMatrixFlag.Default, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+                g.DrawImage(water, new Rectangle(0, 0, width, height), 0, 0, water.Width, water.Height, GraphicsUnit.Pixel, imageAttributes);
+                g.Dispose();
+
+                string extension = sourImaName.Substring(sourImaName.LastIndexOf(".")).ToLower();
+                ImageFormat imgType = ImageFormat.Jpeg;
+
+                switch (extension)
+                {
+                    case ".jpeg":
+                    case ".jpg":
+                    case ".gif":
+                        imgType = ImageFormat.Jpeg;
+                        extension = ".JPG";
+                        break;
+                    case ".png":
+                        imgType = ImageFormat.Png;
+                        extension = ".png";
+                        break;
+                    default:
+                        imgType = ImageFormat.Jpeg;
+                        extension = ".JPG";
+                        break;
+                }
+
+                string newfile = Regex.Replace(sourImaName, @"\.\w+$", "_new" + extension);
+                image.Save(newfile, imgType);
+                image.Dispose();
+                return newfile;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourImgName">原图位置</param>
+        /// <param name="desImgName"></param>
+        /// <param name="imgSize"></param>
+        /// <param name="isOverride"></param>
+        /// <returns></returns>
+        [SecuritySafeCritical]
+        public static string CreateResizeImage(string desImgName,byte[] ibyte, string extName ,int imgSize, bool isOverride)
+        {
+            int iWidth = 0;
+            int iHeight = 0;
+            ImageFormat imgType = ImageFormat.Jpeg;
+
+            string extension = extName.ToLower();
+
+            // 获得图片文件存储格式
+            switch (extension)
+            {
+                case ".jpeg":
+                case ".jpg":
+                case ".gif":
+                    imgType = ImageFormat.Jpeg;
+                    extension = ".jpg";
+                    break;
+                case ".png":
+                    imgType = ImageFormat.Png;
+                    extension = ".png";
+                    break;
+                default:
+                    imgType = ImageFormat.Jpeg;
+                    extension = ".jpg";
+                    break;
+            }
+
+            // 修改目标文件的后缀名
+            desImgName = Regex.Replace(desImgName, @"\.\w+$", extension);
+
+            Image imgSource=null;
+            using (MemoryStream ms = new MemoryStream(ibyte))
+            {
+                imgSource =System.Drawing.Image.FromStream(ms);
+            }
+            // 计算图片的缩放尺寸
+             
+
+            if (imgSize == -1 || imgSource.Width <= imgSize)
+            {
+                iWidth = imgSource.Width;
+                iHeight = imgSource.Height;
+            }
+            else
+            {
+                if (imgSource.Width >= imgSource.Height)
+                {
+                    iWidth = imgSize;
+                    iHeight = (int)(imgSize * ((float)imgSource.Height / imgSource.Width));
+                }
+                else
+                {
+                    iHeight = imgSize;
+                    iWidth = (int)(imgSize * ((float)imgSource.Width / imgSource.Height));
+                }
+            }
+
+            Bitmap bmTarget = new Bitmap(iWidth, iHeight, PixelFormat.Format32bppArgb);
+            bmTarget.SetResolution(imgSource.HorizontalResolution, imgSource.VerticalResolution);
+            bmTarget.MakeTransparent(Color.White);
+
+            //建立画布
+            Graphics g = Graphics.FromImage(bmTarget);
+
+            try
+            {
+                //初始化画布
+                g.Clear(Color.White);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.GammaCorrected;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                // 在画布上画图
+                g.DrawImage(imgSource, 0, 0, Convert.ToSingle(iWidth), Convert.ToSingle(iHeight));
+
+                // 释放资源
+                imgSource.Dispose();
+                imgSource = (Image)bmTarget.Clone();
+                imgSource.Save(desImgName, imgType);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                imgSource.Dispose();
+                g.Dispose();
+                bmTarget.Dispose();
+            }
+            return desImgName;
+        }
+
+
+        #endregion
+
+        
+    }
+}

@@ -1,0 +1,43 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class SearchKeywordMySqlBLL : IMySqlBLL
+    {
+        private SearchKeywordMySqlBLL() { }
+        private static SearchKeywordMySqlBLL _instance;
+        private static readonly SearchKeywordMySqlDAL dal = new SearchKeywordMySqlDAL();
+        public static SearchKeywordMySqlBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new SearchKeywordMySqlBLL());
+            }
+        }
+
+        #region CURD
+        
+        public int GetMaxID()
+        {
+            return dal.GetMaxSearchKeywordID();
+        }
+
+        public bool Add(DataTable table, out int errorCount)
+        {
+            return dal.AddSearchKeyword(table, out errorCount);
+        }
+
+        public bool Update(DataTable table, out int errorCount)
+        {
+            return dal.UpdateSearchKeyword(table, out errorCount);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Domain
+{
+    public class FeedBackInfo
+    {
+        /// <summary>
+        /// 意见反馈ID
+        /// </summary>
+        public int feedBackId { get; set; }
+
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public int userID { get; set; }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        public string userName { get; set; }
+
+        /// <summary>
+        /// 类型（0=其他 1=物流问题 2=功能意见 3=流量问题 4=操作体验问题 5=新需求反馈）
+        /// </summary>
+        public int typeID { get; set; }
+
+        /// <summary>
+        /// 0=web 1=h5 2=android 3=ios
+        /// </summary>
+        public string channel { get; set; }
+        
+        /// <summary>
+        /// 反馈内容
+        /// </summary>
+        public string contents { get; set; }
+
+        /// <summary>
+        /// 联系方式
+        /// </summary>
+        public string contact { get; set; }
+
+        /// <summary>
+        /// 反馈时间
+        /// </summary>
+        public long createTime { get; set; }
+
+        /// <summary>
+        /// 回复用户
+        /// </summary>
+        public string replyUserName { get; set; }
+
+        /// <summary>
+        /// 回复内容
+        /// </summary>
+        public string replyContents { get; set; }
+
+        /// <summary>
+        /// 回复时间
+        /// </summary>
+        public long replyTime { get; set; } 
+
+        /// <summary>
+        /// 状态（0=未回复 1=已回复）【查询：0=全部，-1未回复】
+        /// </summary>
+        public int status { get; set; }
+         
+        /// <summary>
+        /// 用户头像
+        /// </summary>
+        public string image { get; set; }
+
+        /// <summary>
+        /// 回复者头像
+        /// </summary>
+        public string replyImage { get; set; }
+    }
+}

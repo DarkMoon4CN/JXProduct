@@ -1,0 +1,178 @@
+﻿using JXProduct.Component.DataAccess;
+using JXProduct.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class ManufacterDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        #region CURD
+        /// <summary>
+        /// Manufacter_Insert Method		
+        /// </summary>
+        /// <param name="ManufacterInfo">Manufacter object</param>
+        /// <returns></returns>
+        internal int Manufacter_Insert(ManufacterInfo manufacterInfo)
+        {
+            string sqlCommand = "Manufacter_Insert";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddOutParameter(dbCommand, "ManuID", DbType.Int32, 4);
+            dbw.AddInParameter(dbCommand, "Manufacturer", DbType.String, manufacterInfo.Manufacturer);
+            dbw.AddInParameter(dbCommand, "Address", DbType.String, manufacterInfo.Address);
+            dbw.AddInParameter(dbCommand, "Postalcode", DbType.String, manufacterInfo.Postalcode);
+            dbw.AddInParameter(dbCommand, "Phone", DbType.String, manufacterInfo.Phone);
+            dbw.AddInParameter(dbCommand, "ConsultPhone", DbType.String, manufacterInfo.ConsultPhone);
+            dbw.AddInParameter(dbCommand, "ServicePhone", DbType.String, manufacterInfo.ServicePhone);
+            dbw.AddInParameter(dbCommand, "Office", DbType.String, manufacterInfo.Office);
+            dbw.AddInParameter(dbCommand, "Fax", DbType.String, manufacterInfo.Fax);
+            dbw.AddInParameter(dbCommand, "RegAddress", DbType.String, manufacterInfo.RegAddress);
+            dbw.AddInParameter(dbCommand, "Site", DbType.String, manufacterInfo.Site);
+            dbw.AddInParameter(dbCommand, "Creator", DbType.String, manufacterInfo.Creator);
+            dbw.AddInParameter(dbCommand, "CreateTime", DbType.DateTime, manufacterInfo.CreateTime);
+
+            dbw.ExecuteNonQuery(dbCommand);
+            return int.Parse(dbw.GetParameterValue(dbCommand, "ManuID").ToString());
+        }
+
+        /// <summary>
+        /// Manufacter_Update Method
+        /// </summary>
+        /// <param name="ManufacterInfo">Manufacter object</param>
+        /// <returns>true:成功 false:失败</returns>
+        internal bool Manufacter_Update(ManufacterInfo manufacterInfo)
+        {
+            string sqlCommand = "Manufacter_Update";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "ManuID", DbType.Int32, manufacterInfo.ManuID);
+            dbw.AddInParameter(dbCommand, "Manufacturer", DbType.String, manufacterInfo.Manufacturer);
+            dbw.AddInParameter(dbCommand, "Address", DbType.String, manufacterInfo.Address);
+            dbw.AddInParameter(dbCommand, "Postalcode", DbType.String, manufacterInfo.Postalcode);
+            dbw.AddInParameter(dbCommand, "Phone", DbType.String, manufacterInfo.Phone);
+            dbw.AddInParameter(dbCommand, "ConsultPhone", DbType.String, manufacterInfo.ConsultPhone);
+            dbw.AddInParameter(dbCommand, "ServicePhone", DbType.String, manufacterInfo.ServicePhone);
+            dbw.AddInParameter(dbCommand, "Office", DbType.String, manufacterInfo.Office);
+            dbw.AddInParameter(dbCommand, "Fax", DbType.String, manufacterInfo.Fax);
+            dbw.AddInParameter(dbCommand, "RegAddress", DbType.String, manufacterInfo.RegAddress);
+            dbw.AddInParameter(dbCommand, "Site", DbType.String, manufacterInfo.Site);
+            dbw.AddInParameter(dbCommand, "LastUpdate", DbType.String, manufacterInfo.LastUpdate);
+            dbw.AddInParameter(dbCommand, "LastUpdateTime", DbType.DateTime, manufacterInfo.LastUpdateTime);
+
+            dbw.ExecuteNonQuery(dbCommand);
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// Manufacter_Get Method
+        /// </summary>
+        /// <param name="manuID">Manufacter Main ID</param>
+        /// <returns>ManufacterInfo get from Manufacter table.</returns>	
+        internal ManufacterInfo Manufacter_Get(int manuID)
+        {
+            ManufacterInfo manufacterInfo = null;
+
+            string sqlCommand = "Manufacter_Get";
+            DbCommand dbCommand = dbr.GetStoredProcCommand(sqlCommand);
+
+            dbr.AddInParameter(dbCommand, "ManuID", DbType.Int32, manuID);
+
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                while (dataReader.Read())
+                {
+                    manufacterInfo = RecoverModel(dataReader);
+                }
+            }
+
+            return manufacterInfo;
+        }
+
+        /// <summary>
+        /// Manufacter_Delete Method
+        /// </summary>
+        /// <param name="manuID">Manufacter Main ID</param>
+        /// <returns>true:成功 false:失败</returns>	
+        internal bool Manufacter_Delete(int manuID)
+        {
+            string sqlCommand = "Manufacter_Delete";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "ManuID", DbType.Int32, manuID);
+            dbw.ExecuteNonQuery(dbCommand);
+            return true;
+        }
+
+        /// <summary>
+        /// Manufacter_GetList Method
+        /// </summary>
+        /// <param name="pageIndex">起始页码</param>
+        /// <param name="pageSize">每页数据数</param>
+        /// <param name="orderType">设置排序，'':没有排序要求 0：主键升序 1：主键降序 字符串：用户自定义排序规则 如：‘SubmitTime DESC , ID DESC’</param>
+        /// <param name="strWhere">查询条件(注意: 不要加 WHERE)</param>
+        /// <param name="recordCount">总记录数</param>
+        /// <returns>A Generic List of ManufacterInfo</returns>
+        internal IList<ManufacterInfo> Manufacter_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            IList<ManufacterInfo> manufacterInfoList = new List<ManufacterInfo>();
+
+            string sqlCommand = "Manufacter_GetList";
+            DbCommand dbCommand = dbr.GetStoredProcCommand(sqlCommand);
+
+            dbr.AddInParameter(dbCommand, "PageIndex", DbType.Int32, pageIndex);
+            dbr.AddInParameter(dbCommand, "PageSize", DbType.Int32, pageSize);
+            dbr.AddInParameter(dbCommand, "OrderType", DbType.String, orderType);
+            dbr.AddInParameter(dbCommand, "StrWhere", DbType.String, strWhere);
+            dbr.AddOutParameter(dbCommand, "RecordCount", DbType.Int32, 4);
+
+            using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+            {
+                while (dataReader.Read())
+                {
+                    manufacterInfoList.Add(RecoverModel(dataReader));
+                }
+            }
+
+            recordCount = int.Parse(dbr.GetParameterValue(dbCommand, "RecordCount").ToString());
+
+            return manufacterInfoList;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复Manufacter对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        private ManufacterInfo RecoverModel(IDataReader dataReader)
+        {
+            ManufacterInfo manufacterInfo = new ManufacterInfo();
+
+            manufacterInfo.ManuID = int.Parse(dataReader["ManuID"].ToString());
+            manufacterInfo.Manufacturer = dataReader["Manufacturer"].ToString();
+            manufacterInfo.Address = dataReader["Address"].ToString();
+            manufacterInfo.Postalcode = dataReader["Postalcode"].ToString();
+            manufacterInfo.Phone = dataReader["Phone"].ToString();
+            manufacterInfo.ConsultPhone = dataReader["ConsultPhone"].ToString();
+            manufacterInfo.ServicePhone = dataReader["ServicePhone"].ToString();
+            manufacterInfo.Office = dataReader["Office"].ToString();
+            manufacterInfo.Fax = dataReader["Fax"].ToString();
+            manufacterInfo.RegAddress = dataReader["RegAddress"].ToString();
+            manufacterInfo.Site = dataReader["Site"].ToString();
+            manufacterInfo.Creator = dataReader["Creator"].ToString();
+            manufacterInfo.CreateTime = DateTime.Parse(dataReader["CreateTime"].ToString());
+            manufacterInfo.LastUpdate = dataReader["LastUpdate"].ToString();
+            manufacterInfo.LastUpdateTime = DateTime.Parse(dataReader["LastUpdateTime"].ToString());
+
+            return manufacterInfo;
+        }
+        #endregion
+    }
+}

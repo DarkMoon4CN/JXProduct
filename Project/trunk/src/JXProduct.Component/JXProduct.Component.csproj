@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{07202FE2-62F3-4166-A7CA-FDCB5B63129A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JXProduct.Component</RootNamespace>
+    <AssemblyName>JXProduct.Component</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
+      <HintPath>..\..\..\..\ComDLL\Bin\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data">
+      <HintPath>..\..\..\..\ComDLL\Bin\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BLL\ActivityBLL.cs" />
+    <Compile Include="BLL\ActivityRuleBLL.cs" />
+    <Compile Include="BLL\AuditStuffEmailBLL.cs" />
+    <Compile Include="BLL\BelowLinePromotionBLL.cs" />
+    <Compile Include="BLL\BrandBLL.cs" />
+    <Compile Include="BLL\CategoryBLL.cs" />
+    <Compile Include="BLL\ClassificationBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ClassificationParameterToPriceBLL.cs" />
+    <Compile Include="BLL\ExpressNewsBLL.cs" />
+    <Compile Include="BLL\JXClassificationBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\KeywordBLL.cs" />
+    <Compile Include="BLL\KeywordProductBLL.cs" />
+    <Compile Include="BLL\ManufacturerBLL.cs" />
+    <Compile Include="BLL\MarketBrandBLL.cs" />
+    <Compile Include="BLL\OperateLogBLL.cs" />
+    <Compile Include="BLL\ProductActivityBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductClassificationBLL.cs" />
+    <Compile Include="BLL\ProductComboBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductEvaluationBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductGiftBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductKeywordBLL.cs" />
+    <Compile Include="BLL\ProductParameterBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductParameterPriceBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductParameterTypeBLL.cs" />
+    <Compile Include="BLL\ProductRelatedBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ProductStockBLL.cs" />
+    <Compile Include="BLL\QualificationBLL.cs" />
+    <Compile Include="BLL\RoleMessagesBLL.cs" />
+    <Compile Include="BLL\SectionBLL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataAccess\JXUsersMySqlData.cs" />
+    <Compile Include="DataAccess\JXMarketingData.cs" />
+    <Compile Include="DataAccess\JXProductData.cs" />
+    <Compile Include="Enums\Abbreviations.cs" />
+    <Compile Include="Enums\Brand.cs" />
+    <Compile Include="Enums\Category.cs" />
+    <Compile Include="Enums\EvalScore.cs" />
+    <Compile Include="Enums\ParameterType.cs" />
+    <Compile Include="Enums\Product.cs" />
+    <Compile Include="Enums\ProductActions.cs" />
+    <Compile Include="Enums\ProductActivity.cs" />
+    <Compile Include="Enums\ProudctEvaluation.cs" />
+    <Compile Include="Enums\QualificationType.cs" />
+    <Compile Include="Enums\RelatedType.cs" />
+    <Compile Include="Enums\RoleType.cs" />
+    <Compile Include="Enums\Selling.cs" />
+    <Compile Include="Model\ActivityInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ActivityRuleInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\BelowLinePromotionInfo.cs" />
+    <Compile Include="Model\RoleMessagesInfo.cs" />
+    <Compile Include="Model\AuditStuffEmailInfo.cs" />
+    <Compile Include="Model\BrandInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\CategoryInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ClassficationParameterInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ClassificationInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ClassificationParameterToPriceInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ExpressNewsInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\JXClassificationInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\JXClassificationParameterInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\JXDoseInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\JXGJJBYBMLInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\JXProductParameterValueInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\KeywordInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ManufacterInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\MarketBrandInfo.cs" />
+    <Compile Include="Model\OperateLogInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ParameterTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductActivityInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductAuditInfo.cs" />
+    <Compile Include="Model\ProductClassificationInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductComboInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductEvaluationInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductGiftInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductInstructionsInfo.cs" />
+    <Compile Include="Model\ProductKeywordInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductParameterPriceInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductParameterValueInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductPropValueInfo.cs" />
+    <Compile Include="Model\ProductQuestionInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductRelatedInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ProductStockInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\QualificationInfo.cs" />
+    <Compile Include="Model\SectionInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLServerDAL\ActivityDAL.cs" />
+    <Compile Include="SQLServerDAL\ActivityRuleDAL.cs" />
+    <Compile Include="SQLServerDAL\BelowLinePromotionDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductDAL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQLServerDAL\RoleMessagesDAL.cs" />
+    <Compile Include="SQLServerDAL\AuditStuffEmailDAL.cs" />
+    <Compile Include="SQLServerDAL\CategoryDAL.cs" />
+    <Compile Include="SQLServerDAL\ExpressNewsDAL.cs" />
+    <Compile Include="SQLServerDAL\KeywordDAL.cs" />
+    <Compile Include="SQLServerDAL\KeywordProductDAL.cs" />
+    <Compile Include="SQLServerDAL\ManufacterDAL.cs" />
+    <Compile Include="SQLServerDAL\ClassificationDAL.cs" />
+    <Compile Include="SQLServerDAL\MarketBrandDAL.cs" />
+    <Compile Include="SQLServerDAL\OperateLogDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductActivityDAL.cs" />
+    <Compile Include="SQLServerDAL\JXClassificationDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductClassificationDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductKeywordDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductParameterPriceDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductParameterTypeDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductQuestionDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductRelatedDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductStockDAL.cs" />
+    <Compile Include="SQLServerDAL\QualificationDAL.cs" />
+    <Compile Include="SQLServerDAL\SectionDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductGiftDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductEvaluationDAL.cs" />
+    <Compile Include="SQLServerDAL\ProductComboDAL.cs" />
+    <Compile Include="SQLServerDAL\BrandDAL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Util\JXUtil.csproj">
+      <Project>{e912bab2-7f26-45b8-a94d-0b2951dbd6b8}</Project>
+      <Name>JXUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

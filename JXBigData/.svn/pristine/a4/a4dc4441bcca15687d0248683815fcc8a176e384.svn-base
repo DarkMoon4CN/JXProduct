@@ -1,0 +1,65 @@
+﻿using JXBigData.Component.DataAccess;
+using JXBigData.Component.Model;
+using JXProduct.Component.DataAccess;
+using JXUtil;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXBigData.Component.SqlServerDAL
+{
+    public class OrderProductDailyDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+
+        public OperationResult<IList<OrderProductDailyInfo>> OrderProductDaily_GetList(int pageIndex, int pageSize, string orderType, string strWhere, out int recordCount)
+        {
+            IList<OrderProductDailyInfo> opInfoList = new List<OrderProductDailyInfo>();
+            try
+            {
+
+                string sqlCommand = "JXMarketing.dbo.OrderProductDaily_GetList";
+                DbCommand dbCommand = dbr.GetStoredProcCommand(sqlCommand);
+
+                dbr.AddInParameter(dbCommand, "PageIndex", DbType.Int32, pageIndex);
+                dbr.AddInParameter(dbCommand, "PageSize", DbType.Int32, pageSize);
+                dbr.AddInParameter(dbCommand, "OrderType", DbType.String, orderType);
+                dbr.AddInParameter(dbCommand, "StrWhere", DbType.String, strWhere);
+                dbr.AddOutParameter(dbCommand, "RecordCount", DbType.Int32, 4);
+
+                using (IDataReader dataReader = dbr.ExecuteReader(dbCommand))
+                {
+                    while (dataReader.Read())
+                    {
+                        opInfoList.Add(GetOrderProductDailyModel(dataReader));
+                    }
+                }
+                recordCount = int.Parse(dbr.GetParameterValue(dbCommand, "RecordCount").ToString());
+                return new OperationResult<IList<OrderProductDailyInfo>>(OperationResultType.Success, null, opInfoList);
+            }
+            catch (Exception ex) 
+            {
+                recordCount = 0;
+                return new OperationResult<IList<OrderProductDailyInfo>>(OperationResultType.Error, ex.Message);
+            }
+        }
+
+        private OrderProductDailyInfo GetOrderProductDailyModel(IDataReader dataReader) 
+        {
+            OrderProductDailyInfo opInfo = new OrderProductDailyInfo();
+            opInfo.RowID = dataReader["RowID"].ToInt();
+            opInfo.ProductID = dataReader["ProductID"].ToInt();
+            opInfo.OrderQuan = dataReader["OrderQuan"].ToInt();
+            opInfo.OrderAmount = dataReader["OrderAmount"].ToDecimal();
+            opInfo.ChineseName=dataReader["ChineseName"].ToString();
+            return opInfo;
+        }
+
+    }
+}

@@ -1,0 +1,20 @@
+﻿using JXProduct.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXProduct.AdminUI.Models.Proudct
+{
+    public class ProductEditModel
+    {
+        public ProductInfo Product { get; set; }
+        public List<KeywordInfo> keywords { get; set; }
+        public ProductInstructionsInfo Instructions { get; set; }
+        public IEnumerable<SelectListItem> Brands { get; set; }
+
+        public List<ProductAuditInfo> Audit { get; set; }
+        public List<ProductSimpleInfo> relateds { get; set; }
+    }
+}

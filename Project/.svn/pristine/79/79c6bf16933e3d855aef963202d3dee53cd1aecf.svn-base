@@ -1,0 +1,112 @@
+﻿@model JXProduct.AdminUI.Models.Product.ActivityModel
+@{
+    ViewBag.Title = "单品活动";
+}
+@section css{
+    <style type="text/css">
+        .addHdComm .spInputWrap input { width: 120px; }
+        .addHdComm .kuangCenter .confirmBtn { padding-top: 10px; }
+        .inputBg { margin-top: 5px; }
+        .kuang .inputTitme, .kuang .enddate, .selecWrap { padding-top: 3px; }
+    </style>
+
+}
+@section script{
+    <script src="~/Content/js/jx.product.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(function () { productactivity.edit(); });
+    </script>
+}
+@{
+    JXProduct.Component.Model.ProductInfo product = ViewBag.Product;
+}
+<div class="kuang addHdComm" style="height:600px">
+    <div class="kuangHead"><span>单品活动</span></div>
+    @using (Ajax.BeginForm("activityedit", "product", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "productactivity.successedit" }, new { id = "form1" }))
+    {
+        @Html.HiddenFor(t => t.ProductID)
+        <div class="kuangCenter clear">
+            <div class="selecWrap">
+                <span class='fl'>* 请选择活动类型：</span>
+                <div class="imitationSelect fl">
+                    <div class="selectTitle">
+                        <span class='selectTitleLeft'>请选择</span>
+                        <span class='selectTitleRight'></span>
+                    </div>
+                    <div class="imitaSelectList">
+                        <ul>
+                            @foreach (var b in JXProduct.Component.BLL.ProductActivityBLL.Instance.GetActivity)
+                            {
+                                <li><a href="#" t="@b.Key">@b.Value</a></li>
+                            }
+                        </ul>
+                    </div>
+                    @Html.HiddenFor(t => t.Type, new { id = "hidden_type" })
+                </div>
+            </div>
+            <div id="actprice" class="spInputWrap fl hide">
+                <span>* 参与活动价格：</span>
+                @Html.TextBoxFor(t => t.ActPrice)
+                <span class='jian'>元</span>
+            </div>
+            <div id="actquantity" class="spInputWrap fl hide">
+                <span>* 请填写参与商品数量：</span>
+                @Html.TextBoxFor(t => t.ActQuantity)
+                <span class='jian'>@product.Unit</span>
+            </div>
+            <div id="actdiscount" class="spInputWrap fl hide">
+                <div class='clear'>
+                    <span class="discountmsg">* 请填写折扣/金额：</span>
+                    @Html.TextBoxFor(t => t.Discount)
+                    <span class='discountunit jian'>件</span>
+                </div>
+            </div>
+            <div id="actproductgift" class="spInputWrap fl hide">
+                <div class='clear'>
+                    <span>* 请填写商品ID：</span>
+                    @Html.TextBoxFor(t => t.ProductGiftID)
+                    <span class='jian'></span>
+                </div>
+                <p class='info'></p>
+            </div>
+            <div id="actcoupon" class="spInputWrap fl hide">
+                <div class='clear'>
+                    <span>* 请填写优惠劵编号：</span>
+                    @Html.TextBoxFor(t => t.CouponBatchNo)
+                    <span class='jian'></span>
+                </div>
+                <div class='clear'>
+                    <span>* 请填写优惠劵名称：</span>
+                    @Html.TextBoxFor(t => t.CouponName)
+                    <span class='jian'></span>
+                </div>
+            </div>
+            <div id="actdesc" class='inputBg fl hide'>
+                <div class="inputPl fl">
+                    <p>活动说明：</p>
+                    @Html.TextAreaFor(t => t.ActDesc)
+                </div>
+            </div>
+            <div name="actdate" class="inputTitme fl hide">
+                <p>活动有效时间：</p>
+                <span>开始时间：</span>
+                <div class="timeBg">@Html.TextBoxFor(t => t.StartDate, new { @class = "Wdate" })</div>
+            </div>
+            <div name="actdate" class="inputTitme enddate fl hide">
+                <span>结束时间：</span>
+                <div class="timeBg">@Html.TextBoxFor(t => t.EndDate, new { @class = "Wdate" })</div>
+            </div>
+            <div id="others" class="checkboxWrap fl hide">
+                <span>不参与活动：</span>
+                <label>@Html.CheckBoxFor(t => t.isCoupon)优惠劵</label>
+                <label>@Html.CheckBoxFor(t => t.isBuyCard)购物卡 </label>
+            </div>
+            <div class="confirmBtn clear">
+                <a class="q submit" href="#">确认</a>
+                <a class="x closewin" href="#">取消</a>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,232 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class JxorderProductMySqlDAL
+    {
+        private static Database dbw = JXOrderMySqlData.Writer;
+        private static Database dbr = JXOrderMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(JxorderProductMySqlDAL));
+
+        #region CURD
+
+        /// <summary>
+        /// 查询商品库最大ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxJxorderProductID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from product order by ProductID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxJxorderProductID 获取商品最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        /// <summary>
+        /// 更新商品
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateJxorderProduct(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into product ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}',{2},'{3}',{4},{5},{6},{7},{8},'{9}',{10},'{11}',{12},{13},{14},'{15}','{16}','{17}','{18}'
+                                                       ,'{19}',{20},'{21}')",
+                                     dr["ProductID"].ToInt(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["ProductType"].ToShort(), dr["ChineseName"].ToString().Replace("\'", "\""), dr["CFID"].ToInt(), dr["BrandID"].ToInt()
+                                     , dr["MarketPrice"].ToDecimal(), dr["TradePrice"].ToDecimal(), dr["CostPrice"].ToDecimal(), dr["Images"].ToString().Replace("\'", "\""), dr["IsFragile"].ToShort(), dr["Dosage"].ToString().Replace("\'", "\"")
+                                     , dr["Selling"].ToShort(), dr["BuyLimit"].ToInt(), dr["Status"].ToShort(), dr["Unit"].ToString().Replace("\'", "\""), dr["Specifications"].ToString().Replace("\'", "\""), dr["Volume"].ToString().Replace("\'", "\"")
+                                     , dr["Abbreviation"].ToString().Replace("\'", "\""), dr["Manufacturer"].ToString().Replace("\'", "\""), dr["LargePacking"].ToInt(), dr["BrandName"].ToString().Replace("\'", "\""));
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateJxorderProduct 更新商品表失败,商品ID{0}-{1},异常信息:{2}", productTable.Rows[0]["ProductID"], productTable.Rows[productTable.Rows.Count - 1]["ProductID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 更新商品
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool UpdateJxorderProductEx(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            for (int i = 0; i < productTable.Rows.Count; i++)
+            {
+                var dr = productTable.Rows[i];
+                try
+                {
+                    StringBuilder sqlCommand = new StringBuilder();
+                    sqlCommand.Append("update product set ");
+                    var Placeholder = string.Format(@"ProductCode = '{0}',ProductType = '{1}',ChineseName = '{2}',CFID = '{3}',BrandID = '{4}',MarketPrice = '{5}',TradePrice = '{6}',CostPrice = '{7}',Images = '{8}',IsFragile = '{9}'
+                                                      ,Dosage = '{10}',Selling = '{11}',BuyLimit = '{12}',Status = '{13}',Unit = '{14}',Specifications = '{15}',Volume = '{16}',Abbreviation  = '{17}',Manufacturer = '{18}',LargePacking = '{19}',BrandName = '{20}'",
+                                      dr["ProductCode"].ToString().Replace("\'", "\""), dr["ProductType"].ToShort(), dr["ChineseName"].ToString().Replace("\'", "\""), dr["CFID"].ToInt(), dr["BrandID"].ToInt()
+                                     , dr["MarketPrice"].ToDecimal(), dr["TradePrice"].ToDecimal(), dr["CostPrice"].ToDecimal(), dr["Images"].ToString().Replace("\'", "\""), dr["IsFragile"].ToShort(), dr["Dosage"].ToString().Replace("\'", "\"")
+                                     , dr["Selling"].ToShort(), dr["BuyLimit"].ToInt(), dr["Status"].ToShort(), dr["Unit"].ToString().Replace("\'", "\""), dr["Specifications"].ToString().Replace("\'", "\""), dr["Volume"].ToString().Replace("\'", "\"")
+                                     , dr["Abbreviation"].ToString().Replace("\'", "\""), dr["Manufacturer"].ToString().Replace("\'", "\""), dr["LargePacking"].ToInt(), dr["BrandName"].ToString().Replace("\'", "\""));
+                    sqlCommand.Append(Placeholder);
+                    sqlCommand.AppendFormat(@" where ProductID = {0}", dr["ProductID"]);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString().Replace("\'null\'", "null").Replace("\\", "\\\\"));
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount++;
+                        flag = false;
+                        myLog.ErrorFormat("UpdateJxorderProduct 更新商品表失败,商品ID：{0},受影响行为0", dr["ProductID"]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    myLog.ErrorFormat("UpdateJxorderProduct 更新商品表失败,商品ID:{0},异常信息:{1}", dr["ProductID"], ex.Message);
+                    flag = false;
+                    errorCount++;
+                }
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// 添加商品
+        /// </summary>
+        /// <param name="productTable"></param>
+        /// <param name="errorCount"></param>
+        /// <returns></returns>
+        public bool AddJxorderProduct(DataTable productTable, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into product ( " + parmsKey + " ) values ");
+                for (int i = 0; i < productTable.Rows.Count; i++)
+                {
+                    var dr = productTable.Rows[i];
+                    var comments = dr["Comments"].ToInt();
+                    if (comments < 0)
+                    {
+                        comments = 0;
+                    }
+                    var Placeholder = string.Format(@"({0},'{1}',{2},'{3}',{4},{5},{6},{7},{8},'{9}',{10},'{11}',{12},{13},{14},'{15}','{16}','{17}','{18}'
+                                                       ,'{19}',{20},'{21}')",
+                                     dr["ProductID"].ToInt(), dr["ProductCode"].ToString().Replace("\'", "\""), dr["ProductType"].ToShort(), dr["ChineseName"].ToString().Replace("\'", "\""), dr["CFID"].ToInt(), dr["BrandID"].ToInt()
+                                     , dr["MarketPrice"].ToDecimal(), dr["TradePrice"].ToDecimal(), dr["CostPrice"].ToDecimal(), dr["Images"].ToString().Replace("\'", "\""), dr["IsFragile"].ToShort(), dr["Dosage"].ToString().Replace("\'", "\"")
+                                     , dr["Selling"].ToShort(), 0, dr["Status"].ToShort(), dr["Unit"].ToString().Replace("\'", "\""), dr["Specifications"].ToString().Replace("\'", "\""), dr["Volume"].ToString().Replace("\'", "\"")
+                                     , dr["Abbreviation"].ToString().Replace("\'", "\""), dr["Manufacturer"].ToString().Replace("\'", "\""), dr["LargePacking"].ToInt(), dr["BrandName"].ToString().Replace("\'", "\""));
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = productTable.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (productTable.Rows.Count - result > 0) ? productTable.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddJxorderProduct 添加商品表失败,商品ID{0}-{1},异常信息:{2}", productTable.Rows[0]["ProductID"], productTable.Rows[productTable.Rows.Count - 1]["ProductID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+
+        private string parmsKey = string.Format(@"ProductID,ProductCode,ProductType,ChineseName,CFID,BrandID,MarketPrice,TradePrice,CostPrice,Images,IsFragile
+                           ,Dosage,Selling,BuyLimit,Status,Unit,Specifications,Volume,Abbreviation ,Manufacturer,LargePacking,BrandName");
+    }
+}

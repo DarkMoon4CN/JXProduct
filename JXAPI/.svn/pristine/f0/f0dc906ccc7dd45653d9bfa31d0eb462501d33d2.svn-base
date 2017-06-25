@@ -1,0 +1,59 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class OrderOperateLogMySqlBLL : IOrdersRelatedMySqlBLL
+    {
+        #region 变量
+
+        private static OrderOperateLogMySqlBLL _instance;
+        private static readonly OrderOperateLogMySqlDAL dal = new OrderOperateLogMySqlDAL();
+        private static readonly object _object = new object();
+
+        #endregion
+
+        private OrderOperateLogMySqlBLL() { }
+
+        public static OrderOperateLogMySqlBLL Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock(_object)
+                    {
+                        if(_instance == null)
+                        {
+                            _instance = new OrderOperateLogMySqlBLL();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        #region CURD
+
+        public long GetMaxID()
+        {
+            return dal.GetMaxOrderOperateLogID();
+        }
+
+        public bool Update(System.Data.DataTable table, out int errorCount)
+        {
+            return dal.UpdateOrderOperateLog(table, out errorCount);
+        }
+
+        public bool Add(System.Data.DataTable table, out int errorCount)
+        {
+            return dal.AddOrderOperateLog(table, out errorCount);
+        }
+        
+        #endregion
+    }
+}

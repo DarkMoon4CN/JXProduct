@@ -1,0 +1,11 @@
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\JXAPI.Component.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\JXAPI.Component.pdb
+E:\JXAPI\trunk\src\JXAPI.Component\obj\Release\JXAPI.Component.dll
+E:\JXAPI\trunk\src\JXAPI.Component\obj\Release\JXAPI.Component.pdb
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Microsoft.Practices.EnterpriseLibrary.Common.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Microsoft.Practices.EnterpriseLibrary.Data.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Newtonsoft.Json.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Microsoft.Practices.Unity.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Microsoft.Practices.ServiceLocation.dll
+E:\JXAPI\trunk\src\JXAPI.Component\bin\Release\Microsoft.Practices.Unity.Interception.dll
+E:\JXAPI\trunk\src\JXAPI.Component\obj\Release\JXAPI.Component.csprojResolveAssemblyReference.cache

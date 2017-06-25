@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JXProduct.Component", "JXProduct.Component\JXProduct.Component.csproj", "{07202FE2-62F3-4166-A7CA-FDCB5B63129A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JXProduct.ConfigComponent", "JXProduct.ConfigComponent\JXProduct.ConfigComponent.csproj", "{C6964221-94C9-4CC4-A62E-A4D98DE6F846}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07202FE2-62F3-4166-A7CA-FDCB5B63129A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07202FE2-62F3-4166-A7CA-FDCB5B63129A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07202FE2-62F3-4166-A7CA-FDCB5B63129A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07202FE2-62F3-4166-A7CA-FDCB5B63129A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6964221-94C9-4CC4-A62E-A4D98DE6F846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6964221-94C9-4CC4-A62E-A4D98DE6F846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6964221-94C9-4CC4-A62E-A4D98DE6F846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6964221-94C9-4CC4-A62E-A4D98DE6F846}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

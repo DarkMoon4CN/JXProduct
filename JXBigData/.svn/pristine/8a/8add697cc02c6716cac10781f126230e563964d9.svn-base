@@ -1,0 +1,55 @@
+﻿using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXBigData.AdminUI.Controllers
+{
+    public class SalesController : Controller
+    {
+        public ActionResult Detail()
+        {
+            return View();
+        }
+
+        //获取饼状图数据
+        public JsonResult GetCakeData(string startTime,string endTime) 
+        {
+            var result = new JsonResultObject();
+
+            DateTime sTime;
+            DateTime eTime;
+
+            //设定当前时间和结束时间
+            if (string.IsNullOrEmpty(startTime))
+            {
+                sTime = DateTime.Parse(DateTime.Now.ToShortDateString() + "0:00:00");
+            }
+            else 
+            {
+                sTime = DateTime.Parse(startTime + "0:00:00");
+            }
+            if (string.IsNullOrEmpty(startTime))
+            {
+                eTime = DateTime.Parse(DateTime.Now.ToShortDateString() + "23:59:59");
+            }
+            else 
+            {
+                eTime = DateTime.Parse(endTime + "23:59:59");
+            }
+           
+            
+            return Json(result);
+        }
+
+        //获取线状图数据
+        public JsonResult GetLineData()
+        {
+            var result = new JsonResultObject();
+
+            return Json(result);
+        }
+    }
+}

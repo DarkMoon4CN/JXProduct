@@ -1,0 +1,138 @@
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Data;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+
+using JXProduct.Component.Model;
+using JXProduct.Component.DataAccess;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class ProductComboDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        #region CURD
+
+
+        /// <summary>
+        /// 1.首先根据MainProductID 同步生成一个主商品
+        /// 2.根据ID生成金象码 
+        /// 3.执行sql  判断是否生成子商品
+        /// 4.汇总 价格数据,定义单品类型。
+        /// 5.执行事务
+        /// 6.返回  ZH 商品ID  失败返回0
+        /// combosql为List<ProductComboInfo> 拼接
+        /// </summary>
+        internal int ProductCombo_Insert(int mainproductid, string comboname, string creator, List<ProductComboInfo> combolist)
+        {
+            var sql = "ProductCombo_Insert";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "mainproductid", DbType.Int32, mainproductid);
+            dbw.AddInParameter(cmd, "comboName", DbType.String, comboname);
+            dbw.AddInParameter(cmd, "combosql", DbType.String, this.ProductCombo_CreateInsertSql(combolist, creator));
+            dbw.AddInParameter(cmd, "creator", DbType.String, creator);
+            var result = Convert.ToInt32(dbw.ExecuteScalar(cmd));
+            return result;
+        }
+
+        internal bool ProductCombo_Update(int productid, string comboname, string creator, List<ProductComboInfo> combolist)
+        {
+            var sql = "ProductCombo_Update";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "productid", DbType.Int32, productid);
+            dbw.AddInParameter(cmd, "comboName", DbType.String, comboname);
+            dbw.AddInParameter(cmd, "combosql", DbType.String, this.ProductCombo_CreateInsertSql(combolist, creator));
+            dbw.AddInParameter(cmd, "creator", DbType.String, creator);
+            return dbw.ExecuteNonQuery(cmd) > 0;
+        }
+
+        private string ProductCombo_CreateInsertSql(List<ProductComboInfo> combolist, string creator)
+        {
+            var sql = new System.Text.StringBuilder();
+            foreach (var combo in combolist)
+            {
+                sql.AppendFormat("INSERT INTO [ProductCombo] ([ProductID] ,[ComboProductID],[Name],[Price] ,[Quantity] ,[Creator] ,[CreateTime],isMain)VALUES (@productid,{0},'{1}',{2},{3},'{4}',getdate(),{5});", combo.ComboProductID, combo.Name, combo.Price, combo.Quantity, creator, combo.IsMain ? 1 : 0);
+            }
+            return sql.ToString();
+        }
+
+
+        /// <summary>
+        ///  得到普通商品内的所有组合ID
+        /// </summary>
+        internal List<int> ProductCombo_GetComboIDs(int comboProductID)
+        {
+            var Ids = new List<int>();
+            string sqlCommand = "SELECT pc.ProductID FROM ProductCombo AS pc WHERE pc.ComboProductID = @comboproductid";
+            var cmd = dbr.GetSqlStringCommand(sqlCommand);
+            dbr.AddInParameter(cmd, "@comboproductid", DbType.Int32, comboProductID);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                while (read.Read())
+                {
+                    Ids.Add(read.GetInt32(0));
+                }
+            }
+            return Ids;
+        }
+
+
+        /// <summary>
+        /// ProductCombo_Delete Method
+        /// </summary>        
+        /// <returns>true:成功 false:失败</returns>	
+        internal bool ProductCombo_Delete(int productID)
+        {
+            string sqlCommand = "ProductCombo_Delete";
+            DbCommand dbCommand = dbw.GetStoredProcCommand(sqlCommand);
+            dbw.AddInParameter(dbCommand, "ProductID", DbType.Int32, productID);
+            dbw.ExecuteNonQuery(dbCommand);
+            return true;
+        }
+
+
+        //获取组合商品信息
+        internal List<ProductComboInfo> ProductCombo_GetByProductIDs(string productIDs)
+        {
+            var sql = "ProductCombo_GetByProductIDs";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "productIDs", DbType.String, productIDs);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                var list = new List<ProductComboInfo>();
+                while (read.Read())
+                {
+                    list.Add(RecoverModel(read));
+                }
+                return list;
+            }
+        }
+
+
+        private ProductComboInfo RecoverModel(IDataReader dataReader)
+        {
+            return new ProductComboInfo()
+            {
+                ProductID = dataReader["ProductID"].ToInt(),
+                ProductName = dataReader["MainName"].ToString(),
+                ComboProductID = dataReader["ComboProductID"].ToInt(),
+                ComboProductName = dataReader["ComboName"].ToString(),
+                ComboProductCode = dataReader["ProductCode"].ToString(),
+                Spec = dataReader["Spec"].ToString(),
+                Name = dataReader["Name"].ToString(),
+                Unit = dataReader["Unit"].ToString(),
+                Price = dataReader["Price"].ToDecimal(),
+                Quantity = dataReader["Quantity"].ToInt(),
+                Creator = dataReader["Creator"].ToString(),
+                CreateTime = dataReader["CreateTime"].ToDateTime(),
+                IsMain = dataReader["IsMain"].ToString().Equals("1")
+            };
+        }
+
+
+        #endregion
+    }
+}

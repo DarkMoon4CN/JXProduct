@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Enums
+{
+    public enum ProductActivity
+    {
+        包邮 = 1,
+        满赠 = 2,
+        满减 = 3,
+        满返 = 4,
+        满折 = 5,
+        换购 = 6,
+        折扣 = 7,
+        直降 = 8
+    }
+}

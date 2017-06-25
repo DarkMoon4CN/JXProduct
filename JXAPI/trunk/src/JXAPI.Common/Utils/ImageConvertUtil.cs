@@ -1,0 +1,106 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Drawing;
+
+namespace JXAPI.Common.Utils
+{
+
+    public class ImageConvertibleInfo
+    {
+        public byte[] srcByte;  // 图片源数据
+        public int dstWidth;    // 目标宽
+        public int dstHeight;   // 目标高
+        public string dstFmt;   // 目标格式：png/jpg
+    }
+
+    /// <summary>
+    /// 注：调用时请注意以下备注
+    /// 1.图片转换的工具类，该类库依赖：Magick.NET-AnyCPU.dll 这个c#库，
+    /// 2.这个库（Magick.NET-AnyCPU.dll）又依赖于 vcomp110.dll, msvcp110.dll, msvcr110.dll（C:windows/system32/）vs运行时库
+    /// </summary>
+    public class ImageConvertUtil
+    {
+        /// <summary>
+        /// 转换图片文件
+        /// </summary>
+        /// <param name="icInfo">待处理的图片数据和目标格式描述</param>
+        /// <param name="dstByte">处理好的图片数据, 函数返回0时表示有效</param>
+        /// <returns>1表示成功，其它值为失败</returns>
+        //public static int ConvertByte64ToImage(ImageConvertibleInfo icInfo, out byte[] dstByte)
+        //{
+        //    MagickImage image = null;
+        //    dstByte = null;
+
+        //    if (icInfo.srcByte == null || icInfo.dstWidth <= 0 || icInfo.dstHeight <= 0)
+        //    {
+        //        return 0;
+        //    }
+        //    try
+        //    {
+        //        image = new MagickImage(icInfo.srcByte);
+        //        // 重新设置图片的尺寸和格式信息，
+        //        image.Scale(icInfo.dstWidth, icInfo.dstHeight);
+        //        switch (icInfo.dstFmt)
+        //        {
+        //            case "png":
+        //                image.Format = MagickFormat.Png;
+        //                break;
+        //            case "jpg":
+        //            case "jpeg":
+        //                image.Format = MagickFormat.Jpg;
+        //                break;
+        //            default:
+        //                image.Format = MagickFormat.Png;
+        //                break;
+        //        }
+        //        dstByte = image.ToByteArray();
+        //    }
+        //    catch
+        //    {
+        //        return 0;
+        //    }
+        //    finally
+        //    {
+        //        if (image != null)
+        //        {
+        //            image.Dispose();
+        //        }
+        //    }
+        //    return 1;
+        //}
+
+        /// <summary>
+        ///  将图片文件转换成Base64
+        /// </summary>
+        /// <param name="imageFileStream">图片流</param>
+        /// <returns></returns>
+        public static string ConvertImageToBase64(Stream imageFileStream)
+        {
+            string byte64String = string.Empty;
+            BinaryReader br = new BinaryReader(imageFileStream);
+
+            byte[] bytes = br.ReadBytes((Int32)imageFileStream.Length);
+            byte[] buffer = new byte[imageFileStream.Length];
+            imageFileStream.Read(buffer, 0, buffer.Length);
+            imageFileStream.Close();
+            byte64String = Convert.ToBase64String(bytes);
+            return byte64String;
+        }
+
+        /// <summary>
+        /// 将Base64编码文本转换成Byte[]
+        /// </summary>
+        /// <param name="base64">Base64编码文本</param>
+        /// <returns></returns>
+        public static Byte[] FromBase64ToByte(string base64)
+        {
+            char[] charBuffer = base64.ToCharArray();
+            byte[] bytes = Convert.FromBase64CharArray(charBuffer, 0, charBuffer.Length);
+            return bytes;
+        }
+    }
+}

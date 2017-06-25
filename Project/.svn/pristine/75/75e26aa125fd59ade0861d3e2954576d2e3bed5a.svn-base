@@ -1,0 +1,94 @@
+﻿@using JXProduct.Component.Model;
+@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "网站公告管理";
+}
+@section script{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jx.om.js"></script>
+<script type="text/javascript">
+    $(function () {
+        om.listInit();
+    });
+</script>
+}
+@section css {
+ 
+}
+
+<div class="operateHeader w">
+    <div class='fl w'>
+        <span class='active'>发布网站公告</span>
+    </div>
+</div>
+<div class="notice w">
+    <div class="noticAddBtn">
+        <a href="javascript:;">+发布公告</a>
+    </div>
+    <div class="addNoticeTab">
+       
+        <table>
+            
+            @if(ViewBag.ExpressNewsInfoList == null || ViewBag.ExpressNewsInfoList.Count==0)
+            {
+             <tr><td colspan="6" style="text-align:left;border:0"><p>没有相关公告</p></td></tr>
+            }
+            else 
+            {
+              <tr>
+                <th>序号</th>
+                <th>发布日期</th>
+                <th>标题</th>
+                <th>类型</th>
+                <th>操作</th>
+            </tr>
+                for (int i = 0; i < ViewBag.ExpressNewsInfoList.Count; i++)
+                {
+
+                    ExpressNewsInfo expressInfo = (ExpressNewsInfo)ViewBag.ExpressNewsInfoList[i];
+                    string typeString = expressInfo.Type == 1 ? "公告" : "广告";
+                    string stickString = expressInfo.IsStick == 1 ? "取消置顶" : "置顶";
+                    string redString = expressInfo.IsRed == 1 ? "取消套红" : "套红";
+                    <tr>
+                        <td>@expressInfo.NewsID</td>
+                        <td>@expressInfo.CreateTime</td>
+
+                        <td class='title'>
+                        @if (expressInfo.IsRed == 1)
+                        {
+                        <font color="red">@expressInfo.Title</font>
+                        }
+                        else {
+                        <font color="black">@expressInfo.Title</font>
+                        }
+                        </td>
+                        <td>@typeString</td>
+                        <td class='caozuo' id="@expressInfo.NewsID">
+                            <a href="javascript:void(0);" class="zd">@stickString</a>
+                            <a href="javascript:void(0);" class="th">@redString</a>
+                            <a href="javascript:void(0);" class="sc">删除</a>
+                            <a href="javascript:void(0);" class="bj">编辑</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+<div class="paging w">
+    <div class="pageW">
+        <div class="lPage">
+            <div class="lPageWrap">
+                @Html.Pager((IPagedList<ExpressNewsInfo>)ViewBag.PageList,
+                                 new PagerOptions()
+                                 {
+                                     PageIndexParameterName = "pageindex"
+                                     ,
+                                     ShowPageIndexBox = true
+                                     ,
+                                     PageIndexBoxType = PageIndexBoxType.DropDownList
+                                 }, new { })
+            </div>
+        </div>
+    </div>
+</div>

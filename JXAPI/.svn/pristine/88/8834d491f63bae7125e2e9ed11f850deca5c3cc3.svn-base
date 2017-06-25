@@ -1,0 +1,29 @@
+﻿using JXAPI.JXSdk.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
+
+namespace JXAPI.JXSdk.Response
+{
+    public class CouponValidateResponse: Venus.VenusClientResponse
+    {
+
+        [XmlElement("endTime")]
+        public long? endTime { get; set; }
+
+        [XmlElement("preferential")]
+        public decimal preferential { get; set; }
+
+        [XmlElement("typeName")]
+        public string typeName { get; set; }
+
+        [XmlElement("error_response")]
+        public ErrorInfo error_response { get; set; }
+
+        [XmlElement("isUsed")]
+        public int isUsed { get; set; }
+        
+    }
+}

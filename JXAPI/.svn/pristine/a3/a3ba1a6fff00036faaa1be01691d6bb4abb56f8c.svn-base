@@ -1,0 +1,85 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class OrderUseService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string deduct = "orderUse/deduteMoney";
+        private static string useCoupon = "orderUse/useCoupon";
+        private static string notUseCoupon = "orderUse/notUseCoupon";
+        private static string couponChose="orderUse/couponChose";
+        public static OrderUseService Instance
+        {
+            get { return new OrderUseService(); }
+        }
+
+        /// <summary>
+        /// 购物卡支付和退款(取消金额传负数)
+        /// </summary>
+        /// <param name="request">请求参数</param>
+        /// <returns></returns>
+        public bool Deduct(DeductMoneyRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = client.Execute(request, deduct, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 优惠券支付提交订单 
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public bool UseCoupon(UseCouponRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = null;
+            response = client.Execute(request, useCoupon, postData);
+            if (response != null)
+            {
+                return response.success;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 优惠券支付取消订单
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public bool NotUseCoupon(UseCouponRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CommonResponse response = null;
+            response = client.Execute(request, notUseCoupon, postData);
+            if (response != null)
+            {
+                return response.success;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 订单页面优惠券可用列表和数量
+        /// </summary>
+        /// <param name="request">请求实体</param>
+        /// <returns></returns>
+        public CouponChoseListResponse CouponChose(CouponChoseListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponChoseListResponse response = null;
+            response = client.Execute(request, couponChose, postData);
+            return response;
+        }
+    }
+}

@@ -1,0 +1,285 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+namespace JXUtil
+{
+    public class ImageHelper
+    {
+        /// <summary>
+        /// 默认路径
+        /// &#10;http://img.jxdyf.com/product/
+        /// </summary>
+        private const string defaultPath = "http://img.jxdyf.com/product/";
+
+        /// <summary>
+        /// 默认空图片
+        /// &#10;http://img.jxdyf.com/picture.jpg
+        /// </summary>
+        private const string emptyImage = "http://img.jxdyf.com/picture.jpg";
+
+
+        #region 水印/缩率图  AddWaterMart+CreateResizeImage
+
+        // 给图片添加水印
+        public static string AddWaterMart(string sourImaName, string wartMarkFile, int width = 740, int height = 740)
+        {
+            if (!File.Exists(sourImaName))
+            {
+                throw new ArgumentException("输入的文件不存在");
+            }
+            if (String.IsNullOrEmpty(wartMarkFile) || !File.Exists(wartMarkFile))
+            {
+                return sourImaName;
+            }
+
+            System.Drawing.Image image = System.Drawing.Image.FromFile(sourImaName);
+            Bitmap water = new Bitmap(wartMarkFile);
+
+            using (Graphics g = Graphics.FromImage(image))
+            {
+
+                System.Drawing.Imaging.ImageAttributes imageAttributes = new System.Drawing.Imaging.ImageAttributes();
+
+                //用矩阵设置水印图片透明度
+                float[][] colorMatrixElements = { 
+                       new float[] {0.3f,  0.0f,  0.0f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.3f,  0.0f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.3f,  0.0f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.0f,  0.3f, 0.0f},
+                       new float[] {0.0f,  0.0f,  0.0f,  0.0f, 0.3f}
+                };
+
+                System.Drawing.Imaging.ColorMatrix wmColorMatrix = new System.Drawing.Imaging.ColorMatrix(colorMatrixElements);
+
+                imageAttributes.SetColorMatrix(wmColorMatrix, System.Drawing.Imaging.ColorMatrixFlag.Default, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+                g.DrawImage(water, new Rectangle(0, 0, width, height), 0, 0, water.Width, water.Height, GraphicsUnit.Pixel, imageAttributes);
+                g.Dispose();
+
+                string extension = sourImaName.Substring(sourImaName.LastIndexOf(".")).ToLower();
+                ImageFormat imgType = ImageFormat.Jpeg;
+
+                switch (extension)
+                {
+                    case ".jpeg":
+                    case ".jpg":
+                    case ".gif":
+                        imgType = ImageFormat.Jpeg;
+                        extension = ".JPG";
+                        break;
+                    case ".png":
+                        imgType = ImageFormat.Png;
+                        extension = ".png";
+                        break;
+                    default:
+                        imgType = ImageFormat.Jpeg;
+                        extension = ".JPG";
+                        break;
+                }
+
+                string newfile = Regex.Replace(sourImaName, @"\.\w+$", "_new" + extension);
+                image.Save(newfile, imgType);
+                image.Dispose();
+                return newfile;
+            }
+        }
+        public static string CreateResizeImage(string sourImgName, string desImgName, int imgSize, bool isOverride)
+        {
+            int iWidth = 0;
+            int iHeight = 0;
+            ImageFormat imgType = ImageFormat.Jpeg;
+
+            FileInfo sourFile = new FileInfo(sourImgName);
+            string extension = sourFile.Extension.ToLower();
+
+            // 获得图片文件存储格式
+            switch (extension)
+            {
+                case ".jpeg":
+                case ".jpg":
+                case ".gif":
+                    imgType = ImageFormat.Jpeg;
+                    extension = ".jpg";
+                    break;
+                case ".png":
+                    imgType = ImageFormat.Png;
+                    extension = ".png";
+                    break;
+                default:
+                    imgType = ImageFormat.Jpeg;
+                    extension = ".jpg";
+                    break;
+            }
+
+            // 修改目标文件的后缀名
+            desImgName = Regex.Replace(desImgName, @"\.\w+$", extension);
+
+            // 处理文件及路径
+            FileInfo file = new FileInfo(desImgName);
+            DirectoryInfo dinfo = new DirectoryInfo(file.DirectoryName);
+            if (!dinfo.Exists)
+                dinfo.Create();
+
+            if (file.Exists)
+            {
+                if (isOverride)
+                    file.Delete();
+                else
+                {
+                    string filestr = file.Name.Replace(extension, "");
+                    FileInfo[] files = dinfo.GetFiles(filestr + "*", SearchOption.TopDirectoryOnly);
+                    int maxIndex = 0;
+                    string regstr = @"[MSLo]_(?<index>\d+)";
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        Match match = Regex.Match(files[i].Name, regstr);
+                        if (match.Success)
+                        {
+                            try
+                            {
+                                int curIndex = int.Parse(match.Groups["index"].Value);
+                                if (maxIndex < curIndex)
+                                {
+                                    maxIndex = curIndex;
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                    maxIndex = maxIndex + 1;
+
+                    //desImgName = file.DirectoryName + "\\" + filestr + "_N" + maxIndex + extension;
+                    desImgName = file.DirectoryName + "\\" + filestr + "_" + maxIndex + extension;
+                }
+            }
+
+
+            // 计算图片的缩放尺寸
+            Image imgSource = Image.FromFile(sourImgName);
+            if (imgSize == -1)
+            {
+                iWidth = imgSource.Width;
+                iHeight = imgSource.Height;
+            }
+            else
+            {
+                if (imgSource.Width >= imgSource.Height)
+                {
+                    iWidth = imgSize;
+                    iHeight = (int)(imgSize * ((float)imgSource.Height / imgSource.Width));
+                }
+                else
+                {
+                    iHeight = imgSize;
+                    iWidth = (int)(imgSize * ((float)imgSource.Width / imgSource.Height));
+                }
+            }
+
+            Bitmap bmTarget = new Bitmap(iWidth, iHeight, PixelFormat.Format32bppArgb);
+            bmTarget.SetResolution(imgSource.HorizontalResolution, imgSource.VerticalResolution);
+            bmTarget.MakeTransparent(Color.White);
+
+            //建立画布
+            Graphics g = Graphics.FromImage(bmTarget);
+
+            try
+            {
+                //初始化画布
+                g.Clear(Color.White);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingQuality = CompositingQuality.GammaCorrected;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                // 在画布上画图
+                g.DrawImage(imgSource, 0, 0, Convert.ToSingle(iWidth), Convert.ToSingle(iHeight));
+
+                // 释放资源
+                imgSource.Dispose();
+                imgSource = (Image)bmTarget.Clone();
+                imgSource.Save(desImgName, imgType);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                imgSource.Dispose();
+                g.Dispose();
+                bmTarget.Dispose();
+            }
+            return desImgName;
+        }
+
+        #endregion
+
+        #region 根据商品编号推算商品图片存放路径 GetProductImageSavePath
+
+        /// <summary>
+        /// 根据商品编号推算商品图片存放路径
+        /// </summary>
+        /// <param name="productID">商品ID</param>
+        public static string GetProductImageSavePath(int productID)
+        {
+            string fullProductID = productID.ToString("000000000");
+            string resultPath = fullProductID.Substring(0, 4) + "\\" + fullProductID.Substring(3, 3) + "\\";
+            return resultPath;
+        }
+
+        #endregion
+
+        #region 商品图片 GetDefaultImage + GetProductImages
+
+        /// <summary>
+        /// 获取商品默认图
+        /// </summary>
+        /// <param name="images">图片字符串</param>
+        /// <returns>图片路劲</returns>
+        public static string GetDefaultImage(string images)
+        {
+            if (!string.IsNullOrEmpty(images))
+            {
+                string[] imgList = images.Split("|".ToCharArray());
+                return (imgList.Length > 0 && imgList[0].Length > 0) ? defaultPath + imgList[0] : emptyImage;
+            }
+            else
+            {
+                return emptyImage;
+            }
+        }
+
+        /// <summary>
+        /// 获取商品的所有图片路径
+        /// </summary>
+        /// <param name="images">商品图片信息</param>
+        /// <returns>图片路径集合</returns>
+        public static List<string> GetProductImages(string images)
+        {
+            var imglist = new List<string>();
+            if (!string.IsNullOrEmpty(images))
+            {
+                string[] imgList = images.Split("|".ToCharArray());
+                foreach (var img in imglist)
+                {
+                    if (img.Length > 0 && img.Length > 0)
+                    {
+                        imglist.Add(defaultPath + img);
+                    }
+                    else
+                    {
+                        imglist.Add(emptyImage);
+                    }
+                }
+            }
+            return imglist;
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXProduct.Component.Enums;
+@{
+    Webdiyer.WebControls.Mvc.PagedList<JXProduct.Component.Model.BrandInfo> paged = ViewBag.PagedList;
+}
+<table class='table table-bordered'>
+    <thead>
+        <tr>
+            <th>品牌ID</th>
+            <th>品牌名称</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    @foreach (var p in paged)
+    {
+        <tr>
+            <td>@p.BrandID</td>
+            <td>@p.ChineseName</td>
+            <td>@(JXUtil.EnumHelper.GetText<Brand.BrandType>(p.BrandType))</td>
+            <td><a href="/brand/edit?brandid=@(p.BrandID)">修改</a></td>
+        </tr>
+    }
+    @if (paged.Count == 0)
+    {
+        <tr><td colspan="9">暂无数据</td></tr>
+    }
+</table>
+<div class="general-pagin">
+    @Ajax.Pager(
+        paged, 
+        new PagerOptions { PageIndexParameterName = "pageindex", NumericPagerItemCount = 6, ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false },
+        new MvcAjaxOptions { UpdateTargetId = "tablelist", DataFormId = "form1" },
+        new { style = "float:right" }
+    )
+</div>

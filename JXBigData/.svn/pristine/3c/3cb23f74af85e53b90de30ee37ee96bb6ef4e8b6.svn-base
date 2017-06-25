@@ -1,0 +1,209 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@using JXBigData.Component.Model;
+@using JXBigData.Component.Enum;
+@using JXProduct.Component.Model;
+@{
+    ViewBag.Title = "商品成交明细";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css {
+    <link href="~/css/right.css" rel="stylesheet" />
+    <style type="text/css">
+        .thun_feedBack {
+            width: 120px;
+            height: 28px;
+            border: 1px solid #E7E7EB;
+            padding-left: 10px;
+            outline: medium none;
+            background: #FFF url("/js/My97DatePicker/skin/datePicker.gif") no-repeat scroll right center;
+            border: 1px solid #E7E7EB;
+        }
+
+        .s_lm {
+            margin-right: -15px;
+        }
+
+        .p_s_lm {
+            margin-right: -15px;
+        }
+    </style>
+
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="~/JqueryPlugins/Highcharts-4.1.8/js/highcharts.js"></script>
+    <script src="~/Content/js/jx.analyse.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            search.init();
+        });
+    </script>
+}
+<div id="l-content-right">
+    <div class="sp_right">
+        <div class="bg">
+            <div class="sp_datail">
+                <div class="r_top" style="height: 1200px; ">
+                    <div class="tab" style="margin-top: 0px;">
+                        <ul class="tab_con">
+                            <li><a href="/Sales/Detail">销售额</a></li>
+                            <li><a href="/ProductTrade/List">商品成交明细</a></li>
+                            <li>成交订单数</li>
+                            <li class="tab_con_current" style="margin-left:62px;"><a href="/Analyse/SearchList">搜索分析</a></li>
+                            <li><a href="/Analyse/Region">人群分析</a></li>
+                        </ul>
+                    </div>
+                    <div id="topicText" class="tip">销售额数据</div>
+                    <div class="date">
+                        <a id="td" href="javascript:void(0);">今日</a>
+                        <a id="tm" href="javascript:void(0);">昨日</a>
+                        <a id="sw" href="javascript:void(0);">最近7天</a>
+                        <a id="st" href="javascript:void(0);">最近30天</a>
+                        <a id="other" href="javascript:void(0);">双日历</a>
+
+                        <span class='s_lm'>日期：</span>
+                        <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        &nbsp;
+                        <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                        <a id="submit" href="#">查看</a>
+                        <input type="hidden" id="startTime" value="@ViewBag.StartTime" />
+                        <input type="hidden" id="endTime" value="@ViewBag.EndTime" />
+                        <input type="hidden" id="typeID" value="@ViewBag.TypeID" />
+                        <input type="hidden" id="orderType" value="@ViewBag.OrderType" />
+                        <input type="hidden" id="sourceID" value="@ViewBag.SourceID" />
+                    </div>
+                    
+
+                    <div class="tab">
+                        <div class="li_page">
+                            <div class="search_all">
+                                <div class="li_con">
+                                    @if (ViewBag.OrderType == 0)
+                                    {
+                                         <span class="list_px list_cur" id="rm">热门搜索</span>
+                                         <span class="line"></span>
+                                         <span class="list_px" id="xt">相同搜索</span>
+                                    }
+                                    else if (ViewBag.OrderType == 1)
+                                    {
+                                        <span class="list_px" id="rm">热门搜索</span>
+                                        <span class="line"></span>
+                                        <span class="list_px list_cur" id="xt">相同搜索</span>
+                                    }
+                                </div>
+                            </div>
+                            @if (ViewBag.SKInfoList != null)
+                            {
+                            <div class="li_search_show">
+                                <div class="search_fl">
+                                    <ul class="m_tab">
+                                       
+                                        @if (ViewBag.SourceID == (int)OrderSource.WEB)
+                                        {
+                                            <li class="hoverli" style="padding-left:80px;"><a href="javascript:void(0);"><span>web</span><em></em></a></li>
+                                            <li><a href="javascript:void(0);"><span>h5</span><em></em></a></li>
+                                            <li><a href="javascript:void(0);"><span>andriod</span><em></em></a></li>
+                                            <li><a href="javascript:void(0);"><span>ios</span><em></em></a></li>
+                                        }
+                                        else if (ViewBag.SourceID == (int)OrderSource.H5) 
+                                        {
+                                             <li><a href="javascript:void(0);"><span>web</span><em></em></a></li>
+                                             <li class="hoverli" style="padding-left:80px;"><a href="javascript:void(0);"><span>h5</span><em></em></a></li>
+                                             <li><a href="javascript:void(0);"><span>andriod</span><em></em></a></li>
+                                             <li><a href="javascript:void(0);"><span>ios</span><em></em></a></li>
+                                        }else if (ViewBag.SourceID == (int)OrderSource.Android)
+                                        {
+                                             <li><a href="javascript:void(0);"><span>web</span><em></em></a></li>
+                                             <li><a href="javascript:void(0);"><span>h5</span><em></em></a></li>
+                                             <li class="hoverli" style="padding-left:80px;"><a href="javascript:void(0);"><span>andriod</span><em></em></a></li>
+                                             <li><a href="javascript:void(0);"><span>ios</span><em></em></a></li>
+                                        }
+                                        else 
+                                        {
+                                           <li><a href="javascript:void(0);"><span>web</span><em></em></a></li>
+                                           <li><a href="javascript:void(0);"><span>h5</span><em></em></a></li>
+                                           <li><a href="javascript:void(0);"><span>andriod</span><em></em></a></li>
+                                           <li class="hoverli" style="padding-left:80px;"><a href="javascript:void(0);"><span>ios</span><em></em></a></li>
+                                        }
+                                    </ul>
+                                </div>
+                                <p><span class="xg_search">相关搜索</span></p>
+                                <div class="rmsearch_table">
+                                       @foreach (var item in (IList<SearchKeywordDailyInfo>)ViewBag.SKInfoList)
+                                        {
+                                                
+                                            <table class="zhpx">
+                                                <tbody>
+                                                    <tr>
+                                                        @if (item.Rowid > 11) 
+                                                        {
+                                                           @Html.Raw("<td class='td_top'><span class='number'>"+item.Rowid+"</span></td>");
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.Raw("<td class='td_top'><span >TOP" + item.Rowid + "</span></td>");
+                                                        }
+                                                        
+                                                        <td class="td_empty"></td>
+                                                        <td class="td_product"><a href="#">@item.Keywords</a></td>
+                                                        <td class="td_cjcount"><span class="cj_money">@(item.TotalQuan)次被搜索</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        }
+                                </div>
+                            </div>
+                            }else if (ViewBag.SKCInfoList != null) { 
+                            <div class="li_search_show">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span></span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_search_product" style="width:31%;"><a href="#"></a></td>
+                                            <td class="search_count"><span class="s_count">总被搜索次数</span></td>
+                                            <td class="search_count"><span class="s_count">web被搜索次数</span></td>
+                                            <td class="search_count"><span class="s_count">h5被搜索次数</span></td>
+                                            <td class="search_count"><span class="s_count">android被搜索次数</span></td>
+                                            <td class="search_count"><span class="s_count">ios被搜索次数</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="samesearch_table">
+                                    @foreach (var item in (IList<SearchKeywordCountInfo>)ViewBag.SKCInfoList)
+                                    {
+                                      <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                @if (item.Rowid > 11)
+                                                {
+                                                    @Html.Raw("<td class='td_top'><span class='number'>" + item.Rowid + "</span></td>");
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("<td class='td_top'><span >TOP" + item.Rowid + "</span></td>");
+                                                }
+                                                <td class="td_empty"></td>
+                                                <td class="td_search_product"><a href="#">@item.Keywords</a></td>
+                                                <td class="search_count"><span class="cj_money">@item.AllCount</span></td>
+                                                <td class="search_count"><span class="cj_money">@item.Web</span></td>
+                                                <td class="search_count"><span class="cj_money">@item.H5</span></td>
+                                                <td class="search_count"><span class="cj_money">@item.Android</span></td>
+                                                <td class="search_count"><span class="cj_money">@item.IOS</span></td>
+                                            </tr>
+                                        </tbody>
+                                     </table>                                    
+                                    }
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

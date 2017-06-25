@@ -1,0 +1,51 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    Webdiyer.WebControls.Mvc.PagedList<JXProduct.Component.Model.ProductInfo> paged = ViewBag.SearchProductList;
+    int actid = ViewBag.ActID;
+}
+<table class='generalTable'>
+    <thead>
+        <tr><td colspan="9" class="tl" style="text-align:left;">&nbsp;<a href="#" name="add">添加</a>&nbsp;&nbsp;<a href="#" name="addall">添加所有</a></td></tr>
+        <tr>
+            <th style="width:80px;"><input type="checkbox" name="allchecked" value="1" />全选</th>
+            <th style="width:80px;">商品ID</th>
+            <th style="width:80px;">金象码</th>
+            <th>商品名称</th>
+            <th>厂家</th>
+            <th>规格</th>
+            <th style="width:80px;">金象价</th>
+        </tr>
+        @if (paged == null || paged.Count == 0)
+        {
+            <tr><td colspan="9">暂无数据</td></tr>
+        }
+    </thead>
+    <tbody>
+        @if (paged != null && paged.Count > 0)
+        {
+            foreach (var p in paged)
+            {
+                <tr>
+                    <td><input type="checkbox" value="@p.ProductID" /></td>
+                    <td>@p.ProductID</td>
+                    <td>@p.ProductCode</td>
+                    <td>@p.ChineseName</td>
+                    <td class="m">@p.ManufacturerName</td>
+                    <td class="spec">@p.Specifications</td>
+                    <td>@p.TradePrice</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@if (paged != null && paged.Count > 0)
+{
+    <div class="lPage">
+        <div class="lPageWrap">
+            @Ajax.Pager(paged.TotalItemCount, paged.PageSize, paged.CurrentPageIndex, "searchproduct", "activity", null, new PagerOptions { PageIndexParameterName = "sindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new { actid = actid },
+            new MvcAjaxOptions { UpdateTargetId = "searchlist", InsertionMode = InsertionMode.Replace, DataFormId = "form1" },
+            new { style = "float:right" }
+        )
+        </div>
+    </div>
+}

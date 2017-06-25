@@ -1,0 +1,231 @@
+﻿using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace JXProduct.AdminUI.Models.Product
+{
+    public class ProductSearchModel : RequestPagedBase
+    {
+        public ProductSearchModel()
+        {
+            base.pagesize = 12;
+
+            this.Type = -1;
+            //this.ProductType = -1;
+            //this.ProductPrice = -1;
+            this.Activity = -1;
+            this.Actions = -1;
+            this.OtherType = -1;
+            this.Selling = 1; //默认搜索上架商品
+            this.Status = -1;
+
+
+
+            this.Audit1 = -1;
+            this.Audit2 = -1;
+            this.Audit3 = -1;
+
+            this.HasCF = -1;
+        }
+        public int ProductID { get; set; }
+        public string ProductCode { get; set; }
+        public string ChineseName { get; set; }
+        public string Keywords { get; set; }
+        public int CF1 { get; set; }
+        public int CF2 { get; set; }
+        public int CF3 { get; set; }
+
+        public int HasCF { get; set; }
+
+        //单品,大包装
+        public int Type { get; set; }
+
+        //public int ProductType { get; set; }  // 商品类型,单轨,双规...
+        public int OtherType { get; set; }  // 普通,泰康,麻黄碱,特例品
+
+        public int Selling { get; set; }
+        public int AnyKeywords { get; set; }
+
+        public int Activity { get; set; }
+        public int Actions { get; set; }
+        public int BaseInfo { get; set; }
+        public int Description { get; set; }
+
+        public int OrderBy { get; set; }
+        public int Audit1 { get; set; }
+        public int Audit2 { get; set; }
+        public int Audit3 { get; set; }
+
+        public bool ShowSelling { get; set; }
+        public bool Expire { get; set; }
+
+        public int Status { get; set; }
+
+        //public bool IsTop { get; set; }
+        //public bool IsRecommend { get; set; }
+        //public bool Gift { get; set; }
+        //public int GiftID { get; set; }
+        //public string StartSelling { get; set; }
+        //public string EndSelling { get; set; }
+        //public bool ImageDiff { get; set; }
+
+        public string ToOrderBy()
+        {
+            var str = string.Empty;
+            switch (this.OrderBy)
+            {
+                case 0: str = "ProductID DESC"; break;  //综合
+                case 1: str = "ProductID DESC"; break; //人气
+                case 2: str = "SellCount Desc"; break;  //销量
+                case 3: str = "Tradeprice Desc"; break;  //价格
+                case 4: str = "TradePrice Asc"; break;
+                default: str = "ProductID Desc"; break;
+            }
+            return str;
+        }
+        /// <summary>
+        /// 生成数据查询sql
+        /// </summary>
+        public string ToSqlWhere()
+        {
+            var sql = new StringBuilder(" 1=1 ");
+
+            if (this.ProductID > 0 || !string.IsNullOrWhiteSpace(this.ProductCode))
+            {
+                if (this.ProductID > 0)
+                {
+                    sql.Append(" AND p.ProductID=" + this.ProductID);
+                }
+                if (!string.IsNullOrWhiteSpace(this.ProductCode))
+                {
+                    sql.AppendFormat(" AND p.ProductCode ='{0}'", this.ProductCode);
+                }
+                return sql.ToString();
+            }
+
+            var cfpath = "";
+            if (this.CF1 > 0)
+                cfpath += this.CF1 + "/";
+            if (this.CF2 > 0)
+                cfpath += this.CF2 + "/";
+            if (this.CF3 > 0)
+                cfpath += this.CF3 + "/";
+
+            if (cfpath.Length > 0)
+            {
+                sql.Append(" AND EXISTS (SELECT 1 FROM productclassification pc where pc.productID =p.ProductID and pc.cfpath like '" + cfpath + "%')");
+            }
+
+            if (this.HasCF > -1)
+            {
+                switch (this.HasCF)
+                {
+                    case 0: { sql.Append(" AND p.CFID>0 "); } break;
+                    case 1: { sql.Append(" AND ISNULL(p.CFID,0)=0 "); } break;
+                }
+            }
+
+            if (this.ProductID > 0)
+            {
+                sql.Append(" AND ProductID = " + this.ProductID);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.ProductCode))
+            {
+                sql.AppendFormat(" AND productCode='{0}' ", this.ProductCode);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.ChineseName))
+            {
+                sql.AppendFormat(" AND p.ChineseName like '%{0}%' ", this.ChineseName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Keywords))
+            {
+                sql.AppendFormat(" AND EXISTS(SELECT 1 FROM Keyword AS k INNER JOIN KeywordProduct AS kp ON kp.KeywordID = k.KeywordID AND kp.ProductID = p.ProductID WHERE k.ChineseName LIKE '%{0}%')", this.Keywords);
+            }
+
+            if (this.ShowSelling)
+            {
+                sql.Append(" AND p.Selling=1");
+            }
+
+            if (this.Expire)
+            {
+                sql.AppendFormat(" AND EXISTS( SELECT * FROM ProductQualification AS pq WHERE pq.EndDate < '{0}' AND (pq.ProductID =pq.ProductID OR pq.ManufacturerID =p.ManufacturerID))", DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd"));
+            }
+
+            if (this.Type >= 0)
+                sql.AppendFormat(" AND p.Type ={0} ", this.Type);
+
+            if (this.AnyKeywords == 1)
+                sql.Append(" AND EXISTS (SELECT 1 FROM KeywordProduct AS kp WHERE kp.ProductID = p.productid) ");
+
+            if (this.Selling > -1)
+                sql.AppendFormat(" AND Selling=" + this.Selling);
+
+            if (this.Status > -1)
+                switch (this.Status)
+                {
+                    case 0:
+                    case 3:
+                    case 4:
+                        sql.AppendFormat(" AND p.Status={0} ", this.Status);
+                        break;
+                    default:
+                        sql.AppendFormat(" AND p.Status not in (0,3,4)", this.Status);
+                        break;
+                }
+
+            /// <summary>
+            /// 普通,泰康,麻黄碱,特例品
+            /// </summary>
+            if (this.OtherType > -1)
+            {
+                switch (this.OtherType)
+                {
+                    case 0:
+                        sql.AppendFormat(" AND IsTaiKang = 0  AND ContainMHJ=0 "); break;
+                    case 1:
+                        sql.AppendFormat(" AND IsTaiKang = 1 "); break;
+                    case 2:
+                        sql.AppendFormat(" and ContainMHJ=1 "); break;
+                }
+            }
+
+            if (this.BaseInfo == 1)
+                sql.AppendFormat(" AND p.ValueList!=''");
+
+            if (this.Activity > -1)
+                sql.AppendFormat(" AND EXISTS(SELECT 1 FROM ProductActivity AS pa WHERE pa.ProductID = p.ProductID AND pa.[Type] ={0})", this.Activity);
+
+            if (this.Actions > -1)
+                sql.AppendFormat(" AND p.Actions={0} ", this.Actions);
+
+            if (this.Description == 1)
+                sql.AppendFormat(" AND p.Description!='' ");
+
+            //三个审核
+            if (this.Audit1 > -1)
+            {
+                sql.AppendFormat(" AND EXISTS (SELECT * FROM ProductAudit AS pa WHERE PA.ProductID = P.ProductID AND PA.[Type] = {0} AND PA.[Status]={1})", (int)JXProduct.Component.Enums.Product.AuditType.商品资质, this.Audit1);
+            }
+            if (this.Audit2 > -1)
+            {
+                sql.AppendFormat(" AND EXISTS (SELECT * FROM ProductAudit AS pa WHERE PA.ProductID = P.ProductID AND PA.[Type] = {0} AND PA.[Status]={1})", (int)JXProduct.Component.Enums.Product.AuditType.商品信息, this.Audit2);
+            }
+            if (this.Audit3 > -1)
+            {
+                sql.AppendFormat(" AND EXISTS (SELECT * FROM ProductAudit AS pa WHERE PA.ProductID = P.ProductID AND PA.[Type] = {0} AND PA.[Status]={1})", (int)JXProduct.Component.Enums.Product.AuditType.详情图片, this.Audit3);
+            }
+
+
+            return sql.ToString();
+        }
+    }
+}

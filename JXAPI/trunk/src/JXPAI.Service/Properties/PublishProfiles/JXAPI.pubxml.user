@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\JXAPI</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/JXAPI.Common.dll">
+      <publishTime>06/23/2015 16:42:39</publishTime>
+    </File>
+    <File Include="bin/JXAPI.Component.dll">
+      <publishTime>06/23/2015 16:42:38</publishTime>
+    </File>
+    <File Include="bin/JXPAI.Service.dll">
+      <publishTime>06/23/2015 16:57:33</publishTime>
+    </File>
+    <File Include="bin/JXPAI.Service.XmlSerializers.dll">
+      <publishTime>06/23/2015 17:02:34</publishTime>
+    </File>
+    <File Include="bin/log4net.dll">
+      <publishTime>06/10/2015 18:09:49</publishTime>
+    </File>
+    <File Include="bin/Magick.NET-AnyCPU.dll">
+      <publishTime>01/05/2015 16:21:44</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/10/2015 18:10:03</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/10/2015 18:10:00</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.dll">
+      <publishTime>06/10/2015 18:10:08</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>06/10/2015 18:10:01</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.WebRequest.dll">
+      <publishTime>06/10/2015 18:10:08</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>06/10/2015 18:10:07</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>06/10/2015 18:10:00</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>06/10/2015 18:10:03</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>06/10/2015 18:10:04</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/Utils/ImageConvertUtil.cs">
+      <publishTime>06/23/2015 14:29:18</publishTime>
+    </File>
+    <File Include="bin/Venus.dll">
+      <publishTime>06/10/2015 18:09:49</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Net.Http.Formatting.resources.dll">
+      <publishTime>06/10/2015 18:10:01</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Net.Http.resources.dll">
+      <publishTime>06/10/2015 18:10:08</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Net.Http.WebRequest.resources.dll">
+      <publishTime>06/10/2015 18:10:08</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Http.resources.dll">
+      <publishTime>06/10/2015 18:10:07</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Http.WebHost.resources.dll">
+      <publishTime>06/10/2015 18:10:00</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Mvc.resources.dll">
+      <publishTime>06/10/2015 18:10:02</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Razor.resources.dll">
+      <publishTime>06/10/2015 18:10:04</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.Deployment.resources.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.Razor.resources.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.resources.dll">
+      <publishTime>06/10/2015 18:10:05</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>06/10/2015 18:09:50</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>06/10/2015 18:09:50</publishTime>
+    </File>
+    <File Include="Properties/DataSources/System.Data.DataTable.datasource">
+      <publishTime>06/10/2015 18:28:40</publishTime>
+    </File>
+    <File Include="Web References/cn.zto.api/Reference.map">
+      <publishTime>06/10/2015 18:41:15</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>06/23/2015 16:42:41</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

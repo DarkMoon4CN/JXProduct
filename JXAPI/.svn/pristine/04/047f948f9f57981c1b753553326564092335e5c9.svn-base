@@ -1,0 +1,11 @@
+2015-08-14 11:12:11,051  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/8/14 11:12:11
+2015-08-14 11:12:12,627  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-08-14 11:12:12,628  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/8/14 11:12:12
+2015-08-14 11:12:12,629  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-08-14 11:12:26,211  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/8/14 11:12:26
+2015-08-14 11:12:27,834  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-08-14 11:12:28,688  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-08-14 11:12:28,688  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:测试推送信息
+2015-08-14 11:12:28,689  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000011,2000009
+2015-08-14 11:12:30,396  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/8/14 11:12:30
+2015-08-14 11:12:30,397  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================

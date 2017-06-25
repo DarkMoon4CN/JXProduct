@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="securevalid" type="JXAPI.JXSdk.Config.SecureConfigSection, JXAPI.JXSdk"/>
+    <section name="times" type="JXAPI.Common.Config.TimesConfig, JXAPI.Common"/>
+    <section name="log4net" allowLocation="true" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
+  </configSections>
+  <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
+    </startup>
+  <times>
+    <coupontime name="coupon">
+      <add key="use"  numberHour="1"></add>
+      <add key="expired"  numberHour="72"></add>
+    </coupontime>
+    <orderstime name="orders">
+      <add key="expired"  numberHour="48"></add>
+    </orderstime>
+    
+  </times>
+  <securevalid ipvalid="0">
+    <secures>
+      <add source="messages" pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2"  url="http://211.155.81.220:8080/health/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+      <add source="switch"  pwd="jx_api_security_md5_signature_8kokszxy22zoq6fagr2"  url="http://211.155.81.220:8080/user/" ip="192.168.21.8,192.168.21.6,127.0.0.1"></add>
+     </secures>
+  </securevalid>
+  <connectionStrings>
+    <add name="JXMarketingReader" connectionString="data source=192.168.21.8;uid=jxmarketing;pwd=glito9iyd8g7u7;Initial Catalog=jxmarketing" providerName="System.Data.SqlClient" />
+    <add name="JXMarketingWriter" connectionString="data source=192.168.21.8;uid=jxmarketing;pwd=glito9iyd8g7u7;Initial Catalog=jxmarketing" providerName="System.Data.SqlClient" />
+
+    <add name="MySqlCouponBaseReader" connectionString="server=192.168.21.8;user id=jxcoupon;password=u5l9(7)8ihijit;database=jxcoupon;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlProductReader" connectionString="server=192.168.21.8;user id=jxproduct;password=prol9(7)8ihjrt;database=JXProduct;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlProductWriter" connectionString="server=192.168.21.8;user id=jxproduct;password=prol9(7)8ihjrt;database=JXProduct;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlActivityWriter" connectionString="server=192.168.21.8;user id=jxactivity;password=t7)i(jy18i3;database=jxactivity;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlActivityReader" connectionString="server=192.168.21.8;user id=jxactivity;password=t7)i(jy18i3;database=jxactivity;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlOrderReader" connectionString="server=192.168.21.8;user id=jxorder;password=od98(7)8iijopt;database=jxorder;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlOrderWrite" connectionString="server=192.168.21.8;user id=jxorder;password=od98(7)8iijopt;database=jxorder;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlYXWriter" connectionString="server=192.168.21.8;user id=jxyx;password=od97)8ij90hy;database=jxyx;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlYXReader" connectionString="server=192.168.21.8;user id=jxyx;password=od97)8ij90hy;database=jxyx;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlHealthActivityWriter" connectionString="server=192.168.21.8;user id=jxhealth;password=7)8i(jhy183;database=jxhealth;pooling=false;" providerName="MySql.Data.MySqlClient" />
+    <add name="MySqlHealthActivityReader" connectionString="server=192.168.21.8;user id=jxhealth;password=7)8i(jhy183;database=jxhealth;pooling=false;" providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+
+  <log4net>
+    <logger name="JXAPI.ConsoleAppPush" additivity="false">
+      <level value="INFO" />
+      <appender-ref ref="ComponentAppender" />
+    </logger>
+    <appender name="ComponentAppender" type="log4net.Appender.RollingFileAppender">
+      <param name="File" value="Log/Push-" />
+      <param name="AppendToFile" value="true" />
+      <param name="MaxSizeRollBackups" value="10" />
+      <param name="StaticLogFileName" value="false" />
+      <param name="DatePattern" value="yyyy-MM-dd&quot;.log&quot;" />
+      <param name="RollingStyle" value="Date" />
+      <layout type="log4net.Layout.PatternLayout">
+        <param name="ConversionPattern" value="%d  [%t]  %-5p  %c  [%x]  -  %m%n" />
+      </layout>
+    </appender>
+  </log4net>
+  
+</configuration>

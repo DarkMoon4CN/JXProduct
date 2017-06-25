@@ -1,0 +1,9 @@
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\JXAPI.JXSdk.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\JXAPI.JXSdk.pdb
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\log4net.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\Magick.NET-AnyCPU.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\Newtonsoft.Json.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Debug\Venus.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\obj\Debug\JXAPI.JXSdk.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\obj\Debug\JXAPI.JXSdk.pdb
+E:\JXAPI\trunk\src\JXAPI.JXSdk\obj\Debug\JXAPI.JXSdk.csprojResolveAssemblyReference.cache

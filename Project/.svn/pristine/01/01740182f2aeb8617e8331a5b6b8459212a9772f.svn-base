@@ -1,0 +1,70 @@
+﻿using JXProduct.Component.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.Model
+{
+    public class ProductRelatedInfo
+    {
+        public int RelatedID { get; set; }
+        /// <summary>
+        /// 主商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+        /// <summary>
+        /// 主商品名称
+        /// </summary>
+        public string MainName { get; set; }
+
+        /// <summary>
+        /// 子商品ID
+        /// </summary>
+        public int ChildProductID { get; set; }
+
+        /// <summary>
+        /// 子商品名称
+        /// </summary>
+        public string ChildName { get; set; }
+
+        /// <summary>
+        /// 分类  1大包装  2规格  3推荐
+        /// </summary>
+        public short Type { get; set; }
+
+
+        /// <summary>
+        /// 大包装数量
+        /// </summary>
+        public int Quantity { get; set; }
+
+        /// <summary>
+        /// 大包装价格
+        /// </summary>
+        public decimal MainPrice { get; set; }
+
+        /// <summary>
+        /// 商品价格
+        /// </summary>
+        public decimal ChildPrice { get; set; }
+
+        /// <summary>
+        /// 前台展示名称
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 规格
+        /// </summary>
+        public string Specifications { get; set; }
+
+
+        //记录
+        public string Creator { get; set; }
+        public DateTime CreateTime { get; set; }
+
+        public string Updater { get; set; }
+        public DateTime UpdateTime { get; set; }
+    }
+}

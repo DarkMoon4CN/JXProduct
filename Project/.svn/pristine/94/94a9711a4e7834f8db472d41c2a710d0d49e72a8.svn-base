@@ -1,0 +1,77 @@
+﻿@model JXProduct.AdminUI.Models.Product.EvaluationModel
+@{
+    ViewBag.Title = "添加评论";
+}
+@section css{
+    <style>
+        .selectTit { text-align: left; }
+        .selecWrap { height: 24px; line-height: 24px; }
+        .selectTit input { width: 230px; }
+        .commAddSp .kuCun { padding-top: 10px; }
+        .commAddSp .inputPl {padding-top:2px; padding-bottom:2px;}
+    </style>
+}
+@section script {
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        function evalsubmitsucc(data) {
+            if (data.status) {
+                jx.alert("编辑成功!");
+                $('#UserName').add($('#Title')).add($('#Score')).add($('#Content')).val('');
+            }
+            else {
+                jx.alert("失败了!" + data.msg);
+            }
+        }
+        $(function () {
+            $('.submit').click(function () {
+                $('#form1').submit();
+            });
+        })
+    </script>
+}
+<div class="kuang commAddSp">
+    <div class="kuangHead"><span>添加商品评论</span></div>
+    <div class="kuangCenter">
+        @{ Ajax.BeginForm("evaledit", "product", null, new AjaxOptions { HttpMethod = "Post", OnSuccess = "evalsubmitsucc" }, new { id = "form1" });  }
+        @Html.HiddenFor(t => t.ProductID)
+        <div class="kuCun clear">
+            <p>商品名称：@Model.ChineseName</p>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>金象码：</span>
+                    <div class="selectTit"><span class="xz sw">@Model.ProductCode</span></div>
+                </div>
+            </div>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>用户名：</span>
+                    <div class="selectTit"><span class="xz sw">@Html.TextBoxFor(t => t.UserName)</span></div>
+                </div>
+            </div>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>评价：</span>
+                    <div class="selectTit"><span class="xz sw">@Html.TextBoxFor(t => t.Score)</span></div>
+                </div>
+            </div>
+            <div class="selecWrap">
+                <div class="titleSelecWrap">
+                    <span>评论标题：</span>
+                    <div class="selectTit">
+                        <span class="xz" contenteditable="true">@Html.TextBoxFor(t => t.Title)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="inputPl">
+            <p>评论内容：</p>
+            @Html.TextAreaFor(t => t.Content)
+        </div>
+        <div class="confirmBtn clear">
+            <a class="q submit" href="##">确认</a>
+            <a class="x closewin" href="##">取消</a>
+        </div>
+        @{Html.EndForm();}
+    </div>
+</div>

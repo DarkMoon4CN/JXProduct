@@ -1,0 +1,969 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "销售数据管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css {
+   
+    <link href="~/css/right.css" rel="stylesheet" />
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/JqueryPlugins/Highcharts-4.1.8/js/highcharts.js"></script>
+    <script src="~/Content/js/jx.sales.js"></script>
+    <script type="text/javascript">
+        $(function () {
+           
+            sales.init();
+        });
+     </script>
+}
+<div id="l-content-right">
+    <div class="sp_right">
+        <div class="bg">
+            <div class="sp_datail">
+                <div class="r_top" style=" height:1123px">                    
+                    <div id="topicText" class="tip">商品成交明细</div>
+                    <div class="date"><a href="#">今日</a><a href="#">昨日</a><a href="#">最近7天</a><a href="#">最近30天</a><a href="#">双日历</a></div>
+                     
+                    <div id="cake" style=" padding-top:10px;width: 99%; height: 500px; margin: 0 auto; min-width: 1100px; height: 600px">
+                    </div>
+
+                    <div id="line" style=" padding-top:10px;width: 99%; height: 500px; margin: 0 auto; min-width: 400px; height: 300px">
+                    </div>
+                </div>
+                <div class="tab">
+                    <ul class="tab_con">
+                        <li class="tab_con_current" style="margin-left:62px;">销售额</li>
+                        <li>商品成交明细</li>
+                        <li>成交订单数</li>
+                        <li>搜索分析</li>
+                        <li>人群分析</li>
+                    </ul>
+                    <div class="li_page">
+                        <div class="xse">
+                            <div class="page_con">
+                                <a class="data_afirst" href="#">最近7天</a><a href="#">最近30天</a><a href="#">最近90天</a><a href="#">双日历</a>
+                            </div>
+                            <div class="page_con_div">
+                                <div class="mobile">
+                                    <table style="width:100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table class="left_mobile">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="ios"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="ios">ios</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="andriod">andriod</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h5">h5</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="web">web</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table class="right_xse">
+                                                        <tbody>
+                                                            <tr class="one">
+                                                                <td class="title ltab"><span class="xse_ltab">&nbsp;销售额</span></td>
+                                                                <td class="title"><span>同比</span></td>
+                                                                <td class="title rtab"><span class="xse_rtab">环比&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+
+                                                <td>
+                                                    <table class="right_xse" style="margin-left:5%;">
+                                                        <tbody>
+                                                            <tr class="one">
+                                                                <td class="title ltab"><span class="xse_ltab">&nbsp;总订单生成量</span></td>
+                                                                <td class="title"><span>同比</span></td>
+                                                                <td class="title rtab"><span class="xse_rtab">环比&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+
+                                                <td>
+                                                    <table class="right_xse" style="margin-left:5%;">
+                                                        <tbody>
+                                                            <tr class="one">
+                                                                <td class="title ltab"><span class="xse_ltab">&nbsp;支付成功订单量</span></td>
+                                                                <td class="title"><span>同比</span></td>
+                                                                <td class="title rtab"><span class="xse_rtab">环比&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table class="right_xse" style="margin-left:5%;">
+                                                        <tbody>
+                                                            <tr class="one">
+                                                                <td class="title ltab"><span class="xse_ltab">&nbsp;未支付订单量</span></td>
+                                                                <td class="title"><span>同比</span></td>
+                                                                <td class="title rtab"><span class="xse_rtab">环比&nbsp;</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span>615</span></td>
+                                                                <td><span>同比</span><em class="xse_up"></em></td>
+                                                                <td><span>环比</span><em class="xse_down"></em></td>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="li_page" style=" display:none;">
+                        <div class="li_con">
+                            <span class="list_px list_cur">综合排序</span>
+                            <span class="line"></span>
+                            <span class="list_px">按照商品分类排序</span>
+                            <span class="line"></span>
+                            <span class="list_px last">按照平台排序</span>
+                        </div>
+
+                        <div class="list_show">
+                            <div class="zhpx_table">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP2</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="general-pagin">
+                                <div>
+                                    <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="list_show" style="display:none">
+                            <ul class="spfl_ul">
+                                <li class="tag">
+                                    <span class="tagcon">中西药品</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">母婴专区</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">滋补养生</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">营养保健</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">医疗器械</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">美妆护理</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">隐形眼镜</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">成人用品</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">日用百货</span><em></em><span class="tra"></span>
+                                </li>
+                            </ul>
+                            <div class="spfl_right">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP2</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP3</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP4</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP5</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP6</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP7</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP8</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP9</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP10</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="list_show" style="display:none;">
+                            <ul class="spfl_ul">
+                                <li class="tag">
+                                    <span class="tagcon">Web</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">H5</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">IOS</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">Andriod</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">天猫</span><em></em><span class="tra"></span>
+                                </li>
+                                <li>
+                                    <span class="tagcon">京东</span><em></em><span class="tra"></span>
+                                </li>
+                            </ul>
+                            <div class="spfl_right">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP2</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP3</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP4</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP5</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP6</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spfl_right" style="display:none;">
+                                <div class="spfl_table">
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span>TOP7</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="zhpx">
+                                        <tbody>
+                                            <tr>
+                                                <td class="td_top"><span class="number">100000</span></td>
+                                                <td class="td_empty"></td>
+                                                <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                                <td class="td_cjcount"><span>成交件数：58888</span><span class="cj_money">成交金额：¥30.00</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="li_page" style="display:none;">
+                        <div class="li_con">空页</div>
+                    </div>
+                    <div class="li_page" style="display:none;">
+                        <div class="search_all">
+                            <div class="li_con">
+                                <span class="list_px list_cur">热门搜索</span>
+                                <span class="line"></span>
+                                <span class="list_px">相同搜索</span>
+                            </div>
+                        </div>
+                        <div class="li_search_show">
+                            <div class="search_fl">
+                                <ul class="m_tab">
+                                    <li class="hoverli" style="padding-left:80px;"><a href="#"><span>ios</span><em></em></a></li>
+                                    <li><a href="#"><span>andriod</span><em></em></a></li>
+                                    <li><a href="#"><span>h5</span><em></em></a></li>
+                                    <li><a href="#"><span>web</span><em></em></a></li>
+                                </ul>
+                            </div>
+                            <p><span class="xg_search">相关搜索</span></p>
+                            <div class="rmsearch_table">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP2</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rmsearch_table" style="display:none;">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP3</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rmsearch_table" style="display:none;">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP4</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rmsearch_table" style="display:none;">
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP5</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="td_cjcount"><span class="cj_money">150次被搜索</span></td>
+                                        </tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="li_search_show" style="display:none">
+                            <table class="zhpx">
+                                <tbody>
+                                    <tr>
+                                        <td class="td_top"><span></span></td>
+                                        <td class="td_empty"></td>
+                                        <td class="td_search_product" style="width:31%;"><a href="#"></a></td>
+                                        <td class="search_count"><span class="s_count">总被搜索次数</span></td>
+                                        <td class="search_count"><span class="s_count">IOS被搜索次数</span></td>
+                                        <td class="search_count"><span class="s_count">android被搜索次数</span></td>
+                                        <td class="search_count"><span class="s_count">h5被搜索次数</span></td>
+                                        <td class="search_count"><span class="s_count">web被搜索次数</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+
+                            <div class="samesearch_table">
+
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span>TOP1</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_search_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">TOP1</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_search_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">100000</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_search_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="zhpx">
+                                    <tbody>
+                                        <tr>
+                                            <td class="td_top"><span class="number">10</span></td>
+                                            <td class="td_empty"></td>
+                                            <td class="td_search_product"><a href="#">禾博士氨糖软骨素加钙片1.0g*60片</a></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                            <td class="search_count"><span class="cj_money">150</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="general-pagin">
+                                    <div>
+                                        <a disabled="disabled">首页</a><a disabled="disabled">上一页</a>1<a data-pageindex="2" href="#?pageindex=2">2</a><a data-pageindex="3" href="#?pageindex=3">3</a><a data-pageindex="4" href="#?pageindex=4">4</a><a data-pageindex="5" href="#?pageindex=5">5</a><a data-pageindex="6" href="#?pageindex=6">6</a><a data-pageindex="7" href="#?pageindex=7">...</a><a data-pageindex="2" href="#?pageindex=2">下一页</a><a data-pageindex="171" href="#?pageindex=171">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="li_page" style="display:none;">
+                        <div class="li_con">人群分析空页</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

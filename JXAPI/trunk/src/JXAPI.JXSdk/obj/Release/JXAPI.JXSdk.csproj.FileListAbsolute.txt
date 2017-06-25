@@ -1,0 +1,8 @@
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\JXAPI.JXSdk.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\JXAPI.JXSdk.pdb
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\log4net.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\Magick.NET-AnyCPU.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\Newtonsoft.Json.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\bin\Release\Venus.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\obj\Release\JXAPI.JXSdk.dll
+E:\JXAPI\trunk\src\JXAPI.JXSdk\obj\Release\JXAPI.JXSdk.pdb

@@ -1,0 +1,39 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class CouponService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string list = "coupon/getList";
+        private static string add = "coupon/addCoupon";
+        public static CouponService Instance
+        {
+            get { return new CouponService(); }
+        }
+
+        public CouponListResponse List(CouponListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponListResponse response = client.Execute(request, list, postData);
+            return response;
+        }
+        public bool Add(CouponInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+    }
+}

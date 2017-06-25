@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <title>金象网后台管理系统</title>
+    <link rel="stylesheet" href="/content/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/content/css/new-style.css">
+    <script src='/content/js/jquery-2.1.3.min.js'></script>
+    <script src="/content/layer/layer.js"></script>
+    <script src='/content/bootstrap/js/bootstrap.min.js'></script>
+    <script src="/content/js/jx.common.js"></script>
+    @RenderSection("css",false)
+</head>
+<body>
+    <div id="l-header" class='clear'>
+        <div class="l-header-l">
+            <ul class='clear'>
+                <li class='first'><a href="javascript:;">金象网后台管理系统</a></li>
+                <li class='active'><a href="javascript:;">首页</a></li>
+                <li><a href="/home/index">运营管理</a></li>
+                @*<li><a href="javascript:;">数据管理</a></li>
+                <li><a href="javascript:;">用户管理</a></li>
+                <li><a href="javascript:;">CMS管理</a></li>
+                <li><a href="javascript:;">系统管理</a></li>*@
+            </ul>
+        </div>
+        <div class="l-header-r">
+            <dl>
+                <dt class='fl'><span></span>@ViewBag.LoginUserInfo</dt>
+                <dd class='fl'> <a href="javascript:;">退出</a></dd>
+            </dl>
+        </div>
+    </div>
+    <div id="l-content" class='clear'>
+        <div id="l-index-nav" class='fl'>
+            <dl>
+                <dt class='dt-bg active'><span class='ico-01'></span>商品管理<span>-</span></dt>
+                <dd><a href="/product/list"><i></i>商品信息管理</a></dd>
+                @*<dd><a href="/product/addproduct"><i></i>商品采购审批</a></dd>
+                <dd><a href="javascript:;"><i></i>商品评价管理</a></dd>
+                <dd><a href="javascript:;"><i></i>商品品牌管理</a></dd>*@
+            </dl>
+            @*<dl>
+                <dt class='dt-bg'><span class='ico-02'></span>WEB运营管理<span>-</span></dt>
+                <dd><a href="javascript:;"><i></i>首页banner管理</a></dd>
+                <dd><a href="javascript:;"><i></i>首页限时促销管理</a></dd>
+                <dd><a href="javascript:;"><i></i>首页楼层管理</a></dd>
+                <dd><a href="javascript:;"><i></i>首页专题展示</a></dd>
+                <dd><a href="javascript:;"><i></i>全站活动设置</a></dd>
+                <dd><a href="javascript:;"><i></i>全站左侧广告管理</a></dd>
+                <dd><a href="javascript:;"><i></i>热销/促销/猜喜欢设置</a></dd>
+                <dd><a href="javascript:;"><i></i>网站公告</a></dd>
+            </dl>
+            <dl>
+                <dt class='dt-bg'><span class='ico-03'></span>APP运营管理<span>-</span></dt>
+                <dd><a href="javascript:;"><i></i>首页banner管理</a></dd>
+                <dd><a href="javascript:;"><i></i>健康头条管理</a></dd>
+                <dd><a href="javascript:;"><i></i>健康说管理</a></dd>
+                <dd><a href="javascript:;"><i></i>精彩活动</a></dd>
+                <dd><a href="javascript:;"><i></i>手机推送</a></dd>
+            </dl>*@
+            @*<dl>
+                <dt><span class='ico-04'></span>意见反馈管理</dt>
+            </dl>
+            <dl>
+                <dt><span class='ico-05'></span>关键词管理</dt>
+            </dl>
+            <dl>
+                <dt><span class='ico-06'></span>分类管理</dt>
+            </dl>*@
+        </div>
+        @RenderBody()
+    </div>
+    @RenderSection("js", false)
+</body>
+</html>

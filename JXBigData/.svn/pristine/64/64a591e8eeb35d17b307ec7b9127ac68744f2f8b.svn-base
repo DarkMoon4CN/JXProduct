@@ -1,0 +1,144 @@
+﻿using JXBigData.Component.DataAccess;
+using JXBigData.Component.Model;
+using JXProduct.Component.DataAccess;
+using JXUtil;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXBigData.Component.SqlServerDAL
+{
+    public class OrderDailyDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        /// <summary>
+        /// 按时间查询出orderDaily中的总支付数量和总支付金额
+        /// </summary>
+        /// <param name="startTime">起始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <returns></returns>
+        public OperationResult<IList<OrderDailyInfo>> OrderDaily_GetSourcePrice(DateTime startTime,DateTime endTime) 
+        {
+            IList<OrderDailyInfo> odInfoList = new List<OrderDailyInfo>();
+            try
+            {
+                string sqlCommand = "JXMarketing.dbo.OrderDaily_GetSourcePrice";
+                DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+                dbw.AddInParameter(cmd, "StartTime", DbType.DateTime, startTime);
+                dbw.AddInParameter(cmd, "EndTime", DbType.DateTime, endTime);
+                using (var read = dbr.ExecuteReader(cmd))
+                {
+                    while (read.Read())
+                    {
+                        odInfoList.Add(GetSourcePriceModel(read));
+                    }
+                } 
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Success, null, odInfoList);
+            }
+            catch (Exception ex) 
+            {
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Error, ex.Message);
+            }
+        }
+
+        public OperationResult<IList<OrderDailyInfo>> OrderDaily_GetStationePrice(DateTime startTime, DateTime endTime) 
+        {
+            IList<OrderDailyInfo> odInfoList = new List<OrderDailyInfo>();
+            try
+            {
+                string sqlCommand = "JXMarketing.dbo.OrderDaily_GetStationePrice";
+                DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+                dbw.AddInParameter(cmd, "StartTime", DbType.DateTime, startTime);
+                dbw.AddInParameter(cmd, "EndTime", DbType.DateTime, endTime);
+                using (var read = dbr.ExecuteReader(cmd))
+                {
+                    while (read.Read())
+                    {
+                        odInfoList.Add(GetStationePriceModel(read));
+                    }
+                }
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Success, null, odInfoList);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Error, ex.Message);
+            }
+        }
+
+       
+        private OrderDailyInfo GetSourcePriceModel(IDataReader read) 
+        {
+            OrderDailyInfo odInfo=new OrderDailyInfo();
+            odInfo.Source = read["Source"].ToInt();
+            odInfo.PayQuan = read["PayQuan"].ToInt();
+            odInfo.PayAmount = read["PayAmount"].ToDecimal();
+            return odInfo;
+        }
+
+        private OrderDailyInfo GetStationePriceModel(IDataReader read)
+        {
+            OrderDailyInfo odInfo = new OrderDailyInfo();
+            odInfo.CreateDate = read["CreateDate"].ToDateTime();
+            odInfo.Source = read["Source"].ToInt();
+            odInfo.PayQuan = read["PayQuan"].ToInt();
+            odInfo.PayAmount = read["PayAmount"].ToDecimal();
+            return odInfo;
+        }
+
+
+        /// <summary>
+        /// 根据时间查询出指定的时间内 列的 统计
+        /// </summary>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <returns></returns>
+        public OperationResult<IList<OrderDailyInfo>> OrderDaily_GetSUMAll(DateTime startTime, DateTime endTime) 
+        {
+            IList<OrderDailyInfo> odInfoList = new List<OrderDailyInfo>();
+            try
+            {
+                string sqlCommand = "JXMarketing.dbo.OrderDaily_GetSUMAll";
+                DbCommand cmd = dbw.GetStoredProcCommand(sqlCommand);
+
+                dbw.AddInParameter(cmd, "StartTime", DbType.DateTime, startTime);
+                dbw.AddInParameter(cmd, "EndTime", DbType.DateTime, endTime);
+                using (var read = dbr.ExecuteReader(cmd))
+                {
+                    while (read.Read())
+                    {
+                        odInfoList.Add(GetSUMAllModel(read));
+                    }
+                }
+
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Success, null, odInfoList);
+            }
+            catch (Exception ex) 
+            {
+                return new OperationResult<IList<OrderDailyInfo>>(OperationResultType.Error, ex.Message);
+            }
+           
+        }
+
+        private OrderDailyInfo GetSUMAllModel(IDataReader read)
+        {
+            OrderDailyInfo odInfo = new OrderDailyInfo();
+            odInfo.Source = read["Source"].ToInt();
+            odInfo.PayQuan = read["PayQuan"].ToInt();
+            odInfo.PayAmount = read["PayAmount"].ToDecimal();
+            odInfo.OrderQuan = read["OrderQuan"].ToInt();
+            odInfo.OrderAmount = read["OrderAmount"].ToDecimal();
+            odInfo.SendAmount = read["SendAmount"].ToDecimal();
+            odInfo.SendQuan = read["SendQuan"].ToInt();
+            return odInfo;
+        }
+    }
+
+}

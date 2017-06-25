@@ -1,0 +1,140 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.Model
+{
+    public class OrdersInfo
+    {
+        public string OrderID { get; set; }
+
+        public int UID { get; set; }
+
+        public string UserName { get; set; }
+
+        public decimal ProductFee { get; set; }
+
+        public decimal ShipFee { get; set; }
+
+        public decimal NewShipFee { get; set; }
+
+        public decimal VoucherFee { get; set; }
+
+        public string VoucherSeriall { get; set; }
+
+        public short PaymentMethodID { get; set; }
+
+        public short ShipMethodID { get; set; }
+
+        public string Province { get; set; }
+
+        public string City { get; set; }
+
+        public string County { get; set; }
+
+        public string Receiver { get; set; }
+
+        public string Telephone { get; set; }
+
+        public string Mobile { get; set; }
+
+        public string Address { get; set; }
+
+        public string PostalCode { get; set; }
+
+        public string Invoice { get; set; }
+
+        public short SendTimeInfo { get; set; }
+
+        public short SplitType { get; set; }
+
+        public string Remarks { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public string Creator { get; set; }
+
+        public short PayStatus { get; set; }
+
+        public DateTime PayTime { get; set; }
+
+        public DateTime AuditTime { get; set; }
+
+        public string Auditor { get; set; }
+
+        public string Sender { get; set; }
+
+        public DateTime SendTime { get; set; }
+
+        public short OrderStatus { get; set; }
+
+        public short FeeHasUpdate { get; set; }
+
+        public DateTime FeeUpdateTime { get; set; }
+
+        public DateTime StatusChangTime { get; set; }
+
+        public DateTime NextOperateTime { get; set; }
+
+        public string SerialNumber { get; set; }
+
+        public decimal RebateFee { get; set; }
+
+        public short IsRebate { get; set; }
+
+        public decimal BalanceFee { get; set; }
+
+        public decimal RefundFee { get; set; }
+
+        public string Refunder { get; set; }
+
+        public DateTime RefundTime { get; set; }
+
+        public DateTime CacelTime { get; set; }
+
+        public string Cancer { get; set; }
+
+        public DateTime RevokeTime { get; set; }
+
+        public string Revoker { get; set; }
+
+        public string MediumSource { get; set; }
+
+        public short OrderSource { get; set; }
+
+        public short ReduceType { get; set; }
+
+        public decimal ReduceFee { get; set; }
+
+        public decimal ActiveReduceFee { get; set; }
+
+        public short ActiveReduceType { get; set; }
+
+        public decimal UseAccountFee { get; set; }
+
+        public short IsFreeShip { get; set; }
+
+        public DateTime VisitTime { get; set; }
+
+        public string Visit { get; set; }
+
+        public short VisitStatus { get; set; }
+
+        public string UnionPara { get; set; }
+
+        public short UnionType { get; set; }
+
+        public string ThirdOrderID { get; set; }
+
+        public short ThirdStatus { get; set; }
+
+        public DateTime ThirdStatusChangeTime { get; set; }
+
+        public short IsJXSCM { get; set; }
+
+        public short IsSplit { get; set; }
+
+        public string MainID { get; set; }
+    } 
+}

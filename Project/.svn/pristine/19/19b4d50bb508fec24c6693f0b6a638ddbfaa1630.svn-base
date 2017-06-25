@@ -1,0 +1,215 @@
+﻿@using JXProduct.Component.Model
+@using JXProduct.Component.Enums
+@{
+    ViewBag.Title = "商品关联";
+}
+@section css{
+    <style>
+        #tuijian .shortinput { width: 120px; }
+        .spInputWrap font { margin-left: 5px; }
+        .spInputWrap .error { color: #f3506e; font-size: 12px; }
+        .spInputWrap span:first-child { width: 130px; }
+        .taoCanZH td { width: auto; }
+        .cancel { margin-left: 10px; display: none; }
+        .infoList { padding-left: 100px; }
+        tbody input { border: 1px solid #e7e7eb; border-radius: 5px; height: 24px; line-height: 24px; outline: medium none; padding-left: 3px; width: 50px; }
+    </style>
+}
+@section script{
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/validate/jquery.validate.min.js"></script>
+    <script src="~/js/jx.product.js"></script>
+    <script src="~/js/base.regex.js"></script>
+    <script type="text/javascript">
+        $(function () { related.edit(); });
+    </script>
+}
+@{
+    JXProduct.Component.Model.ProductInfo product = ViewBag.Product;
+}
+<div class="setCommAttrHeader w">
+    <div class="fl wBFB">
+        <span class='active'>大包装</span>
+        <span>套餐组合</span>
+        <span>最佳推荐</span>
+        <span>规格关联</span>
+    </div>
+</div>
+<div class="setCommConterTab w" style="display:block;">
+    @{
+        var temp = @"<ul>
+                        <li>商品ID：<span class='pid'>{0}</span></li>
+                        <li>金象码：{1}</li>
+                        <li>商品名称：<span class='pname'>{2}</span> 单位:<span class='unit'>{3}</span></li>
+                        <li>市场价：￥<span class='marketprice'>{4}<span> </li>
+                        <li>金象价：￥<span class='tradeprice'>{5}</span></li>
+                    </ul>";
+    }
+    <div id="packaging" class="packagingInfo">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                @if (product.Type == 0)
+                {
+                    @(Html.Raw(string.Format(temp, product.ProductID, product.ProductCode, product.ChineseName, product.Unit, product.MarketPrice, product.TradePrice)))
+                }
+                else
+                {
+                    ProductInfo baseproduct = ViewBag.BaseProduct;
+                    @(Html.Raw(string.Format(temp, baseproduct.ProductID, baseproduct.ProductCode, baseproduct.ChineseName, baseproduct.Unit, baseproduct.TradePrice, baseproduct.TradePrice)))
+                }
+            </div>
+        </div>
+        <div class="infoTitle hide updateTitle">大包装信息：<span> </span></div>
+        <form id="form1">
+            <div class="spInput clear">
+                <div class="spInputWrap clear">
+                    <span>* 主商品数量：</span>
+                    <input name="quantity" type="text" placeholder="数量" required data-rule-digits="true" data-msg-required="不能为空" data-msg-digits="请输入数字">
+                    <span class='m'>@product.Unit</span>
+                </div>
+                <div class="spInputWrap clear">
+                    <span>* 大包装价格：</span>
+                    <input name="price" type="text" placeholder="价格" required data-rule-number="true" data-msg-required="不能为空" data-msg-number="请输入价格">
+                    <span class='m'>元</span>
+                </div>
+                <div class="spInputWrap clear">
+                    <div class="spTime">
+                        <span>* 大包装前台展示名称：</span>
+                        <input type="text" name="viewname" required data-rule-age="true" data-msg-required="不能为空">
+                    </div>
+                </div>
+                <div class="spInputWrap clear" id="bzerror">
+                </div>
+                <div class="saveBtn clear">
+                    <a href="#" name="save">保存</a>
+                    <a href="#" class="cancel" name="cancel">取消</a>
+                </div>
+            </div>
+        </form>
+        <div class="infoTable">
+            @{ Html.RenderPartial("_PartialRelated", (int)RelatedType.大包装); }
+        </div>
+    </div>
+    <div id="zuhe" class="packagingInfo hide">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                @(Html.Raw(string.Format(temp, product.ProductID, product.ProductCode, product.ChineseName, product.Unit, product.MarketPrice, product.TradePrice)))
+            </div>
+        </div>
+        <div class="spInput clear">
+            <div class="spInputWrap clear">
+                <span class="titleName">* 子商品ID：</span>
+                <input type="text" class="bBtn" name="childid">
+                <span class="m"></span>
+            </div>
+            <div class="spInputWrap clear">
+                <span class="titleName">* 子商品价格：</span>
+                <input type="text" class="bBtn" name="childprice">
+                <span class="m">元</span>
+                <span class="m"></span>
+            </div>
+            <div class="spInputWrap clear">
+                <span class="titleName">* 子商品数量：</span>
+                <input type="text" class="bBtn" name="childcount">
+                <span class="m">@product.Unit</span>
+                <span class="m"></span>
+            </div>
+            <div class="spInputWrap clear">
+                <span class="titleName">* 前台展示名称：</span>
+                <input type="text" class="bBtn" style="width: 420px;" name="viewname">
+            </div>
+            <div class="saveBtn clear">
+                <a href="#" name="save">保存</a>
+            </div>
+        </div>
+        <div class="infoTable">
+            <table id="temptab" class="taoCanZH">
+                <thead>
+                    <tr class="bg">
+                        <th style="width:90px;">商品ID</th>
+                        <th style="width:90px;">金象码</th>
+                        <th>商品名称</th>
+                        <th>规格</th>
+                        <th>前台展示名称</th>
+                        <th style="width:90px;">价格</th>
+                        <th style="width:90px;">数量</th>
+                        <th style="width:90px;">操作</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr class="scTaoCan">
+                        <td colspan="9">
+                            <div class="fl scTaoCanLeft">
+                                <span>套餐名称：</span>
+                                <input type="text" name="comboname">
+                            </div>
+                            <div class="saveBtn clear fl">
+                                <a href="#" name="submitcombo">生成套餐</a>
+                                <a href="#" class="cancel" style="display:none;">取消编辑</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr><td>@product.ProductID</td><td>@product.ProductCode</td><td>@product.ChineseName</td><td>@product.Specifications</td><td>@product.ChineseName</td><td>@product.TradePrice</td><td quantity="1">*1@(product.Unit)</td><td><a href="#" name="update">修改</a></td></tr>
+                </tbody>
+            </table>
+            <br />
+            @{ Html.RenderPartial("_PartialCombo", product.ProductID); }
+        </div>
+    </div>
+    <div id="tuijian" class="packagingInfo hide">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                @(Html.Raw(string.Format(temp, product.ProductID, product.ProductCode, product.ChineseName, product.Unit, product.MarketPrice, product.TradePrice)))
+            </div>
+        </div>
+        <div class="spInput clear">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <div class="spInputWrap clear">
+                    <span>* 关联商品ID@(i)：</span>
+                    <input type="text" class="shortinput" name="tuijianid" data-val-number="必须是一个数字">
+                    <span class='m'></span>
+                </div>
+            }
+            <div class="saveBtn clear">
+                <a href="#" class="save">保存</a>
+            </div>
+        </div>
+        <div class="infoTable">
+            @{ Html.RenderPartial("_PartialRelated", (int)RelatedType.最佳推荐); }
+        </div>
+    </div>
+    <div id="guige" class="packagingInfo hide">
+        @{
+            var guigelist = JXProduct.Component.BLL.ProductRelatedBLL.Instance.ProductRelated_GetList(product.ProductID, RelatedType.不同规格);
+        }
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                @(Html.Raw(string.Format(temp, product.ProductID, product.ProductCode, product.ChineseName, product.Unit, product.MarketPrice, product.TradePrice)))
+            </div>
+        </div>
+        <div class="spInput clear">
+            <div class="spInputWrap clear">
+                <span>* 子商品：</span>
+                <input type="text" name="childid" />
+                <span class="m"></span>
+            </div>
+            <div class="spInputWrap clear">
+                <span>* 前台展示名称：</span>
+                <input type="text" name="viewname" />
+            </div>
+            <div class="saveBtn clear">
+                <a href="#" name="save">保存</a>
+            </div>
+        </div>
+        <div class="infoTable">
+            @{ Html.RenderPartial("_PartialRelated", (int)RelatedType.不同规格); }
+        </div>
+    </div>
+</div>

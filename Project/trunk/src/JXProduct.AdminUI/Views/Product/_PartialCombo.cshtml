@@ -1,0 +1,46 @@
+﻿@model int
+<table class="taoCanZH table">
+    <thead>
+        <tr class="bg">
+            <th style="width:70px;">序号</th>
+            <th>商品选择名称</th>
+            <th style="width:100px;">套餐ID</th>
+            <th style="width:90px;">套餐金象码</th>
+            <th style="width:80px;">套餐价格</th>
+            <th style="width:80px;">套餐规格</th>
+            <th>库存</th>
+            <th style="width:100px;">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var productid = Model;
+            var comboIDs = JXProduct.Component.BLL.ProductComboBLL.Instance.ProductCombo_Get(productid);
+            var combolist = JXProduct.Component.BLL.ProductComboBLL.Instance.ProductCombo_GetByProductIDs(comboIDs);
+            var productlist = JXProduct.Component.BLL.ProductBLL.Instance.Product_GetList(comboIDs);
+            if (productlist.Count == 0)
+            {
+                <tr><td colspan="8">暂无套餐</td></tr>
+            }
+            else
+            {
+                var index = 1;
+                foreach (var p in productlist)
+                {
+                    var combo = combolist.FirstOrDefault(t => t.ProductID == p.ProductID && t.IsMain);
+                    var name = combo != null && !string.IsNullOrWhiteSpace(combo.Name) ? combo.Name : p.ChineseName;
+                    <tr>
+                        <td>@(index++)</td>
+                        <td class="tcName"><a href="http://www.jxdyf.com/product/@(p.ProductID).html">@name</a></td>
+                        <td>@p.ProductID</td>
+                        <td>@p.ProductCode</td>
+                        <td>￥<span>@p.TradePrice</span></td>
+                        <td>@p.Specifications</td>
+                        <td>0</td>
+                        <td productid='@p.ProductID' chinesename="@p.ChineseName" longname="@p.LongName"><a href="#" name="edit">编辑</a><a href="#" name="del" class="ml-10">删除</a></td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

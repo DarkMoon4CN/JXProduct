@@ -1,0 +1,306 @@
+2015-09-02 14:34:13,325  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:34:13
+2015-09-02 14:34:13,446  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:34:15,658  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:34:15,659  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:34:15,660  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528055已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:34:15,661  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:34:15,992  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:34:15,994  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:619
+2015-09-02 14:34:16,001  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:34:16,002  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:34:16,003  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:34:16,004  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:34:16,018  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:34:16,020  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:620
+2015-09-02 14:34:16,022  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:34:16
+2015-09-02 14:34:16,023  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:34:33,462  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:34:33
+2015-09-02 14:34:33,518  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:34:40,356  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:34:40,603  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:34:40,959  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528055已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:34:41,155  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:35:07,681  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:36:03,253  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:36:03
+2015-09-02 14:36:03,310  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:36:12,501  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:36:12
+2015-09-02 14:37:41,216  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:37:41
+2015-09-02 14:37:48,371  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 14:37:58,815  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:37:58,987  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:37:59,158  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:37:59,312  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:38:03,683  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:38:04,002  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:621
+2015-09-02 14:38:08,106  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:38:08
+2015-09-02 14:38:08,457  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:38:41,683  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:38:41
+2015-09-02 14:38:44,144  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:38:50,602  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:38:50,920  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:38:51,133  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:38:51,325  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:38:57,663  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:38:57,969  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:234
+2015-09-02 14:39:07,895  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:39:08,479  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:39:08,854  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:39:09,826  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:39:22,178  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:39:22,495  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:621
+2015-09-02 14:39:32,381  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:39:32
+2015-09-02 14:39:32,563  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:40:06,543  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:40:06
+2015-09-02 14:40:06,602  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:40:17,917  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:40:18,261  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:40:18,491  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:40:18,708  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:40:36,255  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:40:36
+2015-09-02 14:40:36,313  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:40:39,322  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:40:39,513  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:40:39,840  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:40:40,077  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:40:56,221  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:40:56
+2015-09-02 14:40:56,282  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:41:01,051  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:41:01,052  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:41:01,053  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:41:01,053  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:42:39,697  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:42:39,700  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:234
+2015-09-02 14:42:44,951  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:42:46,083  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:42:47,318  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:42:48,583  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:42:51,014  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:42:51,015  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:621
+2015-09-02 14:42:51,019  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:42:51
+2015-09-02 14:42:51,020  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:42:56,777  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:42:56
+2015-09-02 14:42:57,078  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:43:03,286  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:43:03,286  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:43:03,287  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:43:03,287  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:43:11,262  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:43:11,270  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:234
+2015-09-02 14:43:12,520  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:43:12,521  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:43:12,521  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:43:12,522  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:43:13,054  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:43:13,055  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:621
+2015-09-02 14:43:13,059  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:43:13
+2015-09-02 14:43:13,059  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:43:28,594  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:43:28
+2015-09-02 14:43:28,663  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:43:32,482  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:43:32,741  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:43:32,910  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:43:33,059  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:43:46,058  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:43:46,060  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:234
+2015-09-02 14:43:47,619  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:43:47,620  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-09-02 14:43:47,620  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528057已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-09-02 14:43:47,622  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-09-02 14:43:48,555  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 14:43:48,557  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:621
+2015-09-02 14:43:48,565  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 14:43:48
+2015-09-02 14:43:48,567  [12]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 14:43:53,973  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:43:53
+2015-09-02 14:43:54,033  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:43:55,531  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:43:55,532  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:43:55,532  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:43:55,533  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 14:45:33,706  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 14:45:33
+2015-09-02 14:45:33,764  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 14:45:36,075  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 14:45:36,075  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 14:45:36,076  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 14:45:36,077  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:04:33,270  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:04:33
+2015-09-02 15:04:33,327  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 15:04:36,749  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:04:37,077  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:04:37,291  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:04:37,455  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:05:37,217  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:05:37
+2015-09-02 15:05:37,274  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 15:05:39,918  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:05:39,919  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:05:39,919  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:05:39,920  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:53:46,364  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:53:46
+2015-09-02 15:53:46,421  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:2
+2015-09-02 15:53:46,956  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:53:46,957  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:53:46,957  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:53:46,958  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:53:47,000  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-09-02 15:53:47,001  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:234
+2015-09-02 15:53:47,009  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送数据已失败5次 推送ID：621
+2015-09-02 15:53:47,012  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:53:47
+2015-09-02 15:53:47,013  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:54:30,098  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:54:30
+2015-09-02 15:54:30,154  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:54:33,740  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:54:34,171  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:54:34,385  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:54:34,506  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:55:18,959  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:55:18
+2015-09-02 15:55:19,015  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:55:23,542  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:55:23,543  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:55:23,543  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:55:23,544  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:55:55,648  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 15:55:55,664  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:55:55
+2015-09-02 15:55:55,665  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:57:42,915  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:57:42
+2015-09-02 15:57:42,972  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:57:48,691  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:57:48,691  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:57:48,692  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:57:48,692  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:57:51,654  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 15:57:51,670  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:57:51
+2015-09-02 15:57:51,672  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:58:07,012  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:58:07
+2015-09-02 15:58:07,073  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 15:58:07,074  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:58:07
+2015-09-02 15:58:07,075  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:58:15,089  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:58:15
+2015-09-02 15:58:15,156  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:58:15,637  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:58:15,637  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:58:15,638  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:58:15,639  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:58:24,145  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 15:58:24,162  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:58:24
+2015-09-02 15:58:24,164  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:59:07,620  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:59:07
+2015-09-02 15:59:07,676  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:59:08,616  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:59:08,617  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:59:08,617  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:59:08,618  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:59:11,039  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 15:59:11,055  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:59:11
+2015-09-02 15:59:11,056  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:59:30,053  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:59:30
+2015-09-02 15:59:30,108  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 15:59:30,109  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:59:30
+2015-09-02 15:59:30,110  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 15:59:40,639  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 15:59:40
+2015-09-02 15:59:40,704  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 15:59:41,175  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 15:59:41,175  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 15:59:41,176  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 15:59:41,177  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 15:59:42,084  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 15:59:42,102  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 15:59:42
+2015-09-02 15:59:42,104  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:00:14,284  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:00:14
+2015-09-02 16:00:14,351  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:00:16,119  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:00:16,119  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:00:16,120  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:00:16,120  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:00:16,601  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 16:00:16,626  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:00:16
+2015-09-02 16:00:16,627  [9]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:00:29,670  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:00:29
+2015-09-02 16:00:29,738  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:00:30,517  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:00:30,517  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:00:30,518  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:00:30,519  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:00:32,192  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 16:00:32,212  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:00:32
+2015-09-02 16:00:32,213  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:00:58,635  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:00:58
+2015-09-02 16:00:58,695  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:00:59,500  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:00:59,501  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:00:59,502  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:00:59,502  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:01:00,227  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 16:01:00,236  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:01:00
+2015-09-02 16:01:00,236  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:01:12,319  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:01:12
+2015-09-02 16:01:12,376  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:01:12,942  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:01:12,942  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:01:12,943  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:01:12,944  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:01:14,886  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 16:01:14,903  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:01:14
+2015-09-02 16:01:14,904  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:02:19,459  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:02:19
+2015-09-02 16:02:19,519  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:02:20,180  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:02:20,180  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:02:20,181  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:02:20,181  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:02:21,206  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  跳过推送ID：2000229
+2015-09-02 16:02:21,220  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:02:21
+2015-09-02 16:02:21,221  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:03:10,127  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:03:10
+2015-09-02 16:03:10,180  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 16:03:10,180  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:03:10
+2015-09-02 16:03:10,181  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:03:20,985  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:03:20
+2015-09-02 16:03:21,041  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:03:21,747  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:03:21,748  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:03:21,748  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:03:21,749  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:03:22,991  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 16:03:23,006  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:03:23
+2015-09-02 16:03:23,007  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:03:49,577  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:03:49
+2015-09-02 16:03:49,629  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 16:03:49,630  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:03:49
+2015-09-02 16:03:49,631  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:04:12,402  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:04:12
+2015-09-02 16:04:12,457  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 16:04:12,458  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:04:12
+2015-09-02 16:04:12,459  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:04:20,812  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:04:20
+2015-09-02 16:04:20,875  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:04:21,494  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:04:21,495  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:04:21,495  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:04:21,497  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:04:46,155  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 16:04:46,174  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:04:46
+2015-09-02 16:04:46,175  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:05:16,836  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:05:16
+2015-09-02 16:05:16,895  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:0
+2015-09-02 16:05:16,896  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:05:16
+2015-09-02 16:05:16,897  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:05:27,418  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:05:27
+2015-09-02 16:05:27,475  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:05:28,110  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:05:28,111  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:05:28,111  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:05:28,112  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:07:37,426  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:07:37
+2015-09-02 16:07:37,507  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:07:37,999  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:07:37,999  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:07:38,000  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:07:38,001  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229
+2015-09-02 16:08:01,812  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送结果：ok
+2015-09-02 16:08:01,828  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/9/2 16:08:01
+2015-09-02 16:08:01,829  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================
+2015-09-02 16:08:09,641  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/9/2 16:08:09
+2015-09-02 16:08:09,710  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-09-02 16:08:10,181  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-09-02 16:08:10,182  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:list
+2015-09-02 16:08:10,182  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:咱还是写的文艺点的比较好
+2015-09-02 16:08:10,183  [10]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:2000229

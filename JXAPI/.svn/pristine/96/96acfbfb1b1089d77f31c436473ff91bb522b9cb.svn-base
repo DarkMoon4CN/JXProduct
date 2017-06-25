@@ -1,0 +1,279 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class SqlDAL
+    {
+        private static Database dbr_Product = JXProductData.Reader;
+        private static Database dbr_Marketing = JXMarketingData.Reader;
+        private static Database dbr_CouponBase = JXCouponBaseData.Reader;
+        private static Database dbr_YX = JXYXData.Reader;
+        private static Database dbr_Order = JXOrderData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(SqlDAL));
+        DatabaseType dbType_Update = DatabaseType.dbr_Product;
+        DatabaseType dbType_Add = DatabaseType.dbr_Product;
+        #region CURD
+
+        /// <summary>
+        /// 查询需要添加列表
+        /// </summary>
+        /// <param name="productID">ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetAddList(int ID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                switch (tableName.ToLower())
+                {
+                    case "coupon":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ID > {0} and EndTime> '{1}'  ORDER BY ID", ID, DateTime.Now));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponbatch":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ID > {0}  ORDER BY ID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponchannel":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND ChannelID > {0}  ORDER BY ChannelID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "coupontype":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND TypeID > {0}  ORDER BY TypeID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcard":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND CouponID > {0}  ORDER BY CouponID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcarddetail":
+                        sqlCommand.Append(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                        sqlCommand.Append(string.Format(" AND CardDetailID > {0}  ORDER BY CardDetailID", ID));
+                        dbType_Add = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "jxmarketingbrand":
+                        sqlCommand.Append(string.Format(@"SELECT m.BrandID,m.CFID,p.ChineseName,p.ImageLogo,p.Sort from JXMarketing.dbo.Brand as m
+                                                           inner join JXProduct.dbo.Brand p on m.BrandID = p.BrandID "));
+                        dbType_Add = DatabaseType.dbr_Marketing;
+                        break;
+                    case "orderproducthistory-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProductHistory h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderproducthistory-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProductHistory h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderproduct-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProduct h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderproduct-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTime from OrderProduct h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.OrderProductID > {2} ORDER BY h.OrderProductID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperateloghistory-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTimeEx from OrderOperateLogHistory h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperateloghistory-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTimeEx from OrderOperateLogHistory h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperatelog-before":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTimeEx from OrderOperateLog h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime < '{1}' and h.LogID > {2} ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperatelog-after":
+                        sqlCommand.AppendFormat(@"select top {0} h.*,o.CreateTimeEx from OrderOperateLog h left join Orders o on h.OrderNO = o.OrderNO
+                                                 where o.CreateTime >= '{1}' and h.LogID > {2}  ORDER BY h.LogID", pageSize, DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orders-before":
+                        sqlCommand.AppendFormat(@"select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from Orders as o where o.OrderID = t.OrderID) as status
+                                                from Orders as t", pageSize);
+                        sqlCommand.Append(string.Format(" where  t.CreateTime < '{0}' and t.OrderNO > {1}  ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString(), ID));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orders-after":
+                        sqlCommand.AppendFormat(@"select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from Orders as o where o.OrderID = t.OrderID) as status
+                                                from Orders as t", pageSize);
+                        sqlCommand.AppendFormat(@"  where t.CreateTime >= '{0}' and t.OrderNO > {1} ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "ordershistory-before":
+                        sqlCommand.AppendFormat(@" select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from ordershistory as o where o.OrderID = t.OrderID) as status
+                                                from ordershistory as t", pageSize);
+                        sqlCommand.Append(string.Format(" where t.CreateTime < '{0}' and t.OrderNO > {1}  ORDER BY t.OrderNO", DateTime.Now.AddMonths(-3).ToString(),ID));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "ordershistory-after":
+                        sqlCommand.AppendFormat(@" select top {0} t.*,(select case when o.PaymentMethodID > 0 AND o.PayStatus = 0 then 0
+                                                when o.OrderStatus NOT IN (11,16,12,13,14,15,17) AND (o.PaymentMethodID=0 OR (o.PaymentMethodID>0 AND PayStatus in (1,2))) then 1
+                                                when o.OrderStatus=17 and NOT EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 0) then 2
+                                                when o.OrderStatus=17 and EXISTS(SELECT 1 FROM ORDERPRODUCT where IsComment = 1) then 3
+                                                when o.OrderStatus  IN (11,16,12,13,14,15) then 4
+                                                else 0 end from ordershistory as o where o.OrderID = t.OrderID) as status
+                                                from ordershistory as t", pageSize);
+                        sqlCommand.AppendFormat(@" where t.CreateTime >= '{0}' and OrderNO > {1} ORDER BY t.OrderNO",DateTime.Now.AddMonths(-3).ToString(), ID);
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderlogistics":
+                        sqlCommand.Append(string.Format("select top {0} * FROM OrderLogistics WHERE LogisticsID > {1}  ORDER BY LogisticsID", pageSize, ID));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    default:
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Add)
+                {
+                    case DatabaseType.dbr_YX:
+                        var dbCommand1 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_CouponBase:
+                        var dbCommand2 = dbr_CouponBase.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_CouponBase.ExecuteDataSet(dbCommand2);
+                        break;
+                    case DatabaseType.dbr_Order:
+                        var dbCommand3 = dbr_Order.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Order.ExecuteDataSet(dbCommand3);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetAddList 查询需要添加的{0}表失败,ID:{1},异常信息:{2}", tableName, ID, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询需要更新的列表
+        /// </summary>
+        /// <param name="productInitID">需要更新的原始ID,即需要更新的最大ID</param>
+        /// <param name="productNowID">当前更新到的ID</param>
+        /// <param name="updateTime">更新时间</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <returns></returns>
+        public DataTable GetUpdateList(int MaxID, int NowID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0} * FROM {1} WHERE 1=1 ", pageSize, tableName));
+                switch (tableName.ToLower())
+                {
+                    case "coupon":
+                    case "couponbatch":
+                        sqlCommand.Append(string.Format(" AND ID > {0} AND ID <= {1} ORDER BY ID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponchannel":
+                        sqlCommand.Append(string.Format(" AND ChannelID > {0} AND ChannelID <= {1}  ORDER BY ChannelID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "coupontype":
+                        sqlCommand.Append(string.Format(" AND TypeID > {0} AND TypeID <= {1}  ORDER BY TypeID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcard":
+                        sqlCommand.Append(string.Format(" AND CouponID > {0} AND CouponID <= {1}  ORDER BY CouponID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "couponshoppingcarddetail":
+                        sqlCommand.Append(string.Format(" AND CardDetailID > {0} AND CardDetailID <= {1}  ORDER BY CardDetailID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_CouponBase;
+                        break;
+                    case "searchkeyword":
+                        sqlCommand.Append(string.Format(" AND KeywordID > {0} AND KeywordID <= {1}  ORDER BY KeywordID", NowID, MaxID));
+                        dbType_Update = DatabaseType.dbr_YX;
+                        break;
+                    default:
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Update)
+                {
+                    case DatabaseType.dbr_YX:
+                        var dbCommand1 = dbr_Marketing.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_YX.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_CouponBase:
+                        var dbCommand2 = dbr_CouponBase.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_CouponBase.ExecuteDataSet(dbCommand2);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetUpdateList 查询需要更新的{0}表失败,ID:{0},异常信息:{1}", tableName, NowID, ex.Message);
+                return null;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 关键词列表
+        /// </summary>
+        /// <param name="strWhere">条件</param>
+        /// <returns></returns>
+        public DataTable Keyword_GetListForSearch(string strWhere)
+        {
+            string sqlCommand = "Keyword_GetListForSearch";
+            var dbCommand = dbr_Product.GetStoredProcCommand(sqlCommand);
+            dbr_Product.AddInParameter(dbCommand, "strWhere", DbType.String, strWhere);
+            DataSet dSet = dbr_Product.ExecuteDataSet(dbCommand);
+            return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+        }
+
+    }
+
+    enum DatabaseType
+    {
+        dbr_Product = 1,
+        dbr_Marketing,
+        dbr_CouponBase,
+        dbr_YX,
+        dbr_Order,
+    }
+}

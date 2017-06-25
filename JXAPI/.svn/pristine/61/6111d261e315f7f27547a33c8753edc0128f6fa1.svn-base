@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Domain
+{
+    /// <summary>
+    /// App版本
+    /// </summary>
+    public class AppVersionInfo
+    {
+        public int versionID{get;set;}
+
+        /// <summary>
+        /// 渠道
+        /// </summary>
+        public string appchannel { get; set; }
+
+        /// <summary>
+        /// 发布的版本号
+        /// </summary>
+        public  int buildNo{get;set;}
+
+        /// <summary>
+        /// 显示的版本号
+        /// </summary>
+        public  string appversion{get;set;}
+
+        /// <summary>
+        /// 版本名称
+        /// </summary>
+        public  string name{get;set;}
+
+        /// <summary>
+        /// 下载地址
+        /// </summary>
+        public  string downloadLink{get;set;}
+
+        /// <summary>
+        /// 安装包大小
+        /// </summary>
+        public decimal size{get;set;}
+
+        /// <summary>
+        /// 更新说明
+        /// </summary>
+        public  string content{get;set;}
+
+        /// <summary>
+        /// 强制更新（0=否 1=是）
+        /// </summary>
+        public  int forceUpdate{get;set;}
+
+        /// <summary>
+        /// 发布时间
+        /// </summary>
+        public long createTime{get;set;}
+
+        /// <summary>
+        /// 平台(2 安卓 3 ios)
+        /// </summary>
+        public int appplatForm { get; set; }
+    }
+}

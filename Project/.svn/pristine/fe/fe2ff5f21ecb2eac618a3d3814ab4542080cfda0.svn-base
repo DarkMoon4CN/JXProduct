@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "NotPass";
+    Layout = "~/Views/Shared/_DefaultWin.cshtml";
+}
+@section js{
+    <script>
+        $(function () {
+            var $hidden_productid = $('#ProductID');
+            var $hidden_type = $('#Type');
+            var $save = $('a[name=save]');
+            var $cancel = $('a[name=cancel]');
+            var $remarks = $('textarea[name=remarks]');
+            $cancel.on("click", function () { parent.jx.closeAll(); });
+            $save.on("click", function () {
+                jx.confirm("确定要不通过审核吗?", function () {
+                    var productid = $hidden_productid.val();
+                    var type = $hidden_type.val();
+                    var remarks = $remarks.val();
+                    if (productid == "0" || type == "0" || remarks.length == 0) {
+                        jx.alert("参数错误!");
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/audit/product",
+                        data: { productid: productid, type: type, status: 2, remarks: remarks },
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.status) {
+                                jx.alert("提交成功!", function () {
+                                    parent.location.reload();
+                                });
+                            } else {
+                                jx.error("提交失败!" + data.msg);
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
+<div class="popupGeneral reject-width">
+    <div class="popupGeneral-h">
+        <span>驳回审核</span>
+    </div>
+    <div class="reject-center">
+        <p>请说明驳回原因：最多300字：</p>
+        <div class="reject-input-text">
+            <textarea name="remarks" maxlength="300"></textarea>
+        </div>
+
+        <div class="confirm-wrap">
+            <div class="confirm">
+                <a href="#" name="save">保存</a>
+                <a href="#" name="cancel">取消</a>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("ProductID", (int)ViewBag.ProductID)
+    @Html.Hidden("Type", (int)ViewBag.Type)
+</div>

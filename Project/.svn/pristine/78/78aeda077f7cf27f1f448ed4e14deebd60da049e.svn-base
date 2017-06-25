@@ -1,0 +1,470 @@
+using JXProduct.Component.Enums;
+using System;
+using System.Collections.Generic;
+namespace JXProduct.Component.Model
+{
+    /// <summary>
+    ///商品信息
+    /// </summary>
+    public class ProductInfo
+    {
+        public ProductInfo()
+        {
+            this.CreateTime = DateTime.Now;
+        }
+
+        /// <summary>
+        ///商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        ///金象码
+        /// </summary>
+        public string ProductCode { get; set; }
+
+        /// <summary>
+        ///商品名称
+        /// </summary>
+        public string ChineseName { get; set; }
+
+        /// <summary>
+        ///药品通用名称
+        /// </summary>
+        public string CADN { get; set; }
+
+        /// <summary>
+        ///销售名称
+        /// </summary>
+        public string SellingName { get; set; }
+
+        /// <summary>
+        ///长名称,卖点
+        /// </summary>
+        public string LongName { get; set; }
+
+        /// <summary>
+        ///链接文本
+        /// </summary>
+        public string LinkName { get; set; }
+
+        /// <summary>
+        /// 英文名称
+        /// </summary>
+        public string EnglishName { get; set; }
+        /// <summary>
+        ///链接Url
+        /// </summary>
+        public string LinkUrl { get; set; }
+
+        /// <summary>
+        ///拼音
+        /// </summary>
+        public string PinyinName { get; set; }
+
+        /// <summary>
+        ///分类ID
+        /// </summary>
+        public int CFID { get; set; }
+        public string CFPath { get; set; }
+
+        /// <summary>
+        ///品牌ID
+        /// </summary>
+        public int BrandID { get; set; }
+        public string BrandName { get; set; }
+
+        //两处合并,写到同一个数据里面
+        // 非药品,单轨,双轨,甲类非处方,乙类非处方
+        /// <summary>
+        ///商品类型 0:单轨  1:药品  2:非药品  3:双规
+        /// </summary>
+        public short ProductType { get; set; }
+
+        /// <summary>
+        ///药品类型( 1:处方药 2:甲类非处方药 3:乙类非处方药)
+        /// </summary>
+        public short DrugType { get; set; }
+        /// <summary>
+        ///药品分类 (1:中成药 2:西药)
+        /// </summary>
+        public short DrugClassification { get; set; }
+        /// <summary>
+        ///商品分类属性  1药品 2医疗器械 3保健品 4化妆品 5消毒品 6百货
+        /// </summary>
+        public short ParameterType { get; set; }
+
+        /// <summary>
+        ///商品类型 0 ：正常 1：大包装 2：套餐
+        /// </summary>
+        public short Type { get; set; }
+        public string TypeName
+        {
+            get
+            {
+                switch (this.Type)
+                {
+                    case 0: return "单品";
+                    case 1: return "大包装";
+                    case 2: return "套餐";
+                    default: return string.Empty;
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        ///市场价
+        /// </summary>
+        public decimal MarketPrice { get; set; }
+
+        /// <summary>
+        ///会员价
+        /// </summary>
+        public decimal TradePrice { get; set; }
+
+        /// <summary>
+        ///成本价
+        /// </summary>
+        public decimal CostPrice { get; set; }
+
+        /// <summary>
+        ///手机终端价格
+        /// </summary>
+        public decimal MobilePrice { get; set; }
+
+        /// <summary>
+        ///商品图片
+        /// </summary>
+        public string Images { get; set; }
+
+        /// <summary>
+        ///商品说明书[图片地址]
+        /// </summary>
+        public string Instructions { get; set; }
+
+        /// <summary>
+        /// 促销专区
+        /// </summary>
+        public string Promotion { get; set; }
+
+        /// <summary>
+        ///商品介绍[多图]
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        ///规格
+        /// </summary>
+        public string Specifications { get; set; }
+
+        /// <summary>
+        ///简介（||分割）~#$ 说明书（||）
+        /// </summary>
+        public string ValueList { get; set; }
+
+
+        public int ManufacturerID { get; set; }
+        public string ManufacturerName { get; set; }
+
+        public int SupplierID { get; set; }
+        public string SupplierName { get; set; }
+
+        /// <summary>
+        /// 批准文号
+        /// </summary>
+        public string ApprovalNumber { get; set; }
+        /// <summary>
+        ///产地(0:未处理  1:国产  2:进口)
+        /// </summary>
+        public short Origin { get; set; }
+
+        /// <summary>
+        ///当前商品包装数量 单品为1  大包装数量待定
+        /// </summary>
+        public int LargePacking { get; set; }
+
+        /// <summary>
+        /// 限购数量
+        /// </summary>
+        public int BuyLimit { get; set; }
+
+        /// <summary>
+        ///单位
+        /// </summary>
+        public string Unit { get; set; }
+
+        /// <summary>
+        ///长宽高
+        /// </summary>
+        public string Volume { get; set; }
+
+        /// <summary>
+        ///储藏条件( 1:冷藏 2:阴凉 3:常温)
+        /// </summary>
+        public short Storage { get; set; }
+
+        /// <summary>
+        ///剂型
+        /// </summary>
+        public string Dosage { get; set; }
+
+        /// <summary>
+        ///使用方式 (1:内服  2:外用)
+        /// </summary>
+        public short Usage { get; set; }
+
+
+        /// <summary>
+        /// 缩写 RX=处方药 OTC=非处方药 QX=器械 QT=其它
+        /// </summary>
+        public string Abbreviation { get; set; }
+
+        /// <summary>
+        /// 麻黄碱 1：是
+        /// </summary>
+        public short ContainMHJ { get; set; }
+
+        /// <summary>
+        ///易碎 1：是
+        /// </summary>
+        public short IsFragile { get; set; }
+
+        /// <summary>
+        /// 泰康商品 1：是
+        /// </summary>
+        public short IsTaiKang { get; set; }
+
+        /// <summary>
+        ///礼盒装 1：是
+        /// </summary>
+        public short IsDeluxe { get; set; }
+
+        /// <summary>
+        ///易串味 1：是
+        /// </summary>
+        public short IsOdour { get; set; }
+
+        /// <summary>
+        ///重点养护
+        /// </summary>
+        public short IsProtection { get; set; }
+
+        /// <summary>
+        ///基药 1：是
+        /// </summary>
+        public short IsBasePowder { get; set; }
+
+        /// <summary>
+        ///医保商品 1：是
+        /// </summary>
+        public short IsYiBao { get; set; }
+
+        /// <summary>
+        ///是否基础商品 1：是
+        /// </summary>
+        public short IsBasic { get; set; }
+
+        /// <summary>
+        ///推荐
+        /// </summary>
+        public short IsRecommend { get; set; }
+
+        /// <summary>
+        ///置顶
+        /// </summary>
+        public short IsTop { get; set; }
+
+        /// <summary>
+        ///图片是否与实际有出入
+        /// </summary>
+        public short IsImageDiff { get; set; }
+
+        /// <summary>
+        ///运营标识 1：新品 2：热卖 3：热销 4：火爆 5：特价 6：热气 7：爆款
+        /// </summary>
+        public short Actions { get; set; }
+
+        /// <summary>
+        ///权重 用于排序后计算
+        /// </summary>
+        public short Rank { get; set; }
+
+        /// <summary>
+        ///卖出数量
+        /// </summary>
+        public int SellCount { get; set; }
+
+        /// <summary>
+        ///评论数
+        /// </summary>
+        public int Comments { get; set; }
+
+        /// <summary>
+        ///收藏数
+        /// </summary>
+        public int Favorite { get; set; }
+
+        /// <summary>
+        ///商品PV
+        /// </summary>
+        public int PV { get; set; }
+
+        /// <summary>
+        ///优先级排序
+        /// </summary>
+        public int Sort { get; set; }
+
+        /// <summary>
+        ///有效期
+        /// </summary>
+        public DateTime ValidPeriod { get; set; }
+
+        /// <summary>
+        ///商品状态 0：正常 1：冻结 2：删除  3：待审核  4：审核未通过
+        /// </summary>
+        public short Status { get; set; }
+
+        /// <summary>
+        ///0：下架  1：上架 2：淘汰
+        /// </summary>
+        public short Selling { get; set; }
+
+        /// <summary>
+        ///上架时间
+        /// </summary>
+        public DateTime SellingTime { get; set; }
+
+        /// <summary>
+        ///显示标题
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        ///搜索关键词
+        /// </summary>
+        public string Keywords { get; set; }
+
+        /// <summary>
+        ///Meta关键词
+        /// </summary>
+        public string MetaKeywords { get; set; }
+
+        /// <summary>
+        ///Meta描述
+        /// </summary>
+        public string MetaDescription { get; set; }
+
+        /// <summary>
+        ///创建者
+        /// </summary>
+        public string Creator { get; set; }
+
+        /// <summary>
+        ///创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        ///最后更新者
+        /// </summary>
+        public string Updater { get; set; }
+
+        /// <summary>
+        ///更新时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+    }
+
+    /// <summary>
+    /// 快速编辑数据实体
+    /// </summary>
+    public class QuickEditModel
+    {
+        /// <summary>
+        /// 商品ID
+        /// </summary>
+        public int ProductID { get; set; }
+
+        /// <summary>
+        /// 赠品ID
+        /// </summary>
+        public int ProductGiftID { get; set; }
+        /// <summary>
+        /// 赠品数量
+        /// </summary>
+        public int ProductGiftCount { get; set; }
+
+        /// <summary>
+        /// 包邮
+        /// </summary>
+        public int IsFreeShip { get; set; }
+
+        /// <summary>
+        /// 置顶
+        /// </summary>
+        public int Istop { get; set; }
+
+        /// <summary>
+        /// 推荐
+        /// </summary>
+        public int IsRecommend { get; set; }
+        /// <summary>
+        /// 上下架
+        /// </summary>
+        public int Selling { get; set; }
+
+        /// <summary>
+        /// 活动
+        /// </summary>
+        public int Actions { get; set; }
+
+        /// <summary>
+        /// 权重
+        /// </summary>
+        public int Sort { get; set; }
+
+        /// <summary>
+        /// 操作人
+        /// </summary>
+        public string Creator { get; set; }
+
+    }
+
+
+    public class ValueListInfo
+    {
+        private string split = "~#$";
+        private ValueListInfo() { }
+        public ValueListInfo(string valuelist)
+        {
+            this.ParameterValue = string.Empty;
+            this.Instructions = string.Empty;
+            if (!string.IsNullOrWhiteSpace(valuelist))
+            {
+                var index = valuelist.IndexOf(split);
+                if (index > -1)
+                {
+                    this.ParameterValue = valuelist.Substring(0, index);
+                    this.Instructions = valuelist.Substring(index + split.Length);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 商品参数
+        /// </summary>
+        public string ParameterValue { get; set; }
+
+        /// <summary>
+        /// 金象分类说明书
+        /// </summary>
+        public string Instructions { get; set; }
+
+        public override string ToString()
+        {
+            return string.Concat(this.ParameterValue, split, this.Instructions);
+        }
+    }
+}

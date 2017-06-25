@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "信息审核邮件";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+
+    var list = ViewBag.List as List<JXProduct.Component.Model.AuditStuffEmailInfo>;
+    int index = 0;
+}
+@section js{
+    <script src="~/Content/js/jx.audit.js"></script>
+    <script>
+        $(function () { audit.email(); })
+    </script>
+}
+<div id="l-content-right">
+    <div class="single-center">
+        <div class="single-name">
+            <a href="javascript:;" class="addBtn">+添加</a>
+        </div>
+        <div class="basic-informa-box binding-email">
+            <div class="jbxx-txt">质管部信息维护</div>
+            <div class="informa-box-center none-border">
+                @{
+                    index = 0;
+                    var list1 = list.Where(t => t.Type == 1);
+                    foreach (var l in list1)
+                    {
+                        index++;
+                        <div class="every-one-info">
+                            <div class="bind-email-left"><span class="xingRed">* </span>信息维护员@(index)：<a href="javascript:;">@l.UserName</a></div>
+                            <div class="bind-email-right">绑定邮箱：<a href="javascript:;"> @l.UserEmail</a> <a href="#" name="del" emailid="@l.EmailID">删除</a></div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+        <div class="basic-informa-box binding-email">
+            <div class="jbxx-txt">产品部信息维护</div>
+            <div class="informa-box-center none-border">
+                @{
+                    index = 0;
+                    var list2 = list.Where(t => t.Type == 2);
+                    foreach (var l in list2)
+                    {
+                        index++;
+                        <div class="every-one-info">
+                            <div class="bind-email-left"><span class="xingRed">* </span>信息维护员@(index)：<a href="javascript:;">@l.UserName</a></div>
+                            <div class="bind-email-right">绑定邮箱：<a href="javascript:;"> @l.UserEmail</a><a href="#" name="del" emailid="@l.EmailID">删除</a></div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+        <div class="basic-informa-box binding-email">
+            <div class="jbxx-txt">质管部信息审核</div>
+            <div class="informa-box-center none-border">
+                @{
+                    index = 0;
+                    var list3 = list.Where(t => t.Type == 3);
+                    foreach (var l in list3)
+                    {
+                        index++;
+                        <div class="every-one-info">
+                            <div class="bind-email-left"><span class="xingRed">* </span>信息维护员@(index)：<a href="javascript:;">@l.UserName</a></div>
+                            <div class="bind-email-right">绑定邮箱：<a href="javascript:;"> @l.UserEmail</a><a href="#" name="del" emailid="@l.EmailID">删除</a></div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

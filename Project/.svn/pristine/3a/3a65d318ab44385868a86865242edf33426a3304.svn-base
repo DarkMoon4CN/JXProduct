@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/base.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
+    <script src="~/js/jx.common.js"></script>
+    @RenderSection("css", false)
+    @RenderSection("script", false)
+</head>
+<body>
+    @RenderBody()
+</body>
+</html>

@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Domain
+{
+    public class HeadLinesInfo
+    {
+        /// <summary>
+        /// 头条ID
+        /// </summary>
+        public int headID { get; set; }
+
+        /// <summary>
+        /// 类目
+        /// </summary>
+        public short categoryID { get; set; }
+
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string title { get; set; }
+
+        /// <summary>
+        /// 简介
+        /// </summary>
+        public string intro { get; set; }
+
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string contents { get; set; }
+
+        /// <summary>
+        /// 主图
+        /// </summary>
+        public string picture { get; set; }
+
+        /// <summary>
+        /// 小图
+        /// </summary>
+        public string smallPicture { get; set; }
+
+        /// <summary>
+        /// 评论数
+        /// </summary>
+        public int comment { get; set; }
+
+        /// <summary>
+        /// 浏览数
+        /// </summary>
+        public int browse { get; set; }
+
+        /// <summary>
+        /// 顶数
+        /// </summary>
+        public int flower { get; set; }
+
+        /// <summary>
+        /// 踩数
+        /// </summary>
+        public int egg { get; set; }
+
+        /// <summary>
+        /// 发布人
+        /// </summary>
+        public string creator { get; set; }
+
+        /// <summary>
+        /// 发布时间
+        /// </summary>
+        public long createTime { get; set; }
+
+        /// <summary>
+        /// 状态（0=未审核 1=已审核 2=屏蔽）
+        /// </summary>
+        public short status { get; set; }
+
+        /// <summary>
+        /// 修改人
+        /// </summary>
+        public string updater { get; set; }
+
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        public long? updateTime { get; set; }
+
+        /// <summary>
+        /// 关键词
+        /// </summary>
+        public string keyWords { get; set; }
+
+        public short sort { get; set; }
+    }
+}

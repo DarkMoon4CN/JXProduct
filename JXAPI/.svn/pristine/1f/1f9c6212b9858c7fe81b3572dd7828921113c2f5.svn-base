@@ -1,0 +1,123 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class ProductEvaluationService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("product");
+        private static string list = "productEvaluation/getEvaluationListByCondition";
+        private static string add = "productEvaluation/addProductEvaluation";
+        private static string get = "productEvaluation/getEvaluationContentDetail";
+        private static string verify = "productEvaluation/checkEvaluation";
+        private static string keywordList = "productEvaluation/getEvaluationKeywordByProductId";
+
+        public static ProductEvaluationService Instance
+        {
+            get { return new ProductEvaluationService(); }
+        }
+
+        /// <summary>
+        /// 评论列表
+        /// </summary>
+        /// <param name="request">条件实体</param>
+        /// <returns></returns>
+        public ProductEvaluationListResponse List(ProductEvaluationListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, list, postData);
+        }
+
+        /// <summary>
+        /// 评论详细
+        /// </summary>
+        /// <param name="evaluationId">评论ID</param>
+        /// <returns></returns>
+        public ProductEvaluationInfo Get(int evaluationId)
+        {
+            ProductEvaluationInfo info = new ProductEvaluationInfo()
+            {
+                evaluationID = evaluationId
+            };
+            //  查询
+            ProductEvaluationRequest request = new ProductEvaluationRequest()
+            {
+                evaluationId = evaluationId
+            };
+            string postData = JsonHelper.GetJson(request);
+            ProductEvaluationResponse response = client.Execute(request, get, postData);
+            if (response != null && response.evaluationDetail != null)
+            {
+                return response.evaluationDetail;
+            }
+            return info;
+        }
+
+        /// <summary>
+        /// 新增评论
+        /// </summary>
+        /// <param name="info">评论实体</param>
+        /// <returns></returns>
+        public bool Add(ProductEvaluationInfo info)
+        {
+            //  提交评论
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 审核评论
+        /// </summary>
+        /// <param name="evaluationId">评论ID</param>
+        /// <param name="check">0=删除  1=通过</param>
+        /// <param name="changUser">操作人</param>
+        /// <returns></returns>
+        public bool CheckEvaluation(int evaluationId, short check, string changUser)
+        {
+            ProductEvaluationRequest request = new ProductEvaluationRequest()
+            {
+                evaluationId = evaluationId,
+                check = check,
+                checker = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            ProductEvaluationResponse response = client.Execute(request, verify, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 获取添加商品的评论的关键字
+        /// </summary>
+        /// <param name="productId">商品编号</param>
+        /// <returns></returns>
+        public IList<EvaluationKeyword> GetKeywordList(int productId)
+        {
+            IList<EvaluationKeyword> list = new List<EvaluationKeyword>();
+            //  查询
+            ProductEvaluationRequest request = new ProductEvaluationRequest()
+            {
+                productId = productId
+            };
+            string postData = JsonHelper.GetJson(request);
+            ProductEvaluationResponse response = client.Execute(request, keywordList, postData);
+            if (response != null)
+            {
+                list = response.evaluationKeywordList;
+            }
+            return list;
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+    <link rel="stylesheet" href="kindeditor/themes/default/default.css" />  
+    <script src="kindeditor-all.js"></script>
+    <script src="lang/zh_CN.js"></script>
+    <script language="javascript" type="text/javascript">
+        KindEditor.ready(function (K) {
+            K.create('#tbContent', {
+                uploadJson: 'handler/upload_json.ashx',
+                fileManagerJson: 'handler/file_manager_json.ashx',
+                allowFileManager: true
+            });
+        });
+    </script>
+
+    <input type="text" id="tbContent" name="tbContent" />
+</body>
+</html>

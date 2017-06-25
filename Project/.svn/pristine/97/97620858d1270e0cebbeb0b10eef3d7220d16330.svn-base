@@ -1,0 +1,108 @@
+﻿@using JXProduct.AdminUI.Image;
+@using JXProduct.AdminUI.App_Start.Auth;
+@using JXProduct.Component.Enums;
+    @model JXProduct.AdminUI.Models.Product.ProductEditModel
+    @{
+        ViewBag.Title = "Edit";
+        Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+        var p = Model.Product;
+        var ins = Model.Instructions;
+        var audit = Model.Audit.FirstOrDefault(t => t.Type == (short)Product.AuditType.商品信息) ?? new JXProduct.Component.Model.ProductAuditInfo() { Type = (short)Product.AuditType.商品信息 };
+    }
+    @section css{
+        <style>
+            .col-md-11 label { margin-right: 10px; }
+            .uploadify-button { background: url("/image/sprites/btnbg.png"); text-align: center; }
+            .informa-title .resetUpBtn { padding-top: 18px; }
+            .save0 { text-align: center; margin-bottom: 0px; }
+            .save0 a { width: 130px; }
+        </style>
+    }
+    @section js{
+        <script src="/js/uploadify3.2.1/jquery.uploadify.js"></script>
+        <script src="/content/js/jx.product.js"></script>
+        <script>
+            var productid = @(p.ProductID.ToString() + ";")
+            $(function () {
+
+                productedit.upload();
+                productedit.audit();
+
+                $('a.save').on('click', function () {
+                    var imglist = $('.upImage');
+                    if (imglist < 1) {
+                        jx.alert("请提交图片!");
+                        return false;
+                    }
+
+                    $.post("/product/editimage", { productid: productid }, function (result) {
+                        if (result.status) { jx.alert("已经保存!"); }
+                        else { jx.alert("提交失败！") }
+                    });
+                    return false;
+                });
+            });
+        </script>
+    }
+    <div id="l-content-right">
+        <div class="single-product-h">
+            <a href="/product/list"><i></i><span>返回上一页</span></a>
+        </div>
+        <div class="single-center authority-informa">
+            <div class="single-name">
+                <span>@p.BrandName @p.CADN @p.Specifications</span>
+            </div>
+            <form id="formproduct">
+                @Html.Hidden("ProductID", p.ProductID)
+                <div class="basic-informa-box">
+                    <div class="jbxx-txt">商品五张图</div>
+                    @Html.Raw(JXProduct.Component.Enums.Product.Audit[audit.Status])
+                    <div class="informa-box-center">
+                        <div class="informa-title">
+                            <span class="xingRed">* </span>图片上传：
+                        </div>
+                        <div class="every-one-info" id="uploadimage">
+                            @{
+                                var dic = JXProduct.Component.BLL.ProductBLL.Instance.GetImages(p.Images);
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    var hasimg = !string.IsNullOrWhiteSpace(dic[i]);
+                                    <div class="operAdverW clear">
+                                        <div class="InformaUpload clear">
+                                            <span class="fl"><i class="xingRed">*</i> 主图上传：</span>
+                                            <div class="resetUpBtn fl"><span id="image@(i)"><img src="/content/images/upImg.png" alt=""></span></div>
+                                            <span class="imgInfo fl">大小：1024px*1024px</span>
+                                            <input type="hidden" class="img" name="hidden_image@(i)" value="@dic[i]" required data-msg-required="请上传图片" />
+                                        </div>
+                                        <div class="informa-imgWrap @(hasimg ? "" : "hide")" id="imagequeue@(i)">
+                                            @if (hasimg)
+                                            {
+                                                <div class="upImage">
+                                                    <a href="#" class="closeBtn">X</a>
+                                                    <img src="http://img.jxdyf.com/product/@dic[i].Replace("_S","_L")" alt="">
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="well center-block save0" productids="@Model.Product.ProductID" audittype="@(audit.Type)">
+            @if (UserAuth.hasEditInfo(Model.Roles))
+            {
+                <a class="btn btn-primary save">保存</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" disabled="disabled">保存</a>
+            }
+            @if (UserAuth.hasAudit(Model.Roles))
+            {
+                Html.RenderPartial("_PartialAudit", audit);
+            }
+        </div>
+    </div>

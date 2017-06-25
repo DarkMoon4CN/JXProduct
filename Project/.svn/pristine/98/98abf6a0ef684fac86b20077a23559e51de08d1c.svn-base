@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "全站活动";
+}
+@section css{
+    <style>
+        body { font-size: 12px; background: #fff; }
+        .content { width: 1200px; margin: 0px auto; height: auto; }
+        .kuangHead { height: 50px; line-height: 50px; }
+    </style>
+}
+
+@section script{
+    @{ Html.RegisterMvcPagerScriptResource(); }
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script src="~/js/jx.activity.js"></script>
+    <script>
+        $(function () { activity.list(); });
+    </script>
+}
+@using Webdiyer.WebControls.Mvc
+
+@model JXProduct.AdminUI.Models.Activity.SearchModel
+<div class="commodityHead w">
+    <div class="fl"><span>活动管理</span></div>
+</div>
+<div class="commodityConter w clear">
+    <div id="searchWhere" class="commodityScreening clear"> 
+        @{ Ajax.BeginForm("list",null, new AjaxOptions { UpdateTargetId = "tablist", HttpMethod = "post", InsertionMode = InsertionMode.Replace }, new { id = "form0" });}
+        <div class="commW">
+            @Html.Select1("活动分类", "Type", JXUtil.EnumHelper.GetList<JXProduct.Component.Enums.ProductActivity>().ToDictionary(t => t.Key.ToString(), t => t.Value), string.Empty, true)
+            @Html.Select1("活动限制", "Limit", new Dictionary<string, string>() { { "1", "金额" }, { "2", "数量" } }, string.Empty,true)
+            @Html.Select1("期限", "Expire", Model.ExpireList, string.Empty, true)
+        </div>
+        <div class="timeSelect commW">
+            <div class="inputTitme">
+                <span>上线时间：</span>
+                <div class="timeBg">
+                    @Html.TextBox("StartDate",Model.StartDate.ToString("yyyy-MM-dd"), new { @class = "Wdate" })
+                </div>
+                <div class="timeBg">
+                    @Html.TextBox("EndDate",Model.EndDate.ToString("yyyy-MM-dd"), new { @class = "Wdate" })
+                </div>
+                <div class="addConter"><a href="javascript:void(0)" id="search">搜索</a></div>
+                <div class="addConter"><a href="#" id="addactivity">添加新活动</a></div>
+            </div>
+        </div>
+        @{ Html.EndForm();}
+    </div>
+</div>
+<div id="tablist">
+    @{ Html.RenderPartial("_PartialList"); }
+</div>

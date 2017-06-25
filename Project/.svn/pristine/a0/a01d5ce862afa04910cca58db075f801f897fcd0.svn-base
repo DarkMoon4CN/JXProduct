@@ -1,0 +1,330 @@
+﻿@using JXProduct.Component.Enums;
+@model JXProduct.AdminUI.Models.Product.ProductEditModel
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+
+    var audit = Model.Audit.FirstOrDefault(t => t.Type == (short)Product.AuditType.商品信息) ?? new JXProduct.Component.Model.ProductAuditInfo();
+    var descaudit = Model.Audit.FirstOrDefault(t => t.Type == (short)Product.AuditType.详情图片) ?? new JXProduct.Component.Model.ProductAuditInfo();
+    var p = Model.Product;
+
+}
+@section js{
+    <script src="~/Content/js/jx.product.js"></script>
+    <script>
+        $(function () { productedit.audit(); });
+    </script>
+}
+<div id="l-content-right">
+    <div class="single-product-h">
+        <a href="/product/list"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="single-center overflow">
+        <div class="single-name">
+            @if (p.Type == 0)
+            {
+            <span>[品牌名：@p.BrandName]  [通用名称：@p.CADN][规格：@p.Specifications]</span>
+            }
+            else
+            {
+            <span>商品名称：@p.ChineseName </span>
+            }
+            <div class="sigle-erweima">
+                <img src="./images/tpl-erweima.jpg">
+            </div>
+        </div>
+        @if (p.Type == 0)
+        {
+            <div class="basic-informa-box">
+                <div class="jbxx-txt">基本信息</div>
+                @Html.Raw(Product.Audit[audit.Status])
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品属性：
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>商品商用名：@p.ChineseName
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>商品通用名：@p.CADN
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>商品属类：@(JXUtil.EnumHelper.GetText<ParameterType>(p.ParameterType))
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>商品品牌：@p.BrandName
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>生产企业：@Model.Instructions.Manufacturer
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>企业地址：@Model.Instructions.ManufacturerAddress
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>批准文号：@p.ApprovalNumber
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>产地：@(JXUtil.EnumHelper.GetText<Product.Origin>(p.Origin))
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>存储条件：@(JXUtil.EnumHelper.GetText<Product.Storage>(p.Storage))
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span> 药品类型：@(JXUtil.EnumHelper.GetText<Product.DrugClassification>(p.DrugClassification))
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>药品剂型：@p.Dosage)
+                    </div>
+                    <div class="every-one-info">
+                        <span class="xingRed">* </span>处方类型：@(JXUtil.EnumHelper.GetText<Product.DrugType>(p.DrugType))
+                    </div>
+
+                    @*<div class="every-one-info margin-top clear">
+                            <div class="every-info-left fl">
+                                <span class="xingRed">* </span>规格关联：
+                            </div>
+                            <div class="every-info-right  guan-lian fl">
+                                <p>1.天草丹参保心茶 （商品ID：55886，金象码：5785252）   规格：2.5g*150袋/盒，颜色：黄色；尺寸：20mm；度数：20</p>
+                                <p>1.天草丹参保心茶 （商品ID：55886，金象码：5785252）   规格：2.5g*150袋/盒，颜色：黄色；尺寸：20mm；度数：20</p>
+                                <p>1.天草丹参保心茶 （商品ID：55886，金象码：5785252）   规格：2.5g*150袋/盒，颜色：黄色；尺寸：20mm；度数：20</p>
+                            </div>
+                        </div>*@
+
+                    <div class="every-one-info caozuo-check clear">
+
+                        <label>礼盒装:@(p.IsDeluxe == 1 ? "是" : "否")</label>
+                        <label>易串味:@(p.IsOdour == 1 ? "是" : "否")</label>
+                        <label>重点养护:@(p.IsProtection == 1 ? "是" : "否")</label>
+                        <label>易碎:@(p.IsFragile == 1 ? "是" : "否")</label>
+                        <label>含麻黄碱:@(p.ContainMHJ == 1 ? "是" : "否")</label>
+                    </div>
+
+                </div>
+                <!-- ************************说明书：********************* -->
+
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>商品说明书：
+                    </div>
+                    <div class="every-one-info">
+                        通用名称：@p.CADN
+                    </div>
+                    <div class="every-one-info">
+                        商品名称：@p.ChineseName
+                    </div>
+                    <div class="every-one-info">
+                        英文名称：@p.EnglishName
+                    </div>
+                    <div class="every-one-info">
+                        汉语拼音：@p.PinyinName
+                    </div>
+                    @{
+            var value = new JXProduct.Component.Model.ValueListInfo(p.ValueList);
+            var valuelist = value.Instructions.Split("||".ToCharArray());
+            foreach (var v in valuelist)
+            {
+                if (string.IsNullOrEmpty(v))
+                {
+                    continue;
+                }
+                var splitindex = v.IndexOf(':');
+                <div class="every-one-info margin-top clear">
+                    <div class="every-info-left fl">@v.Substring(0, splitindex)：</div>
+                    <div class="every-info-right fl">@v.Substring(splitindex + 1)</div>
+                </div>
+            }
+                    }
+                    <div class="every-one-info">
+                        企业名称：@Model.Instructions.Manufacturer
+                    </div>
+                    <div class="every-one-info">
+                        企业地址：@Model.Instructions.ManufacturerAddress
+                    </div>
+
+                </div>
+
+                <!-- ************************说明书图片：********************* -->
+
+                <div class="informa-box-center">
+                    <div class="informa-title">
+                        <span class="xingRed">* </span>说明书图片：
+                    </div>
+                    <div class="every-one-info instru-img">
+                        @if (!string.IsNullOrWhiteSpace(p.Instructions))
+                        {
+                            <img src="http://img.jxdyf.com/other/@p.Instructions" alt="">
+                        }
+                        else
+                        {
+                            @:未上传
+                    }
+                    </div>
+                </div>
+                <!-- ************************* 商品五张图：********************* -->
+                <div class="informa-box-center comm-five-box">
+                    <div class="informa-title">
+                        <span>商品五张图：</span>
+                        <i>温馨提示：①图片尺寸为1024*1024。仅支持 jpg，jpeg，png 格式。②图片质量要清晰，不能虚化。建议主图为白色背景正面图。</i>
+                    </div>
+                    @{
+                        var images = JXProduct.Component.BLL.ProductBLL.Instance.GetImages(p.Images);
+                        foreach (var img in images)
+                        {
+                            <div class="every-one-info the-first-few">主商品图片@(img.Key + 1)：</div>
+                            <div class="every-one-info">
+                                <div class="comm-five-img active">
+                                    @if (string.IsNullOrWhiteSpace(img.Value))
+                                    {
+                                        <div>未上传</div>
+                                    }
+                                    else
+                                    {
+                                        <img src="http://img.jxdyf.com/product/@img.Value.Replace("_S","_M")" alt="">
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+                @{
+            switch ((Product.AuditStatus)audit.Status)
+            {
+                case Product.AuditStatus.通过审核:
+                    {
+                        <div class="reject-reason">
+                            <div class="reject-prompt">
+                                <div class="reject-prompt-y"><i></i>已通过审核！</div>
+
+                            </div>
+                        </div>
+                    } break;
+                case Product.AuditStatus.未通过审核:
+                    {
+                        <div class="reject-reason">
+                            <div class="reject-prompt">
+                                <div class="reject-prompt-b"><i></i>已驳回！</div>
+                            </div>
+                            <div class="every-one-info clear">
+                                <div class="every-info-left fl">驳回原因：</div>
+                                <div class="every-info-right fl">@audit.Remarks</div>
+                                <div class="reject-time">@audit.CreateTime.ToString("yyyy-MM-dd HH:mm:dd")</div>
+                            </div>
+                        </div>
+                    } break;
+                default:
+                    {
+                        <div class="examine-btn">
+                            <div class="confirm" productid="@p.ProductID" audittype="@((int)Product.AuditType.商品信息)">
+                                <a href="#" name="pass">审核通过</a>
+                                <a href="#" name="notpass">驳回</a>
+                            </div>
+                        </div>
+
+                    } break;
+            }
+                }
+            </div>
+        }
+        <!-- 商品详情图片 -->
+        <div class="basic-informa-box in-the-promotion">
+            @Html.Raw(Product.Audit[descaudit.Status])
+            <div class="jbxx-txt">商品详情图片</div>
+            <div class="informa-box-center">
+                <div class="informa-title">
+                    <span class="xingRed">* </span>针对本商品的促销：
+                </div>
+                <div class="every-one-info">
+                    @Html.Raw(p.Promotion)
+                </div>
+                <div class="informa-title">
+                    <span class="xingRed">* </span>针对本商品图文详情：
+                </div>
+                @{
+                    var descimages = JXProduct.Component.BLL.ProductBLL.Instance.GetDescImages(p.Description);
+                    foreach (var d in descimages)
+                    {
+                        if (string.IsNullOrWhiteSpace(d.Value))
+                        {
+                            continue;
+                        }
+                        <div class="every-one-info">
+                            <img src="http://img.jxdyf.com/other/@d.Value" alt="">
+                        </div>
+                    }
+                }
+            </div>
+            @{
+                if (audit.Status == (short)Product.AuditStatus.通过审核 || p.Type>0)
+                {
+                    switch ((Product.AuditStatus)descaudit.Status)
+                    {
+                        case Product.AuditStatus.通过审核:
+                            {
+                                <div class="reject-reason">
+                                    <div class="reject-prompt">
+                                        <div class="reject-prompt-y"><i></i>已通过审核！</div>
+
+                                    </div>
+                                </div>
+                            } break;
+                        case Product.AuditStatus.未通过审核:
+                            {
+                                <div class="reject-reason">
+                                    <div class="reject-prompt">
+                                        <div class="reject-prompt-b"><i></i>已驳回！</div>
+                                    </div>
+                                    <div class="every-one-info clear">
+                                        <div class="every-info-left fl">驳回原因：</div>
+                                        <div class="every-info-right fl">@descaudit.Remarks</div>
+                                        <div class="reject-time">@descaudit.CreateTime.ToString("yyyy-MM-dd HH:mm:dd")</div>
+                                    </div>
+                                </div>
+                            } break;
+                        default:
+                            {
+                                <div class="examine-btn">
+                                    <div class="confirm" productid="@p.ProductID" audittype="@((int)Product.AuditType.详情图片)">
+                                        <a href="#" name="pass">审核通过</a>
+                                        <a href="#" name="notpass">驳回</a>
+                                    </div>
+                                </div>
+
+                            } break;
+                    }
+                }
+            }
+        </div>
+        @if (p.Type == 0)
+        {
+            <div class="basic-informa-box in-the-promotion">
+                <div class="jbxx-txt">标签关联</div>
+                <div class="relation-tag-w">
+                    <div class="relation-tag-center">
+                        <ul class="clear">
+                            @foreach (var keyword in Model.keywords)
+                            {
+                                <li><a href="javascript:return false;">@keyword.ChineseName</a></li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="basic-informa-box in-the-promotion">
+                <div class="jbxx-txt">SEO</div>
+                <div class="seo-optimization">
+                    <ul>
+                        <li>搜索关键词：@p.Keywords</li>
+                        <li>显示标题：@p.Title</li>
+                        <li>Meta关键词：@p.MetaKeywords</li>
+                        <li>Meta描述：@p.MetaDescription</li>
+                    </ul>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>

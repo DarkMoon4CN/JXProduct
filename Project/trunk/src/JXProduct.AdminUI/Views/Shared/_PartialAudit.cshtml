@@ -1,0 +1,22 @@
+﻿@using JXProduct.Component.Enums;
+@model JXProduct.Component.Model.ProductAuditInfo
+@{
+     var audit = Model;
+    switch ((Product.AuditStatus)audit.Status)
+    {
+        case Product.AuditStatus.通过审核:
+            {
+                <a class="btn btn-primary" disabled="disabled">已通过审核</a>
+            } break;
+        case Product.AuditStatus.未通过审核:
+            {
+                <a class="btn btn-danger" disabled="disabled">已驳回</a> 
+                @*<label>@audit.Remarks</label>*@
+            } break;
+        default:
+            {
+                <a class="btn btn-primary" name="pass">通过审核</a>
+                <a class="btn btn-danger" name="notpass">驳回</a>
+            } break;
+    }
+}

@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.Model
+{
+    public class OrderOperateLogInfo
+    {
+        public int LogID { get; set; }
+
+        public string OrderID { get; set; }
+
+        public string OrderSplitID { get; set; }
+
+        public int UID { get; set; }
+
+        public short UserType { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Tittle { get; set; }
+
+        public string Content { get; set; }
+
+        public short OldStatus { get; set; }
+
+        public short NewStatus { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public short Status { get; set; }
+    }
+}

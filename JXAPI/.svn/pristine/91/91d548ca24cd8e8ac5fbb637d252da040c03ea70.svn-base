@@ -1,0 +1,73 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class ShoppingCardService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string list = "shoppingCard/getShoppingCardList";
+        private static string get = "shoppingCard/cardDetailByCode";
+        private static string add = "shoppingCard/addShoppingCard";
+        private static string update = "shoppingCard/updateShoppingCard";
+        private static string merge = "shoppingCard/mergeShoppingCard";
+        public static ShoppingCardService Instance
+        {
+            get { return new ShoppingCardService(); }
+        }
+
+        public ShoppingCardListResponse List(ShoppingCardListRequest request) 
+        {
+            string postData = JsonHelper.GetJson(request);
+            ShoppingCardListResponse response= client.Execute(request, list, postData);
+            return response;
+        }
+
+        public bool Add(ShoppingCardInfo info) 
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        public ShoppingCardDetailResponse Get(string code)
+        {
+            ShoppingCardByIdRequest request = new ShoppingCardByIdRequest()
+            {
+                code  = code
+            };
+            string postData = JsonHelper.GetJson(request);
+            ShoppingCardDetailResponse response = client.Execute(request, get, postData);
+            return response;
+        }
+
+        public bool Update(ShoppingCardInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, update, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        public bool Merge(MergeShoppingCardRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            MergeShoppingCardResponse response = client.Execute(request, merge, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+    }
+}

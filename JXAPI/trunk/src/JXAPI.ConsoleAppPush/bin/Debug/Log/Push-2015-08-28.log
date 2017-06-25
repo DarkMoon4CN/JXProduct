@@ -1,0 +1,10 @@
+2015-08-28 17:07:50,776  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行开始！时间:2015/8/28 17:07:50
+2015-08-28 17:07:50,888  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送信息总条数:1
+2015-08-28 17:07:52,712  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  - - - - - - - - - - - - - 
+2015-08-28 17:07:52,712  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送类型:single
+2015-08-28 17:07:52,713  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送内容:您的一个订单:150714151528055已超时未支付,24小时后订单将取消,请您尽快完成支付,以免影响您的购物
+2015-08-28 17:07:52,715  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送目标:1
+2015-08-28 17:07:53,004  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送异常:“JXAPI.ConsoleAppPush.MessagesAddBLL”的类型初始值设定项引发异常。
+2015-08-28 17:07:53,006  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  异常数据:619
+2015-08-28 17:07:53,012  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  推送执行完毕！时间:2015/8/28 17:07:53
+2015-08-28 17:07:53,013  [11]  INFO   JXAPI.ConsoleAppPush.Push  [(null)]  -  ===========================================

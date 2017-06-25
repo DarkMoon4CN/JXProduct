@@ -1,0 +1,341 @@
+2015-09-08 18:14:42,781  [4676]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:15:18,202  [4676]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:15:18,762  [4676]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:17:27,048  [9052]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:18:02,928  [9052]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:18:02,928  [9052]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:20:35,105  [6624]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:21:01,548  [11320]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:21:19,164  [11320]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:21:19,164  [11320]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:22:16,015  [8408]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:22:28,261  [8408]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:22:28,261  [8408]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:25:35,362  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:25:43,050  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:25:43,051  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:26:32,603  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089367,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:34,529  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 7151666,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:35,582  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50006545,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:36,154  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50003300,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:36,719  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 971821,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:38,786  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 974903,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:39,374  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 981309,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:39,975  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 8296079,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:40,575  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 1572562,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:41,115  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50092557,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:43,107  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50071428,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:45,653  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089446,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:46,222  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 2885794,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:46,883  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50080384,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:26:47,585  [2100]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50080385,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:38,952  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:27:45,630  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:27:45,630  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:27:46,900  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089367,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:48,299  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 7151666,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:49,061  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50006545,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:49,457  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50003300,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:49,839  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 971821,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:51,288  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 974903,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:51,704  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 981309,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:52,168  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 8296079,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:52,614  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 1572562,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:27:53,024  [13300]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50092557,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:28:29,162  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:28:34,750  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:28:34,750  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:28:35,733  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 975155,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:28:36,162  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089367,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:28:36,581  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 7732881,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:28:37,259  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50071559,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:28:37,952  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 2659077,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:28:38,661  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50069424,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:28:39,047  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50006545,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:28:39,446  [5960]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50003300,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:28:51,867  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:28:58,022  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:28:58,022  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:28:59,352  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089367,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:29:03,977  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50006545,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:29:04,885  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50003300,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:29:08,010  [9732]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 974903,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:30:05,138  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:30:15,385  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:30:15,385  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:30:24,787  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 8296079,异常内容：将截断字符串或二进制数据。
+语句已终止。
+2015-09-08 18:30:59,474  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html存储完成====
+2015-09-08 18:31:16,739  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:31:16,739  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html 已完成抓取,总条数：72
+2015-09-08 18:32:02,560  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html存储完成====
+2015-09-08 18:32:08,554  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:32:08,554  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-3.html 已完成抓取,总条数：72
+2015-09-08 18:32:51,163  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-3.html存储完成====
+2015-09-08 18:32:59,346  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:32:59,347  [11020]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-4.html 已完成抓取,总条数：72
+2015-09-08 18:36:09,628  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:36:23,086  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:36:23,087  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:36:24,361  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 975155,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:36:24,988  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50089367,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:36:25,858  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 7732881,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:36:26,562  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50071559,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:36:27,259  [7784]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 2659077,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 18:42:52,068  [9632]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:43:00,686  [9632]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:43:00,686  [9632]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:45:19,896  [9556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:45:38,999  [9556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:45:38,999  [9556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:47:46,673  [10556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:48:00,394  [10556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:48:00,394  [10556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:49:49,909  [6964]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:50:00,524  [6964]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:50:00,524  [6964]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 18:56:19,350  [9160]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 18:56:31,597  [9160]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 18:56:31,598  [9160]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:01:57,595  [9680]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 19:02:20,976  [9680]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:02:20,976  [9680]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:02:47,770  [9548]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 19:03:00,353  [9548]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:03:00,353  [9548]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:04:52,361  [2984]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 19:05:02,766  [2984]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:05:02,766  [2984]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:06:35,464  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 19:06:55,528  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:06:55,528  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:08:20,924  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html存储完成====
+2015-09-08 19:08:31,210  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:08:31,210  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html 已完成抓取,总条数：72
+2015-09-08 19:09:20,650  [2736]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html存储完成====
+2015-09-08 19:09:36,796  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  =======================数据抓取开始！============================
+2015-09-08 19:09:45,443  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:09:45,444  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html 已完成抓取,总条数：72
+2015-09-08 19:10:26,327  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-1.html存储完成====
+2015-09-08 19:10:34,406  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:10:34,406  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html 已完成抓取,总条数：72
+2015-09-08 19:11:49,877  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 11914343,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:11:50,720  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50071276,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:11:51,324  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 1293741,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:11:53,116  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 974590,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:11:54,653  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 6105242,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:11:56,150  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 4228064,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:12:00,979  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 5421156,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:12:01,752  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 50011000,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:12:03,563  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  写入异常：数据ID 974839,异常内容：违反了 UNIQUE KEY 约束 'IX_Spider'。不能在对象 'dbo.Spider' 中插入重复键。
+语句已终止。
+2015-09-08 19:12:03,564  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-2.html存储完成====
+2015-09-08 19:12:17,864  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:12:17,864  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-3.html 已完成抓取,总条数：72
+2015-09-08 19:13:31,550  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-3.html存储完成====
+2015-09-08 19:13:42,208  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:13:42,208  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-4.html 已完成抓取,总条数：72
+2015-09-08 19:15:05,949  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-4.html存储完成====
+2015-09-08 19:15:15,790  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:15:15,790  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-5.html 已完成抓取,总条数：72
+2015-09-08 19:16:32,833  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-5.html存储完成====
+2015-09-08 19:16:44,330  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:16:44,331  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-6.html 已完成抓取,总条数：72
+2015-09-08 19:17:20,949  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-6.html存储完成====
+2015-09-08 19:17:26,803  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:17:26,803  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-7.html 已完成抓取,总条数：72
+2015-09-08 19:18:36,804  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-7.html存储完成====
+2015-09-08 19:18:50,269  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:18:50,269  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-8.html 已完成抓取,总条数：72
+2015-09-08 19:20:25,831  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-8.html存储完成====
+2015-09-08 19:20:44,014  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:20:44,015  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-9.html 已完成抓取,总条数：72
+2015-09-08 19:21:58,372  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-9.html存储完成====
+2015-09-08 19:22:17,089  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:22:17,089  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-10.html 已完成抓取,总条数：72
+2015-09-08 19:23:59,448  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-10.html存储完成====
+2015-09-08 19:24:07,215  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:24:07,215  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-11.html 已完成抓取,总条数：72
+2015-09-08 19:25:10,895  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-11.html存储完成====
+2015-09-08 19:25:21,126  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:25:21,126  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-12.html 已完成抓取,总条数：72
+2015-09-08 19:26:12,786  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-12.html存储完成====
+2015-09-08 19:26:21,107  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:26:21,108  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-13.html 已完成抓取,总条数：72
+2015-09-08 19:27:08,774  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-13.html存储完成====
+2015-09-08 19:27:17,065  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:27:17,065  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-14.html 已完成抓取,总条数：72
+2015-09-08 19:27:55,352  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-14.html存储完成====
+2015-09-08 19:28:04,496  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:28:04,496  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-15.html 已完成抓取,总条数：72
+2015-09-08 19:29:19,214  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-15.html存储完成====
+2015-09-08 19:29:34,830  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:29:34,831  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-16.html 已完成抓取,总条数：72
+2015-09-08 19:30:56,960  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-16.html存储完成====
+2015-09-08 19:31:12,456  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:31:12,456  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-17.html 已完成抓取,总条数：72
+2015-09-08 19:32:21,136  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-17.html存储完成====
+2015-09-08 19:32:30,055  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:32:30,055  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-18.html 已完成抓取,总条数：72
+2015-09-08 19:33:50,231  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-18.html存储完成====
+2015-09-08 19:34:00,228  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:34:00,228  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-19.html 已完成抓取,总条数：72
+2015-09-08 19:35:04,551  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-19.html存储完成====
+2015-09-08 19:35:20,342  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:35:20,343  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-20.html 已完成抓取,总条数：72
+2015-09-08 19:36:57,823  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-20.html存储完成====
+2015-09-08 19:37:10,936  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:37:10,936  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-21.html 已完成抓取,总条数：72
+2015-09-08 19:38:11,148  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-21.html存储完成====
+2015-09-08 19:38:24,111  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:38:24,111  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-22.html 已完成抓取,总条数：72
+2015-09-08 19:39:25,305  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-22.html存储完成====
+2015-09-08 19:39:36,737  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:39:36,737  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-23.html 已完成抓取,总条数：72
+2015-09-08 19:40:42,122  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-23.html存储完成====
+2015-09-08 19:40:46,862  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:40:46,863  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-24.html 已完成抓取,总条数：72
+2015-09-08 19:41:49,801  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-24.html存储完成====
+2015-09-08 19:41:54,968  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:41:54,968  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-25.html 已完成抓取,总条数：72
+2015-09-08 19:42:28,940  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-25.html存储完成====
+2015-09-08 19:42:34,543  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:42:34,543  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-26.html 已完成抓取,总条数：72
+2015-09-08 19:43:06,826  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-26.html存储完成====
+2015-09-08 19:43:11,607  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:43:11,608  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-27.html 已完成抓取,总条数：72
+2015-09-08 19:43:47,706  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-27.html存储完成====
+2015-09-08 19:43:52,124  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:43:52,124  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-28.html 已完成抓取,总条数：72
+2015-09-08 19:44:24,407  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-28.html存储完成====
+2015-09-08 19:44:28,869  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:44:28,869  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-29.html 已完成抓取,总条数：72
+2015-09-08 19:44:56,408  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-29.html存储完成====
+2015-09-08 19:45:00,600  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:45:00,600  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-30.html 已完成抓取,总条数：72
+2015-09-08 19:45:28,438  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-30.html存储完成====
+2015-09-08 19:45:32,939  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:45:32,939  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-31.html 已完成抓取,总条数：72
+2015-09-08 19:46:03,890  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-31.html存储完成====
+2015-09-08 19:46:08,382  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:46:08,382  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-32.html 已完成抓取,总条数：72
+2015-09-08 19:46:35,268  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-32.html存储完成====
+2015-09-08 19:46:40,716  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:46:40,718  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-33.html 已完成抓取,总条数：72
+2015-09-08 19:47:13,516  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-33.html存储完成====
+2015-09-08 19:47:17,867  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:47:17,868  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-34.html 已完成抓取,总条数：72
+2015-09-08 19:47:45,402  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-34.html存储完成====
+2015-09-08 19:47:49,515  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:47:49,516  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-35.html 已完成抓取,总条数：72
+2015-09-08 19:48:16,561  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-35.html存储完成====
+2015-09-08 19:48:21,269  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:48:21,270  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-36.html 已完成抓取,总条数：72
+2015-09-08 19:49:02,852  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-36.html存储完成====
+2015-09-08 19:49:07,516  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:49:07,516  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-37.html 已完成抓取,总条数：72
+2015-09-08 19:49:39,814  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-37.html存储完成====
+2015-09-08 19:49:44,102  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:49:44,102  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-38.html 已完成抓取,总条数：72
+2015-09-08 19:50:15,472  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-38.html存储完成====
+2015-09-08 19:50:20,239  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:50:20,239  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-39.html 已完成抓取,总条数：72
+2015-09-08 19:50:55,149  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-39.html存储完成====
+2015-09-08 19:50:59,808  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:50:59,808  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-40.html 已完成抓取,总条数：72
+2015-09-08 19:51:40,684  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-40.html存储完成====
+2015-09-08 19:51:45,539  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:51:45,539  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-41.html 已完成抓取,总条数：72
+2015-09-08 19:52:27,544  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-41.html存储完成====
+2015-09-08 19:52:32,059  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:52:32,060  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-42.html 已完成抓取,总条数：72
+2015-09-08 19:53:22,455  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-42.html存储完成====
+2015-09-08 19:53:27,084  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:53:27,084  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-43.html 已完成抓取,总条数：72
+2015-09-08 19:53:58,924  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-43.html存储完成====
+2015-09-08 19:54:03,037  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:54:03,038  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-44.html 已完成抓取,总条数：72
+2015-09-08 19:54:38,518  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-44.html存储完成====
+2015-09-08 19:54:43,892  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:54:43,893  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-45.html 已完成抓取,总条数：72
+2015-09-08 19:55:12,739  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-45.html存储完成====
+2015-09-08 19:55:16,933  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:55:16,933  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-46.html 已完成抓取,总条数：72
+2015-09-08 19:56:02,822  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-46.html存储完成====
+2015-09-08 19:56:07,594  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:56:07,596  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-47.html 已完成抓取,总条数：72
+2015-09-08 19:56:39,052  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-47.html存储完成====
+2015-09-08 19:56:45,484  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:56:45,484  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-48.html 已完成抓取,总条数：72
+2015-09-08 19:57:18,940  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-48.html存储完成====
+2015-09-08 19:57:23,351  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:57:23,352  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-49.html 已完成抓取,总条数：72
+2015-09-08 19:58:06,182  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-49.html存储完成====
+2015-09-08 19:58:10,874  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:58:10,875  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-50.html 已完成抓取,总条数：72
+2015-09-08 19:58:39,785  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-50.html存储完成====
+2015-09-08 19:58:43,815  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:58:43,816  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-51.html 已完成抓取,总条数：72
+2015-09-08 19:59:19,139  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-51.html存储完成====
+2015-09-08 19:59:23,409  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:59:23,410  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-52.html 已完成抓取,总条数：72
+2015-09-08 19:59:52,569  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-52.html存储完成====
+2015-09-08 19:59:56,706  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 19:59:56,706  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-53.html 已完成抓取,总条数：72
+2015-09-08 20:00:29,827  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-53.html存储完成====
+2015-09-08 20:00:34,856  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 20:00:34,857  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-54.html 已完成抓取,总条数：72
+2015-09-08 20:01:14,165  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-54.html存储完成====
+2015-09-08 20:01:18,985  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ---------------------------------------------------
+2015-09-08 20:01:18,985  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-55.html 已完成抓取,总条数：72
+2015-09-08 20:01:54,742  [7996]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===目标：http://www.111.com.cn/list/953710-0-0-0-0-0-0-55.html存储完成====

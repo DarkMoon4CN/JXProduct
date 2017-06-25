@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXUtil
+{
+    public class RequestPagedBase
+    {
+        private int _pageindex;
+
+        public RequestPagedBase()
+        {
+            this._pageindex = 1;
+            this.pagesize = 12;
+        }
+        
+        /// <summary>
+        /// 页索引
+        /// </summary>
+        public int pageindex { get { return this._pageindex; } set { this._pageindex = value; } }
+
+        /// <summary>
+        /// 页大小 
+        /// </summary>
+        public int pagesize { get; set; }
+        
+        /// <summary>
+        ///  总记录数
+        /// </summary>
+        public int recordcount { get; set; }
+    }
+}

@@ -1,0 +1,47 @@
+﻿@model JXProduct.AdminUI.Models.Classification.ClassificationEditModel
+@section css{
+    <style>
+        #addConter { display: block; }
+        #addConter, #ediConter { margin: 0px; padding: 0px; left: 0px; top: 0px; height: 500px; }
+        .keyCenter ul { max-height: 240px; overflow-y: auto; }
+
+    </style>
+}
+@section script{
+    <script src="~/js/jx.classification.js"></script>
+    <script src="~/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/validate/jquery.validate.js"></script>
+    <script>
+        $(function () { classification.edit() });
+    </script>
+}
+@{
+    var type = Model.ParentID > 0 ? "新增" : "编辑";
+}
+<div id='ediConter'>
+    <div class="addCenterTitle"><span>@(type)分类</span><a href="javascript:;" class="closewin"></a></div>
+    <form id="form1">
+        <div class='addSection'>
+            <p class='strong'>* 请填写@(type)项名称：</p>
+            @{
+                if (Model.ParentID > 0)
+                {
+                    <p>父标签：@Model.ParentChineseName</p>
+                }
+            }
+
+            <div class='seachKey'>
+                <p><input type="text" name="ChineseName" placeholder="请输入内容" value="@Model.ChineseName" required data-msg-required="名称需要填写" data-rule-maxlength="8" data-msg-maxlength="标签过长，最多支持8个汉字、16个英文字母或数字"></p>
+            </div>
+            <div class='operation' style="padding-top:10px;">
+                <input type="submit" value='保存'>
+                <input type="button" value="取消" class="closewin" />
+                @Html.HiddenFor(t => t.ParentID)
+                @Html.HiddenFor(t => t.CFID)
+                @Html.HiddenFor(t => t.IsKeyParent)
+            </div>
+            @Html.HiddenFor(t => t.ChineseName)
+            @Html.HiddenFor(t => t.ParentChineseName)
+        </div>
+    </form>
+</div>

@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = "Related";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css{
+    <style>
+        .spInputWrap .m { float: initial; display: initial; }
+        .error { color: red; }
+        .infoTable table { width: 90%; }
+        #formzuhe input { border: 1px solid #ccc; }
+        #formzuhe input.c { width: 60px; }
+        #formzuhe input.a { width: 250px; }
+    </style>
+}
+@section js{
+    <script src="~/Content/js/jquery.validate.js"></script>
+    <script src="~/Content/js/jx.related.js"></script>
+    <script>
+        $(function () { related.init(); });
+    </script>
+}
+@using JXProduct.Component.Model
+@using JXProduct.Component.Enums
+@model JXProduct.AdminUI.Models.Product.RelatedModel
+@{
+    ProductInfo p = Model.Product;
+}
+@Html.Hidden("ProductID", p.ProductID)
+@Html.Hidden("ProductCode", p.ProductCode)
+@Html.Hidden("ChineseName", p.ChineseName)
+@Html.Hidden("Unit", p.Unit)
+@Html.Hidden("Spec", p.Specifications)
+@Html.Hidden("Price", p.TradePrice)
+<div id="l-content-right">
+    <div class="single-product-h height-auto">
+        <a href="/product/list"><i></i><span>返回上一页</span></a>
+        <div class="header-comm-table">
+            <a class="active" href="#">大包装</a>
+            <a href="#">套餐组合</a>
+            <a href="#">最佳推荐</a>
+        </div>
+    </div>
+    <div class="setCommConterTab" style="display:block">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                <ul>
+                    <li>商品ID：@p.ProductID</li>
+                    <li>金象码：@p.ProductCode</li>
+                    <li>商品名称：@p.ChineseName</li>
+                    <li>金象价:@p.TradePrice.ToString("0.00")</li>
+                </ul>
+            </div>
+        </div>
+        <div class="packagingInfo">
+            <form id="formdbz">
+                <div class="spInput">
+                    <div class="spInputWrap clear">
+                        <span class="width-150"><i class="xingRed">* </i>主商品数量：</span>
+                        <input class="bBtn" name="quantity" type="text" placeholder="数量" required data-rule-digits="true" data-rule-min="2" data-msg-required="不能为空" data-msg-digits="请输入数字" data-msg-min="包装数量大于1">
+                        <span class="m" name="unit">@p.Unit</span>
+                    </div>
+                    <div class="spInputWrap clear">
+                        <span class="width-150"><i class="xingRed">* </i>大包装价格：</span>
+                        <input class="bBtn" name="price" type="text" placeholder="价格" required data-rule-number="true" data-msg-required="不能为空" data-msg-number="请输入价格">
+                        <span class="m">元</span>
+                    </div>
+                    <div class="spInputWrap">
+                        <div class="spTime clear">
+                            <span class="width-150"><i class="xingRed">* </i>大包装前台展示名称：</span>
+                            <input class="bBtn" type="text" name="viewname" required data-rule-age="true" data-msg-required="不能为空">
+                        </div>
+                    </div>
+                    <div class="saveBtn-wrap clear">
+                        <input type="hidden" name="productid" value="@p.ProductID" />
+                        <input type="hidden" name="relatedid" value="0" />
+                        <a href="#" class="addBtn fl" name="save">保存</a>
+                        <p class="gou fl hide"><span></span><i>提交成功</i></p>
+                    </div>
+                </div>
+                <div class="infoTable table-responsive">
+                    @{
+                        Model.RelatedType = 1;
+                        Html.RenderPartial("_PartialRelated", Model);
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="setCommConterTab">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                <ul>
+                    <li>商品ID：@p.ProductID</li>
+                    <li>金象码：@p.ProductCode</li>
+                    <li>商品名称：@p.ChineseName</li>
+                    <li>金象价:@p.TradePrice.ToString("0.00")</li>
+                </ul>
+            </div>
+        </div>
+        <div class="packagingInfo">
+            <form id="formzuhe">
+                <div class="spInput clear">
+                    <div class="spInputWrap clear">
+                        <span class="width-150"><i class="xingRed">* </i>子商品ID：</span>
+                        <input class="bBtn" type="text" name="childid">
+                        <span class="m"></span>
+                    </div>
+                    <div class="spInputWrap clear">
+                        <span class="width-150"><i class="xingRed">* </i>子商品价格：</span>
+                        <input class="bBtn" type="text" name="childprice">
+                        <span class="m">元</span>
+                        <span class="m"></span>
+                    </div>
+                    <div class="spInputWrap clear">
+                        <div class="spTime">
+                            <span class="width-150"><i class="xingRed">* </i>子商品数量：</span>
+                            <input type="text" class="bBtn" name="childcount">
+                            <span class="m">@p.Unit</span>
+                            <span class="m"></span>
+                        </div>
+                    </div>
+                    <div class="spInputWrap clear">
+                        <div class="spTime">
+                            <span class="width-150"><i class="xingRed">* </i>前台展示名称：</span>
+                            <input type="text" class="bBtn" style="width: 420px;" name="viewname">
+                            <span class="commInfo"></span>
+                        </div>
+                    </div>
+                    <div class="saveBtn-wrap clear">
+                        <a href="#" class="addBtn fl" name="save">保存</a>
+                        <p class="gou fl hide"><span></span><i>提交成功</i></p>
+                    </div>
+                </div>
+                <div class="infoTable table-responsive temptable">
+                    <table class="taoCanZH table">
+                        <thead>
+                            <tr class="bg">
+                                <th>商品ID</th>
+                                <th>金象码</th>
+                                <th>商品名称</th>
+                                <th>规格</th>
+                                <th>前台展示名称</th>
+                                <th>价格</th>
+                                <th>数量</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr class="scTaoCan">
+                                <td colspan="9" class="row">
+                                    <div class="taocan-text fl">套餐名称：</div>
+                                    <div class="fl scTaoCanLeft">
+                                        <span></span>
+                                        <input type="text" name="comboname">
+                                    </div>
+                                    <div class="saveBtn-wrap fl">
+                                        <a href="#" class="addBtn fl" name="submitcombo">保存</a>
+                                        <p class="gou fl hide"><span></span><i>提交成功</i></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>@p.ProductID</td>
+                                <td>@p.ProductCode</td>
+                                <td class="tcName">@p.ChineseName</td>
+                                <td>@p.Specifications</td>
+                                <td class="yeMian">@p.ChineseName</td>
+                                <td>@p.TradePrice</td>
+                                <td>1</td>
+                                <td class="cz"><a href="#" name="edit">编辑</a><a href="#" name="del">删除</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="infoTable table-responsive resulttable">
+            @{ Html.RenderPartial("_PartialCombo", p.ProductID); }
+        </div>
+    </div>
+    <div class="setCommConterTab">
+        <div class="commInfo">
+            <div class="infoTitle">主商品信息：</div>
+            <div class="infoList">
+                <ul>
+                    <li>商品ID：@p.ProductID</li>
+                    <li>金象码：@p.ProductCode</li>
+                    <li>商品名称：@p.ChineseName</li>
+                    <li>金象价:@p.TradePrice.ToString("0.00")</li>
+                </ul>
+            </div>
+        </div>
+        <div class="packagingInfo" id="tuijian">
+            <div class="spInput clear">
+                @for (var i = 1; i <= 5; i++)
+                {
+                    <div class="spInputWrap clear">
+                        <span class="width-150"><i class="xingRed">* </i>关联商品ID@(i)：</span>
+                        <input class="bBtn" type="text" placeholder="请输入商品ID" name="tuijianid" data-val-number="必须是一个数字">
+                        <span class="commInfo"></span>
+                    </div>
+                }
+                <div class="saveBtn-wrap clear">
+                    <a href="javascript:;" class="addBtn fl" name="save">保存</a>
+                    <p class="gou fl hide"><span></span><i>提交成功</i></p>
+                </div>
+            </div>
+            <div class="infoTable table-responsive">
+                @{
+                    Model.RelatedType = 3;
+                    Html.RenderPartial("_PartialRelated", Model);
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

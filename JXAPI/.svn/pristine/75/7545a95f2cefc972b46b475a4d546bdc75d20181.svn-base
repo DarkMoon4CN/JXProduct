@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+using JXAPI.Component.Model;
+using System.Data;
+using JXAPI.Common;
+using JXAPI.Component.IBLL.ISqlServerBLL;
+namespace JXAPI.Component.BLL.SqlServerBLL
+{
+    public class ProductBLL: IProductPlanBLL
+    {
+        private static readonly JXAPI.Component.SQLServerDAL.JXProductDAL.ProductDAL dal = new JXAPI.Component.SQLServerDAL.JXProductDAL.ProductDAL();
+        public static ProductBLL Instance
+        {
+            get
+            {
+                return new ProductBLL();
+            }
+        }
+
+        #region CURD
+
+        public DataTable GetList(string tableName,out string errorMsg)
+        {
+            return dal.GetList(tableName, out errorMsg);
+        }
+
+        public OperationResult<bool> UpdateProduct(string tableName, string primaryKey, int primaryValue)
+        {
+            return dal.UpdateProduct(tableName, primaryKey, primaryValue);
+        }
+
+        public DataTable GetProductDeleteItemRecord(out string errorMsg)
+        {
+            return dal.GetProductDeleteItemRecord(out errorMsg);
+        }
+
+        public OperationResult<bool> DeleteProductDeleteItemRecord(int id)
+        {
+            return dal.DeleteProductDeleteItemRecord(id);
+        }
+
+        #endregion
+
+        public DataTable Product_ListForSearch(string strWhere)
+        {
+            return dal.Product_ListForSearch(strWhere);
+        }
+        
+    }
+}

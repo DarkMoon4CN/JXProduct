@@ -1,0 +1,619 @@
+﻿using JXAPI.Common;
+using JXAPI.Component.BLL;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+
+namespace JXAPI.ConsoleProduct
+{
+    public class SynPlan
+    {
+         private static ILog myLog = log4net.LogManager.GetLogger(typeof(SynPlan));
+
+        //设置DataBase查询对象
+        //设置同步时 From 表与 To 表不一样的数据
+        //判定是否联合查询
+        //Dictionary<FromColumnName,ToColumnName> 匹配后,追加自定义列字段
+        //批量同步 分离出哪些要更新哪些要插入
+        //记录批量异常后的单次语句
+        // from  数据来源表    to  写入的目标表名
+        public void Init()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+
+            //获取配置文件里的更新列表
+            IList<SynPlanInfo>  synPlanInfoList=GetSynPlanConfigInfo();
+
+            for (int i = 0; i < synPlanInfoList.Count; i++)
+            {
+                
+                SynPlanInfo spInfo=synPlanInfoList[i];
+                //获取From 表结构
+                IList<string> fromCloumnsName =new  List<string>();
+                //获取To 表结构
+                IList<string> toCloumnsName = new List<string>();
+                //筛选列名
+                Dictionary<string, string> updateColumns =new Dictionary<string,string>();
+                /*
+                 * 当IsJoin==1,表示 from 源表需要联合查询
+                 * 会调用spInfo中的sql语句
+                 * 当IsJoin==1,将无法获得 from 和 to 的表结构
+                 * 当IsJoin==1,将直接调用params所有字段,key作为from的结构体,value作为to的结构体 
+                 * 当IsJoin==1,请保证配置匹配正确
+                 * 当IsJoin==1,分页无效
+                */
+                if (spInfo.IsJoin == 1)
+                {
+                    updateColumns = ScreenColumn(spInfo.FromTable, fromCloumnsName, toCloumnsName, spInfo.Params);
+                }
+                else //普通更新方式
+                {
+                    fromCloumnsName = GetColumnsName(spInfo.FromConnectionName, spInfo.FromTable, (TableType)spInfo.FromType);
+
+                    toCloumnsName = GetColumnsName(spInfo.ToConnectionName, spInfo.ToTable, (TableType)spInfo.ToType);
+
+                    //筛选列名 将To 表的不匹配的字段字典里移除
+                    updateColumns = ScreenColumn(spInfo.FromTable, fromCloumnsName, toCloumnsName, spInfo.Params);
+                }
+
+                //判定to表最大ID
+                var item = updateColumns.ElementAt(0);
+                int maxID = GetMaxID(spInfo.ToConnectionName, spInfo.ToTable, item.Value, (TableType)spInfo.ToType);
+
+                //同步数据 fromCloumnsName[0]：数据源主键ID
+                SynData(spInfo, updateColumns,  item.Key, maxID);
+            }
+        }
+
+        /// <summary>
+        /// 查询出列名
+        /// </summary>
+        /// <param name="connectionName">配置文件中的 name</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="type">1.sql server  2.mysql</param>
+        /// <returns></returns>
+        public IList<string> GetColumnsName(string connectionName, string tableName, TableType type = TableType.SqlServer) 
+        {
+            OperationResult<IList<string>> columnsNameResult=null;
+            if (type == TableType.SqlServer) 
+            {
+                SynPlanSqlServerBLL sqlServerBLL = new SynPlanSqlServerBLL(connectionName);
+                columnsNameResult= sqlServerBLL.GetColumnsName(tableName);
+            }
+            else if (type == TableType.MySql)
+            {
+                SynPlanMySqlBLL mySqlBLL = new SynPlanMySqlBLL(connectionName);
+                columnsNameResult = mySqlBLL.GetColumnsName(tableName);
+            }
+
+            if (columnsNameResult!=null && columnsNameResult.ResultType == OperationResultType.Success)
+            {
+                return columnsNameResult.AppendData;
+            }
+            else 
+            {
+                Log(string.Format("From:{0} 数据库操作失败！原因:{1}", connectionName,columnsNameResult.Message));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 筛选列名   将To 表的不匹配的字段字典里移除
+        /// </summary>
+        /// <param name="fromTableName">用于输出log,但没有具体使用</param>
+        /// <param name="fromCloumnsName">from列名集合</param>
+        /// <param name="toCloumnsName">头 列名集合</param>
+        /// <param name="custom">自定义更新字段 字典集合 (此方法返回也是字典集合)</param>
+        /// <returns></returns>
+        public Dictionary<string, string> ScreenColumn(string fromTableName, IList<string> fromCloumnsName, IList<string> toCloumnsName, Dictionary<string, string> custom) 
+        {
+            Dictionary<string, string> updateColumns = new Dictionary<string, string>();
+
+            //以from为基准筛选
+            for (int i = 0; i < fromCloumnsName.Count; i++)
+            {
+                string fromCloumnName = fromCloumnsName[i];
+                bool isExist = toCloumnsName.Contains(fromCloumnName);
+                if (isExist)
+                {
+                    updateColumns.Add(fromCloumnName, fromCloumnName);
+                }
+                else 
+                {
+                    if (fromCloumnName != "ispush")
+                    {
+                        Log(string.Format("Sql server 数据库:{0}, 字段:{1} 无法匹配与Mysql表字段,请在配置web.config", fromTableName, fromCloumnName));
+                    }
+                }
+            }
+
+            //加入自定义参数
+            foreach (var item in custom)
+            {
+                updateColumns.Add(item.Key, item.Value);
+            }
+            return updateColumns;
+        }
+
+        /// <summary>
+        ///  获取 to 表中的最大ID
+        /// </summary>
+        /// <param name="connectionName">配置文件中的 name</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="pid">表中的主键ID</param>
+        /// <param name="type">1.sql server  2.mysql</param>
+        /// <returns></returns>
+        public int GetMaxID(string connectionName, string tableName, string keyName, TableType type = TableType.MySql)
+        {
+            OperationResult<int> maxIDResult = null;
+            if (type == TableType.SqlServer)
+            {
+                SynPlanSqlServerBLL sqlServerBLL = new SynPlanSqlServerBLL(connectionName);
+                maxIDResult = sqlServerBLL.GetMaxID(tableName, keyName);
+            }
+            else if (type == TableType.MySql)
+            {
+                SynPlanMySqlBLL mySqlBLL = new SynPlanMySqlBLL(connectionName);
+                maxIDResult = mySqlBLL.GetMaxID(tableName, keyName);
+            }
+
+            if (maxIDResult != null && maxIDResult.ResultType == OperationResultType.Success)
+            {
+                return maxIDResult.AppendData;
+            }
+            else
+            {
+                Log(string.Format("From:{0} 数据库操作失败！原因:{1}", connectionName, maxIDResult.Message));
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// 同步数据 Synchronous data 
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="tableName"></param>
+        /// <param name="keyName"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public void SynData(SynPlanInfo spInfo, Dictionary<string, string> columnNames,string keyName,int maxID)
+        {
+            if (spInfo.IsPush != 1) 
+            {
+                Log(string.Format("因web.Config中 {0} isPush设置 不同步,已跳过更新 ", spInfo.FromTable));
+                return;
+            }
+             //从from 里拿数据
+             Log(string.Format("开始执行 从{0} 至 {1} 数据同步开始 时间:{2}",spInfo.FromTable,spInfo.ToTable,DateTime.Now));
+             SynPlanSqlServerBLL sqlServerBLL = new SynPlanSqlServerBLL(spInfo.FromConnectionName);
+             SynPlanMySqlBLL mySqlBLL = new SynPlanMySqlBLL(spInfo.ToConnectionName);
+             int startCount = 1;
+             int endCount = 0;
+             int size = spInfo.Size;
+             int SNUMBER = 0;//计数器
+             string addFromColumnFlag = string.Empty; //insert from字段
+             string addToColumnFlag = string.Empty;   //insert to写入字段
+             string addToPColumnFlag = string.Empty;  //insert to存储过程字段
+
+             //update 时 sql 参数
+             string updateToPValueFlag = string.Empty;//参数
+             string updateToPKeyFlag = string.Empty;  //WHERE 主键
+
+             #region  insert 与 update 的 条件参数
+             for (int i = 0; i < columnNames.Count; i++)
+             {
+                 var item = columnNames.ElementAt(i);
+                 if (i == 0)
+                 {
+                     updateToPKeyFlag = item.Value + "=@" + item.Value;
+                 } 
+                 else 
+                 {
+                     updateToPValueFlag += item.Value + "=@" + item.Value + ",";  
+                 }
+             }
+
+             if (!string.IsNullOrEmpty(updateToPValueFlag))
+             {
+                 updateToPValueFlag = updateToPValueFlag.Substring(0, updateToPValueFlag.Length - 1);
+             }
+
+             
+             //insert时 sql 参数
+             foreach (var item in columnNames)
+             {
+                 addFromColumnFlag += item.Key + ",";   
+             }
+             if (!string.IsNullOrEmpty(addFromColumnFlag)) 
+             {
+                 addFromColumnFlag = addFromColumnFlag.Substring(0, addFromColumnFlag.Length - 1);
+             }
+
+             foreach (var item in columnNames)
+             {
+                 addToColumnFlag += item.Value + ",";
+                 addToPColumnFlag += "@" + item.Value + ",";
+             }
+             if (!string.IsNullOrEmpty(addFromColumnFlag))
+             {
+                 addToColumnFlag = addToColumnFlag.Substring(0, addToColumnFlag.Length - 1);
+                 addToPColumnFlag = addToPColumnFlag.Substring(0, addToPColumnFlag.Length - 1);
+             }
+             #endregion
+
+             while (true)
+             {
+                 startCount = SNUMBER * size + 1;
+                 endCount = (SNUMBER + 1) * size;
+                 DataTable fromData = null;
+
+                 #region 获取 from 数据
+                 if ((TableType)spInfo.FromType == TableType.SqlServer) //从sql server中获取数据
+                 {
+                     OperationResult<DataTable> tableResult =null;
+                     if (spInfo.IsJoin == 1) //判定是否调用联合查询
+                     {
+                         //调用后的table必须和配置文件相同
+                         tableResult = sqlServerBLL.GetList(spInfo.sql);
+                     }
+                     else
+                     {
+                         tableResult = sqlServerBLL.GetList(spInfo.FromTable, keyName, addFromColumnFlag, startCount, endCount);
+                     }
+
+                     if (tableResult.ResultType == OperationResultType.Success)
+                     {
+                         fromData = tableResult.AppendData;
+                     }
+                     else
+                     {
+                         //打不开数据库
+                         Log(string.Format(" 数据库{0}无法打开！程序终止！ ", spInfo.FromConnectionName));
+                         break;
+                     }
+                 }
+                 else if ((TableType)spInfo.FromType == TableType.SqlServer) //从mySql中获取数据
+                 {
+
+                     OperationResult<DataTable> tableResult = null;
+                     if (spInfo.IsJoin == 1) //判定是否调用联合查询
+                     {
+                         //调用后的table必须和配置文件相同
+                         tableResult = sqlServerBLL.GetList(spInfo.sql);
+                     }
+                     else
+                     {
+                       //mysql limit下标是从0开始
+                       tableResult = mySqlBLL.GetList(spInfo.FromTable, keyName, addFromColumnFlag, startCount - 1, size);
+                     }
+                     if (tableResult.ResultType == OperationResultType.Success)
+                     {
+                         fromData = tableResult.AppendData;
+                     }
+                     else
+                     {
+                         //打不开数据库
+                         Log(string.Format(" 数据库{0}无法打开！程序终止！ ", spInfo.FromConnectionName));
+                         break;
+                     }
+                 }
+                 #endregion
+
+                 #region 批量同步
+                 //更新列表
+                 DataTable updateTable = new DataTable();
+                 updateTable = fromData.Copy();
+                 updateTable.Rows.Clear();
+                 //插入列表
+                 DataTable insertTable = new DataTable();
+                 insertTable = fromData.Copy();
+                 insertTable.Rows.Clear();
+
+                 for (int i = 0; i < fromData.Rows.Count; i++)
+                 {
+                    // from 表 ID
+                    int id=Convert.ToInt32(fromData.Rows[i][keyName]);
+                    if (id > maxID)
+                    {
+                        insertTable.ImportRow(fromData.Rows[i]);
+                    }
+                    else 
+                    {
+                        updateTable.ImportRow(fromData.Rows[i]);
+                    }
+                 }
+
+                 // from updateTable的列名和 InsertTable列名修改成  to 表里的列名
+                 foreach (var item in columnNames)
+                 {
+                      var cs= insertTable.Columns[item.Key];
+                      if (cs != null) 
+                      {
+                          insertTable.Columns[item.Key].ColumnName = item.Value;
+                          updateTable.Columns[item.Key].ColumnName = item.Value;
+                      }
+                 }
+                 if ((TableType)spInfo.ToType == TableType.SqlServer) //写入sql server中
+                 {
+                     //insert mysql
+                     OperationResult<bool> isOkAddResult =
+                          sqlServerBLL.InsertData(spInfo.ToTable, addToColumnFlag, addToPColumnFlag, insertTable, columnNames);
+                     if (isOkAddResult.ResultType != OperationResultType.Success || isOkAddResult.AppendData == false)
+                     {
+                         Log(string.Format("批量插入时出现异常,正在过滤异常数据！请留意日志文件"));
+                         //此数据未能成功同步（插入）数据库进入单条插入 
+                         DataTable singleTable = new DataTable();//存放信息table
+                         for (int i = 0; i < insertTable.Rows.Count; i++)
+                         {
+                             singleTable.ImportRow(insertTable.Rows[i]);
+                             OperationResult<bool> singleResult =
+                                 sqlServerBLL.InsertData(spInfo.ToTable, addToColumnFlag, addToPColumnFlag, singleTable, columnNames);
+                             if (singleResult.ResultType != OperationResultType.Success || singleResult.AppendData == false)
+                             {
+                                 Log(string.Format("从:{0} 至:{1} 数据主键ID:{2} 插入失败！"
+                                     , spInfo.FromTable, spInfo.ToTable, singleTable.Rows[0][keyName]));
+                             }
+                             singleTable.Rows.Clear();//执行完清理
+                         }
+                     }
+
+                     //update sql server
+                     OperationResult<bool> isOkUpdateResult =
+                          sqlServerBLL.UpdateData(spInfo.ToTable, updateToPKeyFlag, updateToPValueFlag, updateTable, columnNames);
+                     if (isOkUpdateResult.ResultType != OperationResultType.Success || isOkUpdateResult.AppendData == false)
+                     {
+                         Log(string.Format("批量更新时出现异常,正在过滤异常数据！请留意日志文件"));
+                         //此数据未能成功同步（更新）数据库进入单条更新
+                         DataTable singleTable = new DataTable();//存放信息table
+                         for (int i = 0; i < updateTable.Rows.Count; i++)
+                         {
+                             singleTable.ImportRow(updateTable.Rows[i]);
+                             OperationResult<bool> singleResult =
+                                 sqlServerBLL.UpdateData(spInfo.ToTable, updateToPKeyFlag, updateToPValueFlag, singleTable, columnNames);
+                             if (singleResult.ResultType != OperationResultType.Success || singleResult.AppendData == false)
+                             {
+                                 Log(string.Format("从:{0} 至:{1} 数据主键ID:{2} 插入失败！"
+                                     , spInfo.FromTable, spInfo.ToTable, singleTable.Rows[0][keyName]));
+                             }
+                             singleTable.Rows.Clear();//执行完清理
+                         }
+                     }
+                 }
+                 else if ((TableType)spInfo.ToType == TableType.MySql) //写入mysql中
+                 {
+                    //inser tmysql
+                    OperationResult<bool>  isOkAddResult= 
+                        mySqlBLL.InsertData(spInfo.ToTable, addToColumnFlag, addToPColumnFlag, insertTable, columnNames);
+                    if (isOkAddResult.ResultType != OperationResultType.Success || isOkAddResult.AppendData == false)
+                    {
+                        Log(string.Format("批量插入时出现异常,正在过滤异常数据！请留意日志文件"));
+                        //此数据未能成功同步（插入）数据库进入单条插入 
+                        DataTable singleTable = new DataTable();//存放信息table
+                        for (int i = 0; i < insertTable.Rows.Count; i++)
+                        {
+                             singleTable.ImportRow(insertTable.Rows[i]);
+                             OperationResult<bool> singleResult =
+                                 mySqlBLL.InsertData(spInfo.ToTable, addToColumnFlag, addToPColumnFlag, singleTable, columnNames);
+                             if (singleResult.ResultType != OperationResultType.Success || singleResult.AppendData == false) 
+                             {
+                                 Log(string.Format("从:{0} 至:{1} 数据主键ID:{2} 插入失败！"
+                                     , spInfo.FromTable, spInfo.ToTable, singleTable.Rows[0][keyName]));
+                             }
+                             singleTable.Rows.Clear();//执行完清理
+                        }
+                    }
+
+                     //update mysql
+                    OperationResult<bool> isOkUpdateResult =
+                        mySqlBLL.UpdateData(spInfo.ToTable, updateToPKeyFlag, updateToPValueFlag, updateTable, columnNames);
+                    if (isOkUpdateResult.ResultType != OperationResultType.Success || isOkUpdateResult.AppendData == false)
+                    {
+                        Log(string.Format("批量更新时出现异常,正在过滤异常数据！请留意日志文件"));
+                        //此数据未能成功同步（更新）数据库进入单条更新
+                        DataTable singleTable = new DataTable();//存放信息table
+                        for (int i = 0; i < updateTable.Rows.Count; i++)
+                        {
+                            singleTable.ImportRow(updateTable.Rows[i]);
+                            OperationResult<bool> singleResult =
+                                mySqlBLL.UpdateData(spInfo.ToTable, updateToPKeyFlag, updateToPValueFlag, singleTable, columnNames);
+                            if (singleResult.ResultType != OperationResultType.Success || singleResult.AppendData == false)
+                            {
+                                Log(string.Format("从:{0} 至:{1} 数据主键ID:{2} 插入失败！"
+                                    , spInfo.FromTable, spInfo.ToTable, singleTable.Rows[0][keyName]));
+                            }
+                            singleTable.Rows.Clear();//执行完清理
+                        }
+                     }
+                 }
+                 #endregion
+
+                 if (fromData == null && fromData.Rows.Count == 0)
+                 {
+                     break;
+                 }
+             }
+            Log(string.Format("开始执行 从{0} 至 {1} 数据同步结束 时间:{2}", spInfo.FromTable, spInfo.ToTable, DateTime.Now));
+        }
+
+        #region 执行输出与日志记录
+        /// <summary>
+        /// 执行输出与日志记录
+        /// </summary>
+        /// <param name="message"></param>
+        private void Log(string message)
+        {
+            myLog.InfoFormat(message);
+            Console.WriteLine(message);
+        }
+        #endregion
+
+        #region 获取WebConfig.synplans 配置信息
+        /// <summary>
+        /// 获取WebConfig.synplans 配置信息
+        /// </summary>
+        /// <returns></returns>
+        public IList<SynPlanInfo> GetSynPlanConfigInfo()
+        {
+            IList<SynPlanInfo> synPlanInfoList = new List<SynPlanInfo>();
+            var synPlanSection = ConfigurationManager.GetSection("synplans") as XmlNode;
+            XmlNodeList gradesNode = synPlanSection.ChildNodes;
+            for (int i = 0; i < gradesNode.Count; i++)
+            {
+                SynPlanInfo synPlanInfo = new SynPlanInfo();
+               
+                XmlNode spiderNode = gradesNode[i];
+                for (int j = 0; j < spiderNode.Attributes.Count; j++)
+                {
+                    string name = spiderNode.Attributes[j].Name;
+                    string value = spiderNode.Attributes[name].Value;
+                    switch (name)
+                    {
+                        case "ispsh":
+                            synPlanInfo.IsPush = Convert.ToInt32(value); break;
+                        case "size":
+                            synPlanInfo.Size = Convert.ToInt32(value); break;
+                        case "isjoin":
+                            synPlanInfo.IsJoin=Convert.ToInt32(value);break;
+                        case "sql":
+                            synPlanInfo.sql=value;break;
+                    }
+                }
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                XmlNodeList childNode = spiderNode.ChildNodes;
+                for (int m = 0; m < childNode.Count; m++)
+                {
+                    XmlNode pageNode = childNode[m];
+
+                    if (pageNode.Name == "fromtable" || pageNode.Name == "totable")
+                    {
+                        for (int n = 0; n < pageNode.Attributes.Count; n++)
+                        {
+                            string name = pageNode.Attributes[n].Name;
+                            string value = pageNode.Attributes[name].Value;
+                            switch (name)
+                            {
+                                case "fromconnection":
+                                    synPlanInfo.FromConnectionName = value; break;
+                                case "fromtable":
+                                    synPlanInfo.FromTable = value; break;
+                                case "toconnection":
+                                    synPlanInfo.ToConnectionName = value; break;
+                                case "totable":
+                                    synPlanInfo.ToTable = value; break;
+                                case "fromtype":
+                                    synPlanInfo.FromType = Convert.ToInt32(value); break;
+                                case "totype":
+                                    synPlanInfo.ToType = Convert.ToInt32(value); break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        XmlNodeList paramsNodes = pageNode.ChildNodes;
+                        string fromColumnName = string.Empty;
+                        string toColumnName = string.Empty;
+                        for (int n = 0; n < paramsNodes.Count; n++)
+                        {
+                            XmlNode paramsNode = paramsNodes[n];
+                            for (int k = 0; k < paramsNode.Attributes.Count; k++)
+                            {
+                                string name = paramsNode.Attributes[k].Name;
+                                string value = paramsNode.Attributes[name].Value;
+                                switch (name)
+                                {
+                                    case "key":
+                                        fromColumnName = value; break;
+                                    case "value":
+                                        toColumnName = value; break;
+                                }
+                            }
+                            dict.Add(fromColumnName, toColumnName);
+                        }
+                    }
+                }
+                synPlanInfo.Params = dict;
+                synPlanInfoList.Add(synPlanInfo);
+            }
+            return synPlanInfoList;
+        }
+        #endregion
+
+    }
+
+    #region 配置文件实体
+    public enum TableType
+    {
+         SqlServer=1,
+         MySql=2,
+    }
+
+    public class SynPlanInfo
+    {
+        /// <summary>
+        /// 提供数据源 连接
+        /// </summary>
+        public string FromConnectionName { get; set; }
+
+        /// <summary>
+        /// 提供数据源 表
+        /// </summary>
+        public string FromTable { get; set; }
+
+        /// <summary>
+        /// 提供数据源的数据库类型
+        /// </summary>
+        public int FromType { get; set; }
+
+        /// <summary>
+        /// 填充数据源 连接
+        /// </summary>
+        public string ToConnectionName { get; set; }
+
+        /// <summary>
+        /// 填充数据源 表
+        /// </summary>
+        public string ToTable { get; set; }
+
+
+        /// <summary>
+        /// 填充数据源的数据库类型
+        /// </summary>
+        public int ToType { get; set; }
+
+
+        /// <summary>
+        /// 是否执行同步  1为同步  其他值暂为不同步
+        /// </summary>
+        public int IsPush { get; set; }
+
+
+        /// <summary>
+        /// 单次批量执行的大小
+        /// </summary>
+        public int Size { get; set; }
+
+        /// <summary>
+        /// 数据源是否连接查询
+        /// </summary>
+        public int IsJoin { get; set; }
+
+        /// <summary>
+        /// 数据源的联合查询语句
+        /// </summary>
+        public string sql { get; set; }
+
+        /// <summary>
+        /// 自定义同步列,key为 from 列名   value为to列名
+        /// </summary>
+        public Dictionary<string, string> Params { get; set; }
+
+    }
+    #endregion
+
+}

@@ -1,0 +1,4 @@
+E:\JXBigData\trunk\src\JXBigData.ConfigComponent\bin\Debug\JXBigData.ConfigComponent.dll
+E:\JXBigData\trunk\src\JXBigData.ConfigComponent\bin\Debug\JXBigData.ConfigComponent.pdb
+E:\JXBigData\trunk\src\JXBigData.ConfigComponent\obj\Debug\JXBigData.ConfigComponent.dll
+E:\JXBigData\trunk\src\JXBigData.ConfigComponent\obj\Debug\JXBigData.ConfigComponent.pdb

@@ -1,0 +1,40 @@
+﻿using JXAPI.Component.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class ProductMySqlBLL
+    {
+
+        private ProductMySqlBLL() { }
+        private static ProductMySqlBLL _instance;
+        private static readonly JXAPI.Component.SQLServerDAL.ProductMySqlDAL dal = new JXAPI.Component.SQLServerDAL.ProductMySqlDAL();
+        public static ProductMySqlBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new ProductMySqlBLL());
+            }
+        }
+
+
+
+        public int GetInsetMaxPId()
+        {
+            return dal.GetInsetMaxPId(); 
+        }
+
+        public bool InsertProductMySql(ProductInfo productInfo) 
+        {
+            return dal.InsertProductMySql(productInfo);
+        }
+
+        public bool UpdateProductMySql(ProductInfo productInfo) 
+        {
+            return dal.UpdateProductMySql(productInfo);
+        }
+    }
+}

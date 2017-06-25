@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "价格编辑";
+    Layout = "~/Views/Shared/_DefaultWin.cshtml";
+}
+@section css{
+    <style>
+        body { background: #fff; }
+        .pack-right-wrap { position: inherit; }
+        #packlist { width: 135px; }
+        #packinfo { width: 335px; position: inherit; }
+        #packinfo .width-150 { width: 110px; }
+        #packinfo .save { margin: 0px; margin-top: 5px; }
+        #packinfo .saveBtn-wrap { padding: 0; text-align: center; }
+        #packinfo.single { margin: 0px auto; width: 380px; }
+    </style>
+}
+@section js{
+    <script src="~/Content/js/jquery.validate.js"></script>
+    <script src="~/Content/js/jx.product.js"></script>
+    <script>
+        $(document).ready(function () {
+            product.price();
+        });
+    </script>
+}
+@{
+    var product = ViewBag.ProductInfo as JXProduct.Component.Model.ProductInfo;
+    var dic = ViewBag.ProductList as Dictionary<string, JXProduct.Component.Model.ProductInfo>;
+    
+    var hasEdit = (bool)ViewBag.EditAudit;
+    var read = string.Empty;
+    if (!hasEdit)
+    {
+        read = "readonly='readonly'";
+    }
+}
+<div class="popupGeneral pack-edit-pic">
+    <div class="popupGeneral-h"><span>商品价格</span></div>
+    <div>
+        @if (dic.Count > 0)
+        {
+            <div class="pack-nav-wrap fl" id="packlist">
+                <ul>
+                    @foreach (var p in dic)
+                    {
+                        <li productid="@p.Value.ProductID" @(p.Value.ProductID == product.ProductID ? new HtmlString("class='active'") : new HtmlString(""))>@p.Key</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="pack-right-wrap @(dic.Count == 0 ? "single" : "fl") " id="packinfo">
+            <form id="form1">
+                <div>
+                    <p class="txt">
+                        商品ID: <i nid="productid">@product.ProductID</i><br />
+                        金象码: <i nid="productcode">@product.ProductCode</i> <br />
+                        商品名称: <i nid="chinesename">@product.ChineseName @(string.IsNullOrWhiteSpace(product.Specifications) ? string.Empty : "[" + product.Specifications + "]")</i><br />
+                        成本价：<i nid="costprice">@product.CostPrice</i>
+                    </p>
+                </div>
+                <div class="every-one-info">
+                    <div class="spInputWrap clear">
+                        <span class='width-150'>商品限价：</span>
+                        <input type="text" id="checkprice" name="checkprice" @Html.Raw(read) value="@(product.CheckPrice > 0 ? product.CheckPrice.ToString("0.00") : "")" data-rule-number='true' data-msg-number="请填写正确的价格" />
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="every-one-info">
+                    <div class="spInputWrap clear">
+                        <span class='width-150'>市场价：</span>
+                        <input type="text" id="marketprice" name="marketprice" @Html.Raw(read) value="@product.MarketPrice" data-rule-required=true data-rule-number=true data-msg-required="请填写市场价" data-msg-number="请填写正确的价格" />
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="every-one-info">
+                    <div class="spInputWrap clear">
+                        <span class="width-150">会员价：</span>
+                        <input type="text" id="tradeprice" name="tradeprice" @Html.Raw(read) value="@product.TradePrice" data-rule-required=true data-rule-number=true data-msg-required="请填写金象价" data-msg-number="请填写正确的价格" />
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="every-one-info">
+                    <div class="spInputWrap clear">
+                        <span class='width-150'>手机APP/H5价：</span>
+                        <input type="text" id="mobileprice" name="mobileprice" @Html.Raw(read) value="@product.MobilePrice" data-rule-required=true data-rule-number=true data-msg-required="请填写手机端价" data-msg-number="请填写正确的价格" />
+                        <span>元</span>
+                    </div>
+                </div>
+                <div class="saveBtn-wrap">
+                    @Html.Hidden("ProductID", product.ProductID)
+                    @if(hasEdit)
+                    {
+                        <a href="#" class='addBtn save'>保存</a>
+                    }
+                    else
+                    {
+                        <a href="#" class='addBtn nosave'>保存</a>
+                    }
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

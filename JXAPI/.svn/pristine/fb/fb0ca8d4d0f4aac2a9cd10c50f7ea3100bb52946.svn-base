@@ -1,0 +1,169 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ClassificationMySqlDAL
+    {
+        private static Database dbw = JXProductMySqlData.Writer;
+        private static Database dbr = JXProductMySqlData.Reader;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(ClassificationMySqlDAL));
+
+        #region MySql分类信息相关操作
+
+        public int GetMaxClassificationID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select * from classification order by CFID DESC limit 0, 1";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxClassificationID 获取分类信息最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool UpdateClassification(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("replace into classification ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}',{4},'{5}',{6},{7},'{8}','{9}','{10}',{11},{12},'{13}',{14},{15},{16})",
+                                     dr["CFID"].ToInt(), dr["ChineseName"].ToString().Replace("\'", "\""), dr["PinyinName"].ToString().Replace("\'", "\"")
+                                     , dr["ImagesLogo"].ToString().Replace("\'", "\""), dr["Level"].ToInt(), dr["Path"].ToString().Replace("\'", "\"")
+                                     , dr["ParentID"].ToInt(), dr["PathCount"].ToShort(), dr["Title"].ToString().Replace("\'", "\""), dr["Keywords"].ToString().Replace("\'", "\"")
+                                     , dr["Description"].ToString().Replace("\'", "\""), dr["Sort"].ToInt(), dr["Status"].ToShort(), dr["Path"].ToString().Substring(0, dr["Path"].ToString().IndexOf('/'))
+                                     , dr["IsTop"].ToShort(), dr["IsChannelHot"].ToShort(), dr["keywordID"].ToInt());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("UpdateClassification 更新分类信息表失败,分类信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["CFID"], table.Rows[table.Rows.Count - 1]["CFID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+        public bool AddClassification(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into classification ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var Placeholder = string.Format(@"({0},'{1}','{2}','{3}',{4},'{5}',{6},{7},'{8}','{9}','{10}',{11},{12},'{13}',{14},{15},{16})",
+                                     dr["CFID"].ToInt(), dr["ChineseName"].ToString().Replace("\'", "\""), dr["PinyinName"].ToString().Replace("\'", "\"")
+                                     , dr["ImagesLogo"].ToString().Replace("\'", "\""), dr["Level"].ToInt(), dr["Path"].ToString().Replace("\'", "\"")
+                                     , dr["ParentID"].ToInt(), dr["PathCount"].ToShort(), dr["Title"].ToString().Replace("\'", "\""), dr["Keywords"].ToString().Replace("\'", "\"")
+                                     , dr["Description"].ToString().Replace("\'", "\""), dr["Sort"].ToInt(), dr["Status"].ToShort(), dr["Path"].ToString().Substring(0, dr["Path"].ToString().IndexOf('/'))
+                                     , dr["IsTop"].ToShort(), dr["IsChannelHot"].ToShort(), dr["keywordID"].ToInt());
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddCoupon 添加分类信息失败,分类信息ID：{0}-{1},异常信息:{2}", table.Rows[0]["CFID"], table.Rows[table.Rows.Count - 1]["CFID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        private string parmsKey = string.Format(@"CFID,ChineseName,PinyinName,ImagesLogo,Level,Path,ParentID,
+                                                PathCount,Tittle,Keywords,Description,Sort,Status,RootCFID,IsTop,IsChannelHot,keywordID");
+
+        #endregion
+    }
+}

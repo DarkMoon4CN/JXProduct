@@ -1,0 +1,27 @@
+﻿using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.DataAccess
+{
+    public class JXProductMySqlData
+    {
+        public static Database Writer
+        {
+            get
+            {
+                return DatabaseFactory.CreateDatabase("MySqlProductWriter"); 
+            }
+        }
+        public static Database Reader
+        {
+            get
+            {
+                return DatabaseFactory.CreateDatabase("MySqlProductReader"); ;
+            }
+        }
+    }
+}

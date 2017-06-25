@@ -1,0 +1,420 @@
+﻿using JXAPI.Component.BLL;
+using JXAPI.Component.IBLL;
+using JXAPI.Component.Model;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.ConsoleMysqlPlan
+{
+    public class MySqlUpdateManager
+    {
+        private MySqlUpdateManager() { }
+
+        public static void CouponUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponMySqlBLL.Instance, tbName);
+        }
+
+        public static void CouponBatchUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponBatchMySqlBLL.Instance, tbName);
+        }
+
+        public static void CouponChannelUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponChannelMySqlBLL.Instance, tbName);
+        }
+
+        public static void CouponTypeUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponTypeMySqlBLL.Instance, tbName);
+        }
+
+        public static void CouponShoppingCardUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponShoppingCardMySqlBLL.Instance, tbName);
+        }
+
+        public static void CouponShoppingCardDetailUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, CouponShoppingCardDetailMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrderLogisticsUpdate(string tbName)
+        {
+            MySqlUpdate(SqlBLL.Instance, OrderLogisticsMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrderProductHistoryUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrderProductHistoryMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrderProductUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrderProductMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrderOperateLogHistoryUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrderOperateLogHistoryMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrderOperateLogUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrderOperateLogMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrdersHistoryUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrdersHistoryMySqlBLL.Instance, tbName);
+        }
+
+        public static void OrdersUpdate(string tbName)
+        {
+            MySqlUpdateOrders(SqlBLL.Instance, OrdersMySqlBLL.Instance, tbName);
+        }
+
+        public static void JXMarketingBrandUpdate(string tbName)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} BEGIN ==========", tbName));
+                //  Mysql 商品相关表的最大ID
+                int error = 0;
+                //  批量添加
+                DataTable dTable = SqlBLL.Instance.GetAddList(0, Program.UpdateTime, Program.UpdateMaxCount, tbName);
+                if(JXYXBrandMySqlBLL.Instance.Add(dTable,out error))
+                {
+                    Console.WriteLine(string.Format("{0} 表已添加 {1} 条数据", tbName, dTable.Rows.Count));
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("{0} 表总共需添加 {1} 条数据,失败：{2}", tbName, dTable.Rows.Count, error));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("{0} 更新失败：{1}", tbName, ex.Message));
+            }
+            finally
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} END ==========", tbName));
+            }
+            //  通知主线程MySql数据库更新结束
+            OnNotifyMainThreadCompleted(++completeCount);
+        }
+
+
+        
+
+        /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <param name="mssqlName">MSSQL 表名称</param>
+        /// <param name="mysqlName">MySQL 表名称</param>
+        public static void MySqlUpdateUsers(string mssqlName, string mysqlName)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} BEGIN ==========", mssqlName));
+                //  Mysql 商品相关表的最大ID
+                int maxID = 1772120;
+
+                //  批量添加
+                AddUsers(maxID, mssqlName, mysqlName);
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("{0} 更新失败：{1}", mssqlName, ex.Message));
+            }
+            finally
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} END ==========", mssqlName));
+            }
+
+            //  通知主线程MySql数据库更新结束
+            OnNotifyMainThreadCompleted(++completeCount);
+        }
+
+        /// <summary>
+        /// 新增数据
+        /// </summary>
+        /// <param name="maxID">最大数据ID</param>
+        /// <param name="mssqlName">MSSQL 表名称</param>
+        /// <param name="mysqlName">MySQL 表名称</param>
+        private static void AddUsers(int maxID, string mssqlName, string mysqlName)
+        {
+            DataTable dTable = null;
+            int errorCount = 0, sucessSum = 0;
+            while (true)
+            {
+                //  查询新数据
+                dTable = UsersBLL.Instance.GetList(Program.UpdateMaxCount, maxID, mssqlName);
+                if (dTable == null || dTable.Rows.Count <= 0)
+                {
+                    break;
+                }
+
+                //  保存
+                if (!UsersMySqlBLL.Instance.AddUsers(dTable, mysqlName, out errorCount))
+                {
+                    Console.WriteLine(string.Format("{0} 表总共需添加 {1} 条数据 失败：{2}", mssqlName, dTable.Rows.Count, errorCount));
+                }
+                else
+                {
+                    sucessSum += dTable.Rows.Count;
+                    Console.WriteLine(string.Format("{0} 表已添加 {1} 条数据", mssqlName, sucessSum));
+                }
+                maxID = Convert.ToInt32(dTable.Rows[dTable.Rows.Count - 1][0]);
+            }
+        }
+
+        /// <summary>
+        /// 更新mysql 优惠券相关表的公共方法
+        /// </summary>
+        /// <typeparam name="T">表的实体</typeparam>
+        /// <param name="iBLL">sql server数据库相关接口</param>
+        /// <param name="iMysqlBLL">my server数据库相关接口</param>
+        /// <param name="msg">不同表提示信息</param>
+        private static void MySqlUpdate(ISqlBLL iBLL, IMySqlBLL iMysqlBLL, string tbName)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} BEGIN ==========", tbName));
+                //  Mysql 商品相关表的最大ID
+                int maxID = 0; //iMysqlBLL.GetMaxID();
+                //  批量添加
+                Add(maxID, iBLL, iMysqlBLL, tbName);
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("{0} 更新失败：{1}", tbName, ex.Message));
+            }
+            finally
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0} END ==========", tbName));
+            }
+            //  通知主线程MySql数据库更新结束
+            OnNotifyMainThreadCompleted(++completeCount);
+        }
+
+        /// <summary>
+        /// 新增优惠券
+        /// </summary>
+        /// <param name="maxProductID"></param>
+        private static void Add(int maxID, ISqlBLL iBLL, IMySqlBLL iMysqlBLL, string tbName)
+        {
+            int errorCount = 0;
+            DataTable dTable = null;
+            int errorSum = 0;
+            int sucessSum = 0;
+            while (true)
+            {
+                //  查询新数据
+                dTable = iBLL.GetAddList(maxID, Program.UpdateTime, Program.UpdateMaxCount, tbName);
+                if (dTable == null || dTable.Rows.Count <= 0)
+                {
+                    break;
+                }
+                //  保存
+                if (!iMysqlBLL.Add(dTable, out errorCount))
+                {
+                    errorSum += errorCount;
+                    Console.WriteLine(string.Format("{0} 表总共需添加 {1} 条数据,失败：{2}", tbName, dTable.Rows.Count, errorCount));
+                }
+                else
+                {
+                    sucessSum += dTable.Rows.Count;
+                    Console.WriteLine(string.Format("{0} 表已添加 {1} 条数据", tbName, sucessSum));
+                }
+                maxID = Convert.ToInt32(dTable.Rows[dTable.Rows.Count - 1][GetTbIDStrByTbName(tbName)]);
+            }
+        }
+
+
+        /// <summary>
+        /// 订单相关表数据更新
+        /// </summary>
+        /// <param name="iBLL"></param>
+        /// <param name="iMysqlBLL"></param>
+        /// <param name="tbName"></param>
+        private static void MySqlUpdateOrders(ISqlBLL iBLL, IMySqlBLL iMysqlBLL, string tbName)
+        {
+            string tableName = string.Empty;
+            string msgInfo = string.Empty;
+            try
+            {
+                tableName = tbName.Split('-')[0];
+                string msg = tbName.Split('-')[1];
+                bool flag = true;
+                if (msg == "before")
+                {
+                    msgInfo = "3个月前数据更新";
+                    flag = true;
+                }
+                else
+                {
+                    msgInfo = "3个月后数据更新";
+                    flag = false;
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0}：{1} BEGIN ==========", tableName, msgInfo));
+                int maxID = 0; 
+                //  批量添加
+                AddOrders(maxID, iBLL, iMysqlBLL, tbName, tableName, flag);
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(string.Format("{0}：{1} 失败：{2}", tableName , msgInfo,ex.Message));
+            }
+            finally
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(string.Format("========== {0}：{1} END ==========", tableName, msgInfo));
+            }
+            //  通知主线程MySql数据库更新结束
+            OnNotifyMainThreadCompleted(++completeCount);
+        }
+
+        /// <summary>
+        /// 订单相关表数据更新
+        /// </summary>
+        /// <param name="maxID">最大ID</param>
+        /// <param name="iBLL"></param>
+        /// <param name="iMysqlBLL"></param>
+        /// <param name="tbName"></param>
+        /// <param name="flag">更新3个月之前数据还是最近3个月的数据,3个月之前 - true,最近3个月 - false</param>
+        private static void AddOrders(int maxID, ISqlBLL iBLL, IMySqlBLL iMysqlBLL, string tbNameAll, string tbName, bool flag)
+        {
+            int errorCount = 0;
+            DataTable dTable = null;
+            int errorSum = 0;
+            int sucessSum = 0;
+            string msg = string.Empty;
+            string msgError = string.Empty;
+            if(flag)
+            {
+                msg = "{0}表往相应的历史库已添加 {1} 条数据";
+                msgError = "{0} 表往相应的历史库总共需添加 {1} 条数据,失败数：{2}";
+            }
+            else
+            {
+                msg = "{0}表往相应的库已添加 {1} 条数据";
+                msgError = "{0} 表往相应的库总共需添加 {1} 条数据,失败数：{2}";
+            }
+            while (true)
+            {
+                //  查询新数据
+                dTable = iBLL.GetAddList(maxID, Program.UpdateTime, Program.UpdateMaxCount, tbNameAll);
+                if (dTable == null || dTable.Rows.Count <= 0)
+                {
+                    break;
+                }
+                //  保存
+                if (!iMysqlBLL.Add(dTable, out errorCount))
+                {
+                    errorSum += errorCount;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(string.Format(msgError, tbName, dTable.Rows.Count, errorCount));
+                }
+                else
+                {
+                    sucessSum += dTable.Rows.Count;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(string.Format(msg, tbName, sucessSum));
+                }
+                maxID = Convert.ToInt32(dTable.Rows[dTable.Rows.Count - 1][GetTbIDStrByTbName(tbName)]);
+            }
+        }
+
+
+        private static void OnNotifyMainThreadCompleted(int completeCount)
+        {
+            if(completeCount == Program.tableList.Count)
+            {
+                completeCount = 0;
+                var hander = CompleteEvent;
+                if (hander != null)
+                {
+                    hander(mySqlEndStr);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 根据表获取表相应的主键ID名
+        /// </summary>
+        /// <param name="tbName"></param>
+        /// <returns></returns>
+        private static string GetTbIDStrByTbName(string tbName)
+        {
+            string tbIDStr = string.Empty;
+            switch (tbName)
+            {
+                case "Coupon":
+                    tbIDStr = "ID";
+                    break;
+                case "CouponBatch":
+                    tbIDStr = "ID";
+                    break;
+                case "CouponChannel":
+                    tbIDStr = "ChannelID";
+                    break;
+                case "CouponType":
+                    tbIDStr = "TypeID";
+                    break;
+                case "CouponShoppingCard":
+                    tbIDStr = "CouponID";
+                    break;
+                case "CouponShoppingCardDetail":
+                    tbIDStr = "CardDetailID";
+                    break;
+                case "SearchKeywords":
+                    tbIDStr = "KeywordID";
+                    break;
+                case "JXMarketingBrand":
+                case "Brand":
+                    tbIDStr = "BrandID";
+                    break;
+                case "orderproducthistory":
+                case "orderproduct":
+                    tbIDStr = "OrderProductID";
+                    break;
+                case "orderoperateloghistory":
+                case "orderoperatelog":
+                    tbIDStr = "LogID";
+                    break;
+                case "orders":
+                case "ordershistory":
+                    tbIDStr = "OrderNO";
+                    break;
+                case "OrderLogistics":
+                    tbIDStr = "LogisticsID";
+                    break;
+                default:
+                    break;
+            }
+            return tbIDStr;
+        }
+
+        private static ILog myLog = log4net.LogManager.GetLogger(typeof(MySqlUpdateManager));
+        public static Action<string> CompleteEvent;
+        private static int completeCount = 0;
+        private const string mySqlEndStr = "MySql数据库更新已完成，请按任意键结束";
+    }
+}

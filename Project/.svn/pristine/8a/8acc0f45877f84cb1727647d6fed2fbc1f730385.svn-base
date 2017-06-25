@@ -1,0 +1,94 @@
+﻿using JXProduct.Component.Enums;
+using JXProduct.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+using Webdiyer.WebControls.Mvc;
+
+namespace JXProduct.AdminUI.Controllers
+{
+    public class BrandController : JXAdminAuthBase.BaseController
+    {
+        public ActionResult List(int cfid = -1, int pageIndex = 1, string orderType = "SellCount")
+        {
+            string brandIDs = string.Empty;
+            IList<BrandInfo>  brandInfoList=null;//品牌List对象
+            ViewBag.ClassificationInfoList = null;//所有1级分类
+            ViewBag.BrandInfo = null;//所有品牌
+            ViewBag.SelectedBrands = null;//已选中的品牌
+            ViewBag.SelectedBrandsCount = 0;
+            ViewBag.SelectedClassId = -1;//默认选中的分类id
+            int count = 0;
+            //获取1级分类信息 
+            IList<ClassificationInfo> classificationInfoList =
+                                 JXProduct.Component.BLL.ClassificationBLL.Instance.Classification_GetList(0);
+            #region 已选中的品牌
+            if (cfid == -1 || cfid == -2)
+            {
+                //是热销品牌或者推荐品牌
+                brandInfoList = JXProduct.Component.BLL.BrandBLL.Instance.Brand_GetList(pageIndex - 1, 36, orderType, "", out count);
+                ViewBag.PageList = new PagedList<BrandInfo>(brandInfoList, pageIndex, 36, count);
+                ViewBag.BrandInfo = brandInfoList;
+            }
+            else 
+            {
+                //非热销和推荐的品牌
+                brandInfoList = JXProduct.Component.BLL.BrandBLL.Instance.Brand_GetByCFID(cfid, pageIndex, 36, orderType, out count);
+                ViewBag.PageList = new PagedList<BrandInfo>(brandInfoList, pageIndex, 36, count);
+                ViewBag.BrandInfo = brandInfoList;
+            }
+            #endregion
+
+            #region 等待选中的品牌
+            IList<MarketBrandInfo>  marketBrandInfo =
+                                JXProduct.Component.BLL.MarketBrandBLL.Instance.Brand_GetByCFID(cfid);
+            for (int i = 0; i < marketBrandInfo.Count; i++)
+            {
+                brandIDs += marketBrandInfo[i].BrandID +",";
+            }
+
+            if (!string.IsNullOrEmpty(brandIDs))
+            {
+                brandIDs = brandIDs.Substring(0, brandIDs.Length - 1);
+                brandInfoList = JXProduct.Component.BLL.BrandBLL.Instance.Brand_Get(brandIDs);
+                ViewBag.SelectedBrandsCount = brandIDs.Split(',').Length;
+                ViewBag.SelectedBrands = brandInfoList;
+            }
+            #endregion
+
+            ViewBag.OrderType = orderType;
+            ViewBag.ClassificationInfoList = classificationInfoList;
+            ViewBag.SelectedClassId = cfid;
+            return View();
+        }
+
+        public JsonResult ModifyBrand(int cfId, int brandId)
+        {
+            var result = new JsonResultObject();
+            IList<MarketBrandInfo> brandInfoList = JXProduct.Component.BLL.MarketBrandBLL.Instance.Brand_GetByCFID(cfId, brandId);
+            bool state = false;//执行状态
+            MarketBrandInfo brandInfo = new MarketBrandInfo();
+            brandInfo.BrandID = brandId;
+            brandInfo.CFID = cfId;
+
+            if (brandInfoList == null || brandInfoList.Count == 0)
+            {
+               state= JXProduct.Component.BLL.MarketBrandBLL.Instance.Brand_Insert(brandInfo);
+                result.msg = "添加品牌";
+            }
+            else 
+            {
+               state= JXProduct.Component.BLL.MarketBrandBLL.Instance.Brand_Delete(brandInfo);
+               result.msg = "取消添加品牌";
+            }
+
+            result.data = JXProduct.Component.BLL.MarketBrandBLL.Instance.Brand_GetByCFID(cfId).Count;
+            result.status =state;
+            return Json(result);
+        }
+    }
+}

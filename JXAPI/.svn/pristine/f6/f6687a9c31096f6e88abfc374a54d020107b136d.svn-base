@@ -1,0 +1,178 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using JXAPI.Component.Model;
+using System.Data.Common;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class MySqlOrderDAL
+    {
+        private static Database dbw = JXOrderMySqlData.Reader;
+        private static Database dbr_Product = JXProductMySqlData.Reader;
+
+        private static DatabaseType dbType_Add = DatabaseType.dbr_Product;
+        private static ILog myLog = log4net.LogManager.GetLogger("Default");
+
+        /// <summary>
+        /// 查询需要添加列表
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="createTime">截止时间</param>
+        /// <param name="start">开始记录行</param>
+        /// <param name="pageSize">页面大小</param>
+        /// <param name="tableName">表名</param>
+        /// <returns>dt</returns>
+        public DataTable GetList(int id, string createTime, int start, int pageSize, string tableName, int status = 0)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder();
+                switch (tableName.ToLower())
+                {
+                    case "orders":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE", tableName));
+                        if (id > 0)
+                        {
+                            sqlCommand.Append(string.Format(" OrderID={0}", id));
+                        }
+                        else
+                        {
+                            sqlCommand.Append(string.Format(" CreateTime>'{0}'", createTime));
+                        }
+                        sqlCommand.Append(" ORDER BY CreateTime");
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderproduct":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID={1}", tableName, id));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "orderoperatelog":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE OrderID={1}", tableName, id));
+                        if (status > 0)
+                        {
+                            sqlCommand.Append(string.Format(" AND NewStatus={0}", status));
+                        }
+                        sqlCommand.Append(" ORDER BY CreateTime");
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "productoutbook":
+                        sqlCommand.Append(string.Format("SELECT * FROM {0} WHERE CreateTime>'{1}' ORDER BY OutID", tableName, createTime));
+                        dbType_Add = DatabaseType.dbr_Product;
+                        break;
+                    case "orderspay":
+                        sqlCommand.Append(string.Format("SELECT * FROM Orders WHERE PayStatus=1 and PayTime > '{0}'", createTime));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                    case "ordersstatus":
+                        sqlCommand.Append(string.Format("SELECT * FROM Orders WHERE OrderStatus = 16 AND StatusChangTime>'{0}' ORDER BY OrderID", createTime));
+                        dbType_Add = DatabaseType.dbr_Order;
+                        break;
+                }
+                DataSet dSet = new DataSet();
+                switch (dbType_Add)
+                {
+                    case DatabaseType.dbr_Product:
+                        var dbCommand1 = dbr_Product.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbr_Product.ExecuteDataSet(dbCommand1);
+                        break;
+                    case DatabaseType.dbr_Order:
+                        var dbCommand2 = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                        dSet = dbw.ExecuteDataSet(dbCommand2);
+                        break;
+                }
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetList 查询：{0} ID:{1} 异常信息:{2}", tableName, id, ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 更新订单 指定列的值
+        /// </summary>
+        /// <param name="orderId">订单号</param>
+        /// <param name="colName">列名</param>
+        /// <param name="colValue">列值</param>
+        /// <returns>true、false</returns>
+        internal bool Orders_Update(int orderId, string[] colName, object[] colValue)
+        {
+            string sSQL = " Update Orders set ";
+            for (int i = 0; i < colName.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(colName[i]))
+                {
+                    Type colType = colValue[i].GetType();
+                    if (colType == Type.GetType("System.Int16") ||
+                        colType == Type.GetType("System.Int32") ||
+                        colType == Type.GetType("System.Int64") ||
+                        colType == Type.GetType("System.Decimal") ||
+                        colType == Type.GetType("System.Float"))
+                        sSQL += string.Format("{0}={1},", colName[i], colValue[i]);
+                    else
+                        sSQL += string.Format("{0}='{1}',", colName[i], colValue[i]);
+                }
+            }
+            sSQL = sSQL.Remove(sSQL.Length - 1, 1);
+            sSQL += string.Format(" WHERE OrderID='{0}'", orderId);
+
+            return dbw.ExecuteNonQuery(CommandType.Text, sSQL) == 1 ? true : false;
+        }
+
+
+        /// <summary>
+        /// 新增订单快递单号
+        /// </summary>
+        /// <param name="info">快递信息实体</param>
+        /// <returns>返回：true=成功，false=失败</returns>
+        internal bool OrderLogistics_Insert(OrderLogisticsInfo info)
+        {
+            string sqlCommand = "INSERT INTO OrderLogistics(OrderID,ExpressID,LogisticsCompany,LogisticsNum,Creator,CreateTime)VALUES(@OrderID,@ExpressID,@LogisticsCompany,@LogisticsNum,@Creator,@CreateTime)";
+            DbCommand dbCommand = dbw.GetSqlStringCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.Int32, info.ThirdOrderID);
+            dbw.AddInParameter(dbCommand, "ExpressID", DbType.String, info.ExpressID);
+            dbw.AddInParameter(dbCommand, "LogisticsCompany", DbType.String, info.LogisticsCompany);
+            dbw.AddInParameter(dbCommand, "LogisticsNum", DbType.String, info.LogisticsNum);
+            dbw.AddInParameter(dbCommand, "Creator", DbType.String, info.Creator);
+            dbw.AddInParameter(dbCommand, "CreateTime", DbType.DateTime, info.CreateTime);
+            if (dbw.ExecuteNonQuery(dbCommand) == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 添加订单操作日志
+        /// </summary>
+        /// <param name="ool">实体</param>
+        /// <returns>返回数据：0=成功，1=失败，其它自定义消息</returns>
+        internal bool OrderOperateLog_Insert(OrderOperateLogInfo ool)
+        {
+            string sqlCommand = "INSERT INTO OrderOperateLog (OrderID, UID, UserType, UserName, OldStatus, NewStatus, Tittle, Content) VALUES (@OrderID, @UID, @UserType, @UserName, @OldStatus, @NewStatus, @Tittle, @Content)";
+            DbCommand dbCommand = dbw.GetSqlStringCommand(sqlCommand);
+
+            dbw.AddInParameter(dbCommand, "OrderID", DbType.Int32, ool.ThirdOrderID);
+            dbw.AddInParameter(dbCommand, "UID", DbType.Int32, ool.UID);
+            dbw.AddInParameter(dbCommand, "UserType", DbType.Int32, ool.UserType);
+            dbw.AddInParameter(dbCommand, "UserName", DbType.String, ool.UserName);
+            dbw.AddInParameter(dbCommand, "OldStatus", DbType.Int32, ool.OldStatus);
+            dbw.AddInParameter(dbCommand, "NewStatus", DbType.Int32, ool.NewStatus);
+            dbw.AddInParameter(dbCommand, "Tittle", DbType.String, ool.Tittle);
+            dbw.AddInParameter(dbCommand, "Content", DbType.String, ool.Content);
+            if (dbw.ExecuteNonQuery(dbCommand) == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+}

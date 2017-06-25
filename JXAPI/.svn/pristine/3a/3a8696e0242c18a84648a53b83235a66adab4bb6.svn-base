@@ -1,0 +1,43 @@
+﻿using JXAPI.Component.IBLL;
+using JXAPI.Component.SQLServerDAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.BLL
+{
+    public class CouponMySqlBLL : IMySqlBLL
+    {
+        private CouponMySqlBLL() { }
+        private static CouponMySqlBLL _instance;
+        private static readonly CouponMySqlDAL dal = new CouponMySqlDAL();
+        public static CouponMySqlBLL Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new CouponMySqlBLL());
+            }
+        }
+
+        #region CURD
+        
+        public int GetMaxID()
+        {
+            return dal.GetMaxCouponID();
+        }
+
+        public bool Add(DataTable table, out int errorCount)
+        {
+            return dal.AddCoupon(table, out errorCount);
+        }
+
+        public bool Update(DataTable table, out int errorCount)
+        {
+            return dal.UpdateCoupon(table, out errorCount);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,159 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class TipsService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("health");
+        private static string list = "tips/getTipForApp";
+        private static string get = "tips/getTipsById";
+        private static string add = "tips/addAppTips";
+        private static string update = "tips/updateTips";
+        private static string verify = "tips/verifyTips";
+
+        private static string commentList = "tips/getAppComment";
+        private static string verifyComment = "tips/verifyTipsComment";
+        private static string addComment = "tips/addComment";
+
+        public static TipsService Instance
+        {
+            get { return new TipsService(); }
+        }
+
+        /// <summary>
+        /// 健康说列表
+        /// </summary>
+        /// <param name="request">条件实体</param>
+        /// <returns></returns>
+        public TipsListResponse List(TipsListRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, list, postData);
+        }
+
+        /// <summary>
+        /// 查询健康说详细
+        /// </summary>
+        /// <param name="tipsId">ID</param>
+        /// <returns></returns>
+        public TipsInfo Get(int tipsId)
+        {
+            TipsRequest request = new TipsRequest()
+            {
+                tipsId = tipsId
+            };
+            string postData = JsonHelper.GetJson(request);
+            TipsResponse response = client.Execute(request, get, postData);
+            if (response != null && response.tips != null)
+                return response.tips;
+            return null;
+        }
+
+        /// <summary>
+        /// 新增健康说
+        /// </summary>
+        /// <param name="info">健康说信息</param>
+        /// <returns></returns>
+        public bool Add(TipsInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 编辑健康说
+        /// </summary>
+        /// <param name="info">健康说信息</param>
+        public bool Update(TipsInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, update, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 审核健康说
+        /// </summary>
+        /// <param name="tipsId">ID</param>
+        /// <param name="status">1:审核通过，2屏蔽</param>
+        /// <param name="changUser">操作人</param>
+        /// <returns></returns>
+        public bool Verify(int tipsId, int status, string changUser)
+        {
+            TipsRequest request = new TipsRequest()
+            {
+                tipsId = tipsId,
+                type = status,
+                updater = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            TipsResponse response = client.Execute(request, verify, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 评论列表
+        /// </summary>
+        /// <param name="request">查询条件</param>
+        /// <returns></returns>
+        public TipsCommentResponse CommentList(TipsCommentRequest request)
+        {
+            string postData = JsonHelper.GetJson(request);
+            return client.Execute(request, commentList, postData);
+        }
+
+        /// <summary>
+        /// 审核健康说评论
+        /// </summary>
+        /// <param name="commentId">ID</param>
+        /// <param name="status">1:审核通过，2屏蔽</param>
+        /// <param name="changUser">操作人</param>
+        /// <returns></returns>
+        public bool VerifyComment(int commentId, int status, string changUser)
+        {
+            TipsRequest request = new TipsRequest()
+            {
+                tipsId = commentId,
+                type = status,
+                updater = changUser
+            };
+            string postData = JsonHelper.GetJson(request);
+            TipsResponse response = client.Execute(request, verifyComment, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        /// <summary>
+        /// 评论健康说
+        /// </summary>
+        /// <param name="info">评论内容</param>
+        /// <returns></returns>
+        public bool AddComment(TipsCommentInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, addComment, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+    }
+}

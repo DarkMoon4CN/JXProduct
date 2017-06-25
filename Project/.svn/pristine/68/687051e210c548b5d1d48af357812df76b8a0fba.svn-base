@@ -1,0 +1,153 @@
+﻿using JXProduct.Component.DataAccess;
+using JXProduct.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXProduct.Component.SQLServerDAL
+{
+    public class ProductParameterPriceDAL
+    {
+        private static Database dbr = JXProductData.Writer;
+        private static Database dbw = JXProductData.Reader;
+
+        /// <summary>
+        /// 添加一组属性,0 失败, -1 已经存在  其他正常返回 autoid
+        /// </summary>
+        /// <param name="info"></param>
+        internal int ProductParameterPrice_Insert(ProductParameterPriceInfo info)
+        {
+            var sql = "ProductParameterPrice_Insert";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "MainProductID", DbType.Int32, info.MainProductID);
+            dbw.AddInParameter(cmd, "ChildProductID", DbType.Int32, info.ChildProductID);
+            dbw.AddInParameter(cmd, "Prop1", DbType.String, info.Prop1);
+            dbw.AddInParameter(cmd, "Prop2", DbType.String, info.Prop2);
+            dbw.AddInParameter(cmd, "Prop3", DbType.String, info.Prop3);
+            var result = int.Parse(dbw.ExecuteScalar(cmd).ToString());
+            return result;
+        }
+
+        internal bool ProductParameterPrice_Delete(int priceparaID)
+        {
+            var sql = "DELETE ppp FROM ProductParameterPrice AS ppp WHERE ppp.ParaPriceID =" + priceparaID;
+            var cmd = dbw.GetSqlStringCommand(sql);
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+
+        internal ProductParameterPriceInfo ProductParameterPrice_Get(ProductParameterPriceInfo info)
+        {
+            var sql = "ProductParameterPrice_Get";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "mainproductid", DbType.Int32, info.MainProductID);
+            dbr.AddInParameter(cmd, "prop1", DbType.String, info.Prop1);
+            dbr.AddInParameter(cmd, "prop2", DbType.String, info.Prop2);
+            dbr.AddInParameter(cmd, "prop3", DbType.String, info.Prop3);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                if (read.Read())
+                    return ReaderModel(read);
+            }
+            return null;
+        }
+
+        internal bool ProductParameterPrice_Update(int parapriceID, int childproductid)
+        {
+            var sql = "ProductParameterPrice_Update";
+            var cmd = dbw.GetStoredProcCommand(sql);
+            dbw.AddInParameter(cmd, "ParaPriceID", DbType.Int32, parapriceID);
+            dbw.AddInParameter(cmd, "ChildProductID", DbType.Int32, childproductid);
+            var result = Convert.ToInt32(dbw.ExecuteScalar(cmd));
+            return result > 0;
+        }
+
+        internal List<ProductParameterPriceInfo> ProductParameterPrice_GetList(int productid, int pageindex, int pagesize, out int recordCount)
+        {
+            recordCount = 0;
+            var sql = "ProductParameterPrice_GetList";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "ProductID", DbType.Int32, productid);
+            dbw.AddInParameter(cmd, "pageindex", DbType.Int32, pageindex);
+            dbw.AddInParameter(cmd, "pagesize", DbType.Int32, pagesize);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                var pricelist = new List<ProductParameterPriceInfo>();
+                while (read.Read())
+                {
+                    pricelist.Add(ReaderModel(read));
+                }
+                read.NextResult();
+                if (read.Read())
+                {
+                    recordCount = read.GetInt32(0);
+                }
+
+                return pricelist;
+            }
+        }
+
+        private ProductParameterPriceInfo ReaderModel(IDataReader read)
+        {
+            return new ProductParameterPriceInfo
+            {
+                ParaPriceID = read["ParaPriceID"].ToInt(),
+                MainProductID = read["MainProductID"].ToInt(),
+                MainName = read["MainName"].ToString(),
+                ChildProductID = read["ChildProductID"].ToInt(),
+                ChildProductCode = read["ChildProductCode"].ToString(),
+                ChildName = read["ChildName"].ToString(),
+                Prop1 = read["Prop1"].ToString(),
+                Prop2 = read["Prop2"].ToString(),
+                Prop3 = read["Prop3"].ToString()
+            };
+        }
+
+        internal List<ProductPropValueInfo> ProductPropValue_GetGroupList(int productid)
+        {
+            var sql = "ProductPropValue_GetGroupList";
+            var cmd = dbr.GetStoredProcCommand(sql);
+            dbr.AddInParameter(cmd, "ProductID", DbType.String, productid);
+            using (var read = dbr.ExecuteReader(cmd))
+            {
+                var list = new List<ProductPropValueInfo>();
+                while (read.Read())
+                {
+                    var v = new ProductPropValueInfo();
+                    v.ProductID = read["ProductID"].ToInt();
+                    v.ProductCode = read["ProductCode"].ToString();
+                    v.ChineseName = read["ChineseName"].ToString();
+                    v.TradeName = read["TradeName"].ToString();
+                    v.CADN = read["CADN"].ToString();
+                    v.BarCode = read["BarCode"].ToString();
+                    v.GroupID = read["GroupID"].ToInt();
+                    v.Spec = read["Spec"].ToString();
+                    v.Prop1 = read["Prop1"].ToString();
+                    v.Prop2 = read["Prop2"].ToString();
+                    v.Prop3 = read["Prop3"].ToString();
+
+                    list.Add(v);
+                }
+                return list;
+            }
+        }
+
+        internal bool ProductPropValue_Save(ProductPropValueInfo info)
+        {
+            var sql = "ProductPropValue_Save";
+            var cmd = dbw.GetStoredProcCommand(sql);
+
+            dbw.AddInParameter(cmd, "ProductID", DbType.Int32, info.ProductID);
+            dbw.AddInParameter(cmd, "GroupID", DbType.Int32, info.GroupID);
+            dbw.AddInParameter(cmd, "Spec", DbType.String, info.Spec);
+            dbw.AddInParameter(cmd, "Prop1", DbType.String, info.Prop1);
+            dbw.AddInParameter(cmd, "Prop2", DbType.String, info.Prop2);
+            dbw.AddInParameter(cmd, "Prop3", DbType.String, info.Prop3);
+            var result = dbw.ExecuteNonQuery(cmd);
+            return result > 0;
+        }
+    }
+}

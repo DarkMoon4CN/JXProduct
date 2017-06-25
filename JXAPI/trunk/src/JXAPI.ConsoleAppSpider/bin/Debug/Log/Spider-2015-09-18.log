@@ -1,0 +1,53 @@
+2015-09-18 11:55:03,747  [13084]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 11:55:03
+2015-09-18 11:56:14,098  [11352]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 11:56:14
+2015-09-18 12:00:30,448  [8280]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 12:00:30
+2015-09-18 13:10:12,633  [11040]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:10:12
+2015-09-18 13:13:05,748  [9428]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:13:05
+2015-09-18 13:13:31,194  [9348]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:13:31
+2015-09-18 13:17:50,973  [9556]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:17:50
+2015-09-18 13:18:37,159  [8036]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:18:37
+2015-09-18 13:18:55,450  [9508]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:18:55
+2015-09-18 13:19:06,295  [9508]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 13:19:06
+2015-09-18 13:19:06,296  [9508]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 13:19:08,672  [12304]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:19:08
+2015-09-18 13:19:33,515  [10772]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:19:33
+2015-09-18 13:19:43,058  [10772]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 13:19:43
+2015-09-18 13:19:43,059  [10772]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 13:19:45,229  [11344]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:19:45
+2015-09-18 13:20:26,036  [11224]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 13:20:25
+2015-09-18 14:01:10,432  [848]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:01:10
+2015-09-18 14:02:59,464  [848]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  已向 责任人:chen si nan 手机：15613102150发送了
+2015-09-18 14:02:59,466  [848]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标地址:http://www.jxdyf.com/ 异常信息
+2015-09-18 14:03:17,353  [12976]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:03:17
+2015-09-18 14:18:41,501  [8172]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:18:41
+2015-09-18 14:35:07,353  [10120]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:35:07
+2015-09-18 14:35:38,934  [2396]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:35:38
+2015-09-18 14:38:01,910  [2396]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 14:38:01
+2015-09-18 14:38:01,913  [2396]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 14:38:09,463  [4588]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:38:09
+2015-09-18 14:38:40,233  [4588]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 14:38:40
+2015-09-18 14:38:40,554  [4588]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 14:39:35,800  [8660]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:39:35
+2015-09-18 14:40:05,002  [5308]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:40:04
+2015-09-18 14:40:49,980  [10888]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:40:49
+2015-09-18 14:41:34,951  [11128]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:41:34
+2015-09-18 14:42:31,772  [11128]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 14:42:31
+2015-09-18 14:42:31,773  [11128]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 14:43:34,114  [9296]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:43:34
+2015-09-18 14:43:48,917  [9296]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  已向 责任人:chen si nan 手机：15613102150发送了
+2015-09-18 14:43:51,741  [9296]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  目标地址:http://www.jxdyf.com/ 异常信息
+2015-09-18 14:46:25,264  [6484]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:46:25
+2015-09-18 14:47:49,158  [11780]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:47:49
+2015-09-18 14:48:55,783  [10]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 14:48:55
+2015-09-18 15:05:14,811  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:05:14
+2015-09-18 15:09:53,578  [10]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:09:53
+2015-09-18 15:18:01,523  [9]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:18:01
+2015-09-18 15:20:15,705  [10]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:20:15
+2015-09-18 15:20:51,004  [10]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 15:20:51
+2015-09-18 15:20:51,006  [10]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 15:22:08,257  [9]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:22:08
+2015-09-18 15:22:20,042  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:22:19
+2015-09-18 15:23:33,005  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 15:23:32
+2015-09-18 15:24:24,298  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取完毕！时间:2015/9/18 15:24:24
+2015-09-18 15:24:24,302  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  ===========================================
+2015-09-18 18:01:55,717  [11]  INFO   JXAPI.ConsoleAppSpider.Spider  [(null)]  -  页面抓取开始！时间:2015/9/18 18:01:55

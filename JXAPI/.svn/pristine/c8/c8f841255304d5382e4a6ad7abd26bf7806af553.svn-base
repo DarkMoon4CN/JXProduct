@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.Model
+{
+    public class OrderProductInfo
+    {
+        public int OrderProductID { get; set; }
+
+        public string OrderID { get; set; }
+
+        public int ProductID { get; set; }
+
+        public string OrderSplitID { get; set; }
+
+        public string ProductCode { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string ProductImage { get; set; }
+
+        public short ProductType { get; set; }
+
+        public decimal MarketPrice { get; set; }
+
+        public decimal TradePrice { get; set; }
+
+        public decimal CostPrice { get; set; }
+
+        public int Quantity { get; set; }
+
+        public int OutQuantity { get; set; }
+
+        public int ReturnQuantity { get; set; }
+
+        public decimal ProfeeDiscount { get; set; }
+
+        public string ParaValue { get; set; }
+
+        public int PriceParaID { get; set; }
+
+        public string PriceParaValue { get; set; }
+
+        public string ProBatchNumber { get; set; }
+
+        public string Memo { get; set; }
+
+        public decimal CommissionRatio { get; set; }
+
+        public short CommissionType { get; set; }
+
+        public decimal VoucherFee { get; set; }
+
+        public decimal ActiveReduceFee { get; set; }
+
+        public short ActiveReduceType { get; set; }
+
+        public int BuyScore { get; set; }
+
+        public int HouseID { get; set; }
+    }
+}

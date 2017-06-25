@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.Utils
+{
+    public class EnumHelper
+    {
+        /// <summary>
+        /// 获取枚举文本
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <param name="val">枚举值</param>
+        /// <returns>枚举文本数据</returns>
+        public static string GetText<T>(int val) where T : struct
+        {
+            var t = typeof(T);
+            if (t.IsEnum && Enum.IsDefined(t, val))
+            {
+                return t.GetEnumName(val);
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 获取枚举值
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <param name="text">枚举文本</param>
+        /// <returns>枚举值数据</returns>
+        public static int GetValue<T>(string text) where T : struct
+        {
+
+            var t = typeof(T);
+            if (t.IsEnum && Enum.IsDefined(t, text))
+            {
+                return (int)Enum.Parse(t, text);
+            }
+            return -1;
+        }
+        
+        /// <summary>
+        /// 转换枚举信息成为键值对
+        /// </summary>
+        /// <typeparam name="T">枚举类型</typeparam>
+        /// <returns>Dictionary</returns>
+        public static Dictionary<int, string> GetList<T>() where T : struct
+        {
+            Dictionary<int, string> dic = new Dictionary<int, string>();
+            var t = typeof(T);
+            if (t.IsEnum)
+            {
+                foreach (int i in Enum.GetValues(t))
+                {
+                    dic.Add(i, t.GetEnumName(i));
+                }
+            }
+            return dic;
+        }
+    }
+}

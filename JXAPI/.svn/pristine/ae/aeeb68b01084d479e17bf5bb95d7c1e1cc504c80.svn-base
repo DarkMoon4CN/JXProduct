@@ -1,0 +1,121 @@
+﻿using JXAPI.Component.DataAccess;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class ProductOutBookSqlDAL
+    {
+        private static Database dbr = JXProductOthersData.Reader;
+        private static Database dbw = JXProductOthersData.Writer;
+        private ILog myLog = log4net.LogManager.GetLogger(typeof(OrderProductSqlDAL));
+
+        #region MySql商品前景表相关操作
+
+        public int GetMaxProductOutBookID()
+        {
+            int maxId = 0;
+            try
+            {
+                string sqlCommand = "select max(OutID) from ProductOutBook";
+                var cmd = dbr.GetSqlStringCommand(sqlCommand);
+                if (dbr.ExecuteScalar(cmd).IsNotNULL())
+                {
+                    maxId = Convert.ToInt32(dbr.ExecuteScalar(cmd));
+                }
+                else
+                {
+                    maxId = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("GetMaxProductOutBookID 获取商品前景最大ID失败,异常信息:{0}", ex.Message);
+                maxId = -1;
+            }
+            return maxId;
+        }
+
+        public bool AddProductOutBook(DataTable table, out int errorCount)
+        {
+            var flag = true;
+            errorCount = 0;
+            try
+            {
+                string strPlaceholder = string.Empty;
+                StringBuilder sqlCommand = new StringBuilder();
+                sqlCommand.Append("insert into ProductOutBook ( " + parmsKey + " ) values ");
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    var dr = table.Rows[i];
+                    var msg = "缺货登记";
+                    if (!string.IsNullOrEmpty(dr["Type"].ToString()))
+                    {
+                        if (dr["Type"].ToString() == "1")
+                        {
+                            msg = "申请药师回拨 ";
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(dr["Message"].ToString()))
+                    {
+                        msg += " : " + dr["Message"].ToString();
+                    }
+                    var Placeholder = string.Format(@"('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}'
+                                                       ,'{13}','{14}')",
+                                                     dr["ProductID"].ToInt(), dr["ProductName"].ToString(), dr["ProductCode"].ToString(), dr["TradePrice"].ToDecimal()
+                                                    , dr["UID"].ToInt(), dr["UserName"].ToString(), dr["Mobile"].ToString(), 1, msg
+                                                    , dr["Remark"].ToString().Replace("\'", "\""), dr["CreateTime"].ToDateTime().ToString(), dr["UpdateTime"].ToDateTime().ToString(), dr["Updater"].ToString(), 0
+                                                    , 0);
+                    if (i == 0)
+                    {
+                        strPlaceholder = Placeholder;
+                    }
+                    else
+                    {
+                        strPlaceholder += "," + Placeholder;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strPlaceholder))
+                {
+                    sqlCommand.Append(strPlaceholder);
+                    var cmd = dbw.GetSqlStringCommand(sqlCommand.ToString());
+                    var result = dbw.ExecuteNonQuery(cmd);
+                    if (result <= 0)
+                    {
+                        errorCount = table.Rows.Count;
+                        flag = false;
+                    }
+                    else
+                    {
+                        errorCount = (table.Rows.Count - result > 0) ? table.Rows.Count - result : 0;
+                        if (errorCount == 0)
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                myLog.ErrorFormat("AddProductOutBook 添加商品前景失败,商品前景ID：{0}-{1},异常信息:{2}", table.Rows[0]["OutID"], table.Rows[table.Rows.Count - 1]["OutID"], ex.Message);
+                flag = false;
+            }
+            return flag;
+        }
+
+
+        private string parmsKey = string.Format(@"ProductID, ProductName,ProductCode,TradePrice,UID,Name,Mobile,Quantity
+                                                  ,Message,Remark,CreateTime,UpdateTime,Updater,Status,HasBuy");
+
+        #endregion
+    }
+}

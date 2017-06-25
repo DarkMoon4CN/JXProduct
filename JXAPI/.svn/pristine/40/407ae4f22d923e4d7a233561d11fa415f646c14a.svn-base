@@ -1,0 +1,60 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public partial class ProductMySqlDAL
+    {
+        private static Database hadbr = JXHealthActivityMySqlData.Reader;
+
+        /// <summary>
+        /// 商品降价数据 
+        /// </summary>
+        /// <returns></returns>
+        public IList<ProductFavoriteMySqlInfo> ProductMySql_GetAll()
+        {
+            string  startTime = DateTime.Now.ToString("yyyy-MM-dd");
+            string endTime = DateTime.Parse(startTime).AddDays(1).AddSeconds(-1).ToString();
+            IList<ProductFavoriteMySqlInfo> productInfoList = new List<ProductFavoriteMySqlInfo>();
+            string sql = string.Empty;
+            sql += " SELECT  p.ProductID,p.ChineseName,p.TradePrice,f.Price,f.UserID FROM  jxproduct.product p,jxyx.favorite f  ";
+            sql += " WHERE p.ProductID=f.ProductID  AND p.TradePrice > f.Price  AND p.Selling=1 AND p.Status=0 ";
+            sql += " AND f.CreateTime > '{0}'  ";
+            sql += " AND f.CreateTime < '{1}'  ";
+            sql = string.Format(sql,startTime,endTime);
+
+            DbCommand cmd = hadbr.GetSqlStringCommand(sql);
+            using (IDataReader dataReader = hadbr.ExecuteReader(cmd))
+            {
+                while (dataReader.Read())
+                {
+                    productInfoList.Add(RecoverModel(dataReader));
+                }
+            }
+            return productInfoList;
+        }
+
+        /// <summary>
+        /// 从 IDataReader 中恢复ProductInfo对象
+        /// </summary>
+        /// <param name="IDataReader"></param>
+        /// <returns></returns>
+        public ProductFavoriteMySqlInfo RecoverModel(IDataReader dataReader)
+        {
+            ProductFavoriteMySqlInfo productInfo = new ProductFavoriteMySqlInfo();
+            productInfo.ProductID = dataReader["ProductID"].ToInt();
+            productInfo.Price = dataReader["Price"].ToDecimal();
+            productInfo.UserID = dataReader["UserID"].ToInt();
+            productInfo.TradePrice = dataReader["TradePrice"].ToDecimal();
+            productInfo.ProductName = dataReader["ChineseName"].ToString();
+            return productInfo;
+        }
+    }
+}

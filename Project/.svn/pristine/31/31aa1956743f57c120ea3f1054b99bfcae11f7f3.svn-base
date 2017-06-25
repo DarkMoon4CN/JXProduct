@@ -1,0 +1,220 @@
+﻿@using JXProduct.Component.Enums
+@model JXProduct.AdminUI.Models.Audit.AuditEditModel
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+
+    var product = Model.product;
+    var audit = Model.audit;
+    var m = Model.Manufacturer;
+    var productcf = Model.productCF;
+    var ins = Model.instructions;
+
+}
+@section js{
+    <script>
+        $(function () {
+            var cont = $('.cont');
+            $('#nav a').on("click", function () {
+                var $parent = $(this).parent();
+                $parent.siblings().find("a").removeClass("active");
+                $(this).addClass("active");
+
+                var index = $parent.index();
+                cont.addClass("hide").eq(index).removeClass("hide");
+                return false;
+            });
+
+            var $pass = $('a[name=pass]');
+            var $notpass = $('a[name=notpass]');
+            $pass.on("click", function () {
+                jx.confirm("确定要通过审核吗?", function () {
+                    var $parent = $pass.parent();
+                    var productid = $parent.attr("productid");
+                    var type = $parent.attr("audittype");
+                    $.ajax({
+                        type: "POST",
+                        url: "/audit/product",
+                        data: { productid: productid, type: type, status: 1 },
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.status) {
+                                jx.alert("审核通过!", function () {
+                                    location.href = location.href;
+                                    return false;
+                                });
+                            }
+                            else {
+                                jx.error("审核失败!" + result.msg);
+                            }
+                        }
+                    });
+                });
+                return false;
+            });
+            var $notpass = $('a[name=notpass]');
+            $notpass.on("click", function () {
+                var $parent = $notpass.parent();
+                var productid = $parent.attr("productid");
+                var type = $parent.attr("audittype");
+                jx.open("/audit/notpass?productid=" + productid + "&type=" + type, {
+                    width: 400, height: 400
+                });
+                return false;
+            });
+        })
+    </script>
+}
+<div id="l-content-right" class="overflow">
+    <div class="single-product-h">
+        <a href="javascript:;"><i></i><span>返回上一页</span></a>
+    </div>
+    <div class="infoTable to-examine table-responsive">
+        @Html.Raw(JXProduct.Component.Enums.Product.Audit[audit.Status])
+        <table class="table">
+            <thead>
+                <tr class="bg">
+                    <th>通用名</th>
+                    <th>商品名称</th>
+                    <th class="tabWidth">单位</th>
+                    <th>规格</th>
+                    <th>商品类别</th>
+                    <th>生产企业</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg">
+                    <td>@product.CADN</td>
+                    <td>@product.ChineseName</td>
+                    <td class="tabWidth">@ins.Package</td>
+                    <td>@product.Specifications</td>
+                    <td>@product.TypeName</td>
+                    <td>@ins.Manufacturer</td>
+                </tr>
+            </tbody>
+        </table>
+        @if (audit.Status == (short)JXProduct.Component.Enums.Product.AuditStatus.未通过审核)
+        {
+            <div class="notBy-txt">
+                <span class="triangle"></span>
+                <p>审核未通过原因： </p>
+                <p>@audit.Remarks</p>
+                <time>审核人：@audit.Creator    @audit.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</time>
+            </div>
+        }
+    </div>
+    <div class="basic-informa-box examine-center">
+        <div class="jbxx-txt">资质信息完善</div>
+        <div class="informa-box-center none-border">
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">* </i></span>商品分类
+            </div>
+            @{
+                int index = 0;
+            }
+            @foreach (var cf in Model.productCF)
+            {
+                index++;
+                var l = cf.CFPath.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(t => int.Parse(t));
+                var cflist = Model.cfList.Where(t => l.Contains(t.CFID)).OrderBy(t => t.CFID).ToList();
+
+                <div class="every-one-info">
+                    <span class="num-text">@index</span>@string.Join(">", cflist.Select(t => t.ChineseName))
+                </div>
+            }
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">*</i></span>企业资质
+            </div>
+            <div class="enterprise-auali clear">
+                <div class="enterprise-nav fl">
+                    <ul class="clear" id="nav">
+                        <li><a class="active" href="#" cid="0">营业执照</a></li>
+                        <li><a href="#" cid="1">药品</a></li>
+                        <li><a href="#" cid="2">医疗器械</a></li>
+                        <li><a href="#" cid="3">保健食品</a></li>
+                        <li><a href="#" cid="4">食品</a></li>
+                        <li><a href="#" cid="5">化妆品</a></li>
+                        <li><a href="#" cid="6">消毒用品</a></li>
+                        <li><a href="#" cid="7">百货</a></li>
+                    </ul>
+                </div>
+
+                @for (int i = 0; i < 8; i++)
+                {
+                    List<JXProduct.Component.Model.ProductQualificationInfo> list = null;
+                    if (i == 0)
+                    {
+                        list = new List<JXProduct.Component.Model.ProductQualificationInfo>();
+                        list.Add(Model.ManufacturerItems.First());
+                    }
+                    else
+                    {
+                        var ids = Model.Category.Where(t => t.Cid == i).Select(t => t.Qid).ToList();
+                        list = Model.ManufacturerItems.Where(t => ids.Contains(t.QualificationID)).ToList();
+                    }
+                    var mindex = 0;
+                    <div class="enter-right fl cont @(i==0 ? "" : "hide")">
+                        @foreach (var l in list)
+                        {
+                            mindex++;
+                            <div class="enter-wrap">
+                                <div class="enter-every">
+                                    <div class="enter-title">@(mindex)、@l.QualificationName</div>
+                                    <p>证件图片：@(l.PQID == 0 ? "暂无" : "")</p>
+                                    @if (!string.IsNullOrWhiteSpace(l.Image))
+                                    {
+                                        <div class="comm-five-img active">
+                                            <img src="@JXUtil.ImageHelper.GetOtherImage(l.Image)" alt="">
+                                        </div>
+                                        <div class="enter-txt">
+                                            <p>证件号码：@l.Number</p>
+                                            <p>有效期：@l.StartDate.ToString("yyyy年MM月dd日")  至 @l.EndDate.ToString("yyyy年MM月dd日")</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="informa-title">
+                <span class="xingRed"><i class="xingRed">* </i></span>商品资质
+            </div>
+            <div class="enterprise-auali clear">
+                <div class="enter-right fl">
+                    @{
+                        index = 0;
+                    }
+                    @foreach (var l in Model.ProductItems)
+                    {
+                        index++;
+                        <div class="enter-wrap">
+                            <div class="enter-every">
+                                <div class="enter-title">@index、@l.QualificationName</div>
+                                <p>证件图片：@(l.PQID == 0 ? "暂无" : "")</p>
+                                @if (l.PQID > 0)
+                                {
+                                    <div class="comm-five-img active">
+                                        <img src="@(JXUtil.ImageHelper.GetOtherImage(@l.Image))" alt="">
+                                    </div>
+                                    <div class="enter-txt">
+                                        <p>证件号码：@l.Number</p>
+                                        <p>有效期：@l.StartDate.ToString("yyyy-MM-dd")  至  @l.EndDate.ToString("yyyy-MM-dd")</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @{
+        //if (Model.IsAudit)
+        //{
+            audit.ProductID = product.ProductID;
+            audit.Type = (int)Product.AuditType.商品资质;
+            Html.RenderPartial("_PartialAudit", audit);
+        //}
+    }
+</div>

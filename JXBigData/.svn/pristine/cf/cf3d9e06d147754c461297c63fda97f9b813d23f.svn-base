@@ -1,0 +1,107 @@
+﻿@using Webdiyer.WebControls.Mvc;
+@{
+    ViewBag.Title = "销售数据管理";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@section css {
+    <link href="~/css/right.css" rel="stylesheet" />
+   <style type="text/css">
+       .thun_feedBack {
+           width: 120px;
+           height: 28px;
+           border: 1px solid #E7E7EB;
+           padding-left: 10px;
+           outline: medium none;
+           background: #FFF url("/js/My97DatePicker/skin/datePicker.gif") no-repeat scroll right center;
+           border: 1px solid #E7E7EB;
+       }
+       .s_lm {
+           margin-right: -15px;
+       }
+       .p_s_lm {
+           margin-right: -15px;
+       }
+   </style>
+
+}
+@section js{
+    @{Html.RegisterMvcPagerScriptResource();}
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="~/JqueryPlugins/Highcharts-4.1.8/js/highcharts.js"></script>
+    <script src="~/Content/js/jx.sales.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            sales.init();
+            $("#sw").click();
+            $("#p_st").click();
+        });
+     </script>
+}
+<div id="l-content-right">
+    <div class="sp_right">
+            <div class="bg">
+                <div class="sp_datail">
+                    <div class="r_top" style="height: 1200px; ">
+                        <div class="tab" style="margin-top: 0px;">
+                            <ul class="tab_con">
+                                <li class="tab_con_current" style="margin-left:62px;">销售额</li>
+                                <li>商品成交明细</li>
+                                <li>成交订单数</li>
+                                <li>搜索分析</li>
+                                <li>人群分析</li>
+                            </ul>
+                        </div>
+
+                        <div id="topicText" class="tip">商品成交明细</div>
+                        <div class="date">
+                            <a id="td" href="javascript:void(0);">今日</a>
+                            <a id="tm" href="javascript:void(0);">昨日</a>
+                            <a id="sw" href="javascript:void(0);">最近7天</a>
+                            <a id="st" href="javascript:void(0);">最近30天</a>
+                            <a id="other" href="javascript:void(0);">双日历</a>
+                            
+                            <span class='s_lm'>日期：</span>
+                            <input type="text" id="sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                            &nbsp;
+                            <input type="text" id="eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                            <a id="submit" href="#">查看</a>
+                        </div>
+                        <br><div style="margin-left:30px;" id="msg"><span style="font-size: 18px; color: #4274C5">无查询信息</span></div>
+                        <div id="cake" style="float: left; padding: 10px; width: 99%; height: 500px; margin: 0 auto; min-width: 850px; height: 700px; ">
+                        </div>
+                        <div id="line" style="float: left; padding: 10px; width: 99%; height: 500px; margin: 0 auto; min-width: 400px; height: 300px; ">
+                        </div>
+                    </div>
+                    <div class="tab">                       
+                        <div class="li_page">
+                            <div class="xse">
+                                <div class="page_con">
+                                    <a id="p_sw" class="data_afirst" href="javascript:void(0);">最近7天</a>
+                                    <a id="p_st" href="javascript:void(0);">最近30天</a>
+                                    <a id="p_nd" href="javascript:void(0);">最近90天</a>
+                                    <a id="p_other" href="javascript:void(0);">双日历</a>
+                                    <span class='p_s_lm'>日期：</span>
+                                    <input type="text" id="p_sTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                                    &nbsp;
+                                    <input type="text" id="p_eTime" class="thun_feedBack" onfocus="WdatePicker({lang:'zh-cn'})" />
+                                    <a id="p_submit" href="javascript:void(0);">查看</a>
+                                </div>
+                                <div class="page_con_div">
+                                    <div class="mobile">
+                                        <br><div style="margin-left:30px;" id="msg1"><span style="font-size: 18px; color: #4274C5">无查询信息</span></div>
+                                        <table style="width:100%;">
+                                            <tbody>
+                                                <tr id="p_showTable">
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

@@ -1,0 +1,95 @@
+﻿using JXAPI.JXSdk.Base;
+using JXAPI.JXSdk.Domain;
+using JXAPI.JXSdk.Request;
+using JXAPI.JXSdk.Response;
+using JXAPI.JXSdk.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace JXAPI.JXSdk.Service
+{
+    public class CouponChannelService
+    {
+        private static DefaultJXClient client = new DefaultJXClient("coupon");
+        private static string list = "couponChannel/getList";
+        private static string get = "couponChannel/getByID";
+        private static string add = "couponChannel/addCouponChannel";
+        private static string update = "couponChannel/updateCouponChannel";
+        private static string delete = "couponChannel/deleteCouponChannel";
+        private static string channelList = "couponChannel/getChannelList";
+        public static CouponChannelService Instance
+        {
+            get { return new CouponChannelService(); }
+        }
+
+        public CouponChannelListResponse List(CouponChannelListRequest request) 
+        {
+            string postData = JsonHelper.GetJson(request);
+            CouponChannelListResponse response = client.Execute(request, list, postData);
+            return response;
+        }
+
+        public CouponChannelResponse Get(int channelID) 
+        {
+            CouponChannelRequest request = new CouponChannelRequest()
+            {
+                channelID=channelID
+            };
+            string postData = JsonHelper.GetJson(request);
+            CouponChannelResponse response = client.Execute(request, get, postData);
+            if (response.template != null)
+            {
+                response.success = true;
+            }
+            return response;
+        }
+
+        public bool Add(CouponChannelInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, add, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        public bool Update(CouponChannelInfo info)
+        {
+            string postData = JsonHelper.GetJson(info);
+            CommonRequest request = new CommonRequest();
+            CommonResponse response = client.Execute(request, update, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        public bool Delete(int channelID)
+        {
+            CouponChannelRequest request = new CouponChannelRequest()
+            {
+                channelID = channelID
+            };
+            string postData = JsonHelper.GetJson(request);
+            CouponChannelResponse response = client.Execute(request, delete, postData);
+            if (response != null)
+                return response.success;
+            return false;
+        }
+
+        public CouponChannelListResponse ChannelList()
+        {
+            CouponChannelListRequest request = new CouponChannelListRequest();
+            string postData = JsonHelper.GetJson(request);
+            CouponChannelListResponse response = client.Execute(request, channelList, postData);
+            if (response.list != null)
+            {
+                response.count = response.list.Count;
+            }
+            return response;
+        }
+
+    }
+}

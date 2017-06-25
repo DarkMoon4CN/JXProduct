@@ -1,0 +1,116 @@
+﻿@{
+    var t = (int)ViewBag.Type;
+    var mid = (int)ViewBag.Mid;
+    var pid = (int)ViewBag.Pid;
+    var qid = (int)ViewBag.QualID;
+    var list = ViewBag.List as List<JXProduct.Component.Model.QualificationInfo>;
+    var qualInfo = ViewBag.Info as JXProduct.Component.Model.QualificationInfo;
+}
+@if (t == 0 || t == 1)
+{
+    var vali = qualInfo.EndDate.AddMonths(-3) < DateTime.Now;
+    <form id="form1">
+        <div class="enter-two-nav" id="childnav">
+            <ul class="clear">
+                @if (t == 1 && list != null)
+                {
+                    foreach (var l in list)
+                    {
+                        <li @(Html.Raw(l.QualificationID == qid ? "class='active'" : ""))><a href="#" qid="@l.QualificationID" t="1">@l.ChineseName</a></li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="every-one-info @(vali ? "active":"")">
+            @Html.Hidden("hidden_mid", mid)
+            @Html.Hidden("hidden_t", t)
+            @Html.Hidden("hidden_pid", pid)
+            @Html.Hidden("hidden_qid", qid)
+            @if(vali)
+            {
+                <div class="deng"></div>
+            }
+            <div class="operAdverW clear">
+                <div class="InformaUpload clear">
+                    证件名称：@qualInfo.ChineseName
+                </div>
+                <div class="InformaUpload clear">
+                    <span class="fl">证件图片：</span>
+                    <div class="resetUpBtn fl"><span id="upload1"></span></div>
+                    <input type="hidden" name="imgpath" />
+                </div>
+                <div class="informa-imgWrap" id="upload1content">
+                    @if (!string.IsNullOrWhiteSpace(qualInfo.Image))
+                    {
+                        <a href="javascript:;" class="closeBtn">X</a>
+                        <img src="http://img.jxdyf.com/other/@qualInfo.Image" alt="">
+                    }
+                </div>
+                <div class="spInputWrap">
+                    <span>证件号码：</span>
+                    <input class="sf" type="text" name="number" value="@qualInfo.Number">
+                </div>
+                <div class="fl inputTitme">
+                    <span class="fl">证件有效期：</span>
+                    <div class="timeBg fl">
+                        <input type="text" name="startdate" value="@(qualInfo.StartDate.Year<2000 ?"": qualInfo.StartDate.ToString("yyyy-MM-dd"))">
+                        <span></span>
+                    </div>
+                    <div class="timeBg fl">
+                        <input type="text" name="enddate" value="@(qualInfo.EndDate.Year < 2000 ? "" : qualInfo.EndDate.ToString("yyyy-MM-dd"))">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="save-btn">
+            <a href="#" class="addBtn save">保存</a>
+        </div>
+    </form>
+}
+else if (t == 2)
+{
+    <form id="form2">
+        <div class="every-one-info @(qualInfo.EndDate.AddMonths(-3)< DateTime.Now ? "active":"")  ">
+            @Html.Hidden("hidden_mid", mid)
+            @Html.Hidden("hidden_t", t)
+            @Html.Hidden("hidden_pid", pid)
+            @Html.Hidden("hidden_qid", qid)
+            <div class="sec-right-title">@qualInfo.ChineseName</div>
+            <div class="sec-right-info">温馨提示：如有有效期的一定要填写有效期</div>
+            <div class="operAdverW clear">
+                <div class="InformaUpload clear">
+                    <span class="fl">证件图片：</span>
+                    <div class="resetUpBtn fl"><span id="upload2"></span></div>
+                    <input type="hidden" name="imgpath" />
+                </div>
+                <div class="informa-imgWrap" id="upload2content">
+                    @if (!string.IsNullOrWhiteSpace(qualInfo.Image))
+                    {
+                        <a href="javascript:;" class="closeBtn">X</a>
+                        <img src="http://img.jxdyf.com/other/@qualInfo.Image" alt="">
+                    }
+                </div>
+                <div class="spInputWrap">
+                    <span>证件号码：</span>
+                    <input class="sf" type="text" name="number" value="@qualInfo.Number">
+                </div>
+                <div class="fl inputTitme">
+                    <span class="fl">证件有效期：</span>
+                    <div class="timeBg fl">
+                        <input type="text" name="startdate" value="@(qualInfo.StartDate.Year<2000 ?"": qualInfo.StartDate.ToString("yyyy-MM-dd"))">
+                        <span></span>
+                    </div>
+                    <div class="timeBg fl">
+                        <input type="text" name="enddate" value="@(qualInfo.EndDate.Year < 2000 ? "" : qualInfo.EndDate.ToString("yyyy-MM-dd"))">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="save-btn">
+            <a href="#" class="addBtn save">保存</a>
+        </div>
+    </form>
+}

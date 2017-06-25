@@ -1,0 +1,79 @@
+﻿using System;
+using System.Text;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
+
+namespace JXAPI.Component.Utils
+{
+    public class JsonHelper
+    {
+        #region 生成json格式数据
+        public static string GetJson<T>(T obj)
+        {
+            string szJson = string.Empty;
+            DataContractJsonSerializer json = new DataContractJsonSerializer(obj.GetType());
+            using (MemoryStream stream = new MemoryStream())
+            {
+                json.WriteObject(stream, obj);
+                szJson = Encoding.UTF8.GetString(stream.ToArray());
+            }
+            return szJson;
+        }
+        #endregion
+
+        #region 解析json格式数据
+        public static T ParseFromJson<T>(string szJson)
+        {
+            T obj = Activator.CreateInstance<T>();
+            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(szJson)))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+                return (T)serializer.ReadObject(stream);
+            }
+        }
+        #endregion
+
+        public static string ConvertToJson<T>(T t)
+        {
+            return JsonConvert.SerializeObject(t);
+        }
+        public static T ConvertToObj<T>(string t)
+        {
+            return JsonConvert.DeserializeObject<T>(t);
+        }
+    }
+
+    public class JsonResultObject
+    {
+        public JsonResultObject() { }
+
+        public JsonResultObject(bool status = false)
+        {
+            this.status = status;
+            this.msg = string.Empty;
+            this.data = null;
+        }
+        public JsonResultObject(bool status, string msg, object data)
+        {
+            this.status = status;
+            this.msg = msg;
+            this.data = data;
+        }
+        public bool status { get; set; }
+        public string msg { get; set; }
+        public object data { get; set; }
+    }
+
+    public static class ObjectToJson
+    {
+        public static string ToJson(this JsonResultObject obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+        public static T ToObject<T>(this string str)
+        {
+            return JsonConvert.DeserializeObject<T>(str);
+        }
+    }
+}

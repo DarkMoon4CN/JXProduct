@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>金象网后台管理系统-@ViewBag.Title</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/base.js" type="text/javascript"></script>
+    <script src="/js/index.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
+    <script src="/js/jx.common.js" type="text/javascript"></script>
+    @RenderSection("css", false)
+</head>
+<body>
+    <div class="ceBianHdader">
+        <div class="ceHeaderCenter wc">
+            <div class="setSuer">
+                <span>@ViewBag.LoginUserInfo</span>
+                <a class='xg' href="http://admin.jxdyf.com/employee/EmployeeEditPwd.aspx"> [修改密码] </a><a class='tc' href="http://admin.jxdyf.com/jxdyfadlogin.aspx?logout=logout">[退出登录]</a>
+            </div>
+        </div>
+    </div>
+    <div class="navWrap">
+        <div class="ceBianNav wc clear">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/product/list">商品管理</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="cbCenter" class='clear'>
+        <div class="ceCenterLeft">
+            <div class='classKey navClick'>
+                <a href="/keyword/list" name="keyword">关键词管理</a>
+            </div>
+            <div class='c_commdity navClick'>
+                <a href="/product/list">商品管理</a>
+            </div>
+            <div class='fenLei navClick'>
+                <a href="/classification/list">分类管理</a>
+            </div>
+            <div class='yunYing'>
+                <a href="javascript:;">运营管理</a>
+            </div>
+            <div class="yunYGL">
+                <div class="yyWeb">
+                    <div class="webTitle webClick clear">
+                        <span class='zt'>+</span>
+                        <span class='text'>WEB运营管理</span>
+                    </div>
+                    <div class="yyList lis_01">
+                        <dl>
+                            <dd><a href="/marketing/banner">首页banner管理</a></dd>
+                            <dd><a href="/marketing/preferential">限时促销管理</a></dd>
+                            <dd><a href="/floor/list" name="floor">楼层管理</a></dd>
+                            <dd><a href="/marketing/special">专题展示</a></dd>
+                            <dd><a href="/om/noticelist">网站公告</a></dd>
+                            <dd><a href="/activity/list">全站活动设置</a></dd>
+                            <dd><a href="/marketing/leftad">全站左侧广告管理</a></dd>
+                            <dd><a href="/marketing/productall">全站热销/促销</a></dd>
+                        </dl>
+                    </div>
+                    <div class="webTitle appClick clear">
+                        <span class='zt'>+</span>
+                        <span class='text'>APP运营管理</span>
+                    </div>
+                    <div class="yyList lis_03">
+                        <dl>
+                            <dd><a href="/app/banner">首页banner管理</a></dd>
+                            <dd><a href="/headlines/list" name="headlines">健康头条管理</a></dd>
+                            <dd><a href="/tips/list" name="tips">健康说管理</a></dd>
+                            <dd><a href="/app/activity" name="app">精彩活动</a></dd>
+                            <dd><a href="/app/mobilepush">手机推送</a></dd>
+                            <dd><a href="/app/appversion">App版本</a></dd>
+                        </dl>
+                    </div>
+                    <div class="other">
+                        <a href="/om/feedbacklist">意见反馈管理</a>
+                        <a href="/brand/list">品牌管理</a>
+                        <a href="/product/evallist">商品评价管理</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ceCenterRight">
+            @RenderBody()
+        </div>
+    </div>
+    @RenderSection("script", false)
+</body>
+</html>

@@ -1,0 +1,102 @@
+﻿using JXAPI.Component.DataAccess;
+using JXAPI.Component.Model;
+using JXAPI.Common.Utils;
+using log4net;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+
+namespace JXAPI.Component.SQLServerDAL
+{
+    public class UsersDAL
+    {
+        private static Database dbr = JXUsersBaseData.Reader;
+        private static ILog log = log4net.LogManager.GetLogger(typeof(UsersDAL));
+
+        /// <summary>
+        /// mssql 数据查询
+        /// </summary>
+        /// <param name="pageSize">数量</param>
+        /// <param name="id">ID</param>
+        /// <param name="tableName">表名称</param>
+        /// <returns></returns>
+        public DataTable GetList(int pageSize, int id, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0}", pageSize));
+                switch (tableName.ToLower())
+                {
+                    case "users":
+                        sqlCommand.Append(" UID,UserName,'' AS Mobile,Password,GUID1,GUID2,ISNULL(LastLoginTime,CreateTime) AS LastLoginTime,ISNULL(SourceID,0) AS SourceID,LoginCount,ISNULL(TodayLoginCount,0) AS TodayLoginCount,Status,CreateTime,ISNULL(UpdateTime,CreateTime) AS UpdateTime,UnionIden");
+                        sqlCommand.Append(string.Format("  FROM {0} WHERE UID>{1} AND UID NOT IN (1772076) ORDER BY UID", tableName, id));
+                        break;
+                    case "usersbase":
+                        sqlCommand.Append(" u.UID,'' AS NickName,'3bd9/5b8/e74a/e4da632e8_L.jpg' AS Avatar,ub.TrueName,ISNULL(ub.Sex,0) AS Sex,ISNULL(ub.Birth,'1980-01-01') AS Birth,ub.Mobile,u.CreateTime,ISNULL(u.UpdateTime,u.CreateTime) AS UpdateTime,0 AS [Rank],ISNULL(u.Score,0) AS Score,ISNULL(u.ConsumeTotal,0) AS ConsumeTotal,isnull(u.Remaining,0) AS Remaining,0 AS SafeLevel,RebateFee,u.IsClaim,ISNULL(u.EmployeeID,0) AS EmployeeID,ISNULL(u.PurchaseType,0) AS PurchaseType,ISNULL(u.AgeRange,0) AS AgeRange,0 AS IsUpdateAvatar");
+                        sqlCommand.Append(string.Format("  FROM dbo.Users AS u LEFT JOIN dbo.UsersBase AS ub ON ub.UID=u.UID WHERE u.UID>{0} ORDER BY u.UID", id));
+                        break;
+                    case "usersreceiver":
+                        sqlCommand.Append(" ReceiverID,UID,TrueName,Province,City,ISNULL(County,0) AS County,Address,phone,Mobile,Postalcode,ISNULL(IsDefault,0) AS IsDefault,CreateTime,ISNULL(UpdateTime, CreateTime) AS UpdateTime,ISNULL(PaymentTypeID,0) AS PaymentTypeID,ISNULL(ShipTypeID,0) AS ShipTypeID,ISNULL(ShipTimeID,0) AS ShipTimeID,ISNULL(IsSplit,0) AS IsSplit");
+                        sqlCommand.Append(string.Format("  FROM {0} WHERE ReceiverID>{1} ORDER BY ReceiverID", tableName, id));
+                        break;
+                    case "usersaccount":
+                        sqlCommand.Append(string.Format("  Ident,UID,Deposit,RemainingSum,Creator,CreateTime,Remarks,Status,UpdateTime,ISNULL(OrderNO,0) as OrderNO FROM {0} WHERE Ident>{1} ORDER BY Ident", tableName, id));
+                        break;
+                    case "usersscore":
+                        sqlCommand.Append(string.Format("  ScoreID,UID,Score,ScoreType,GetMethod,CreateTime,ISNULL(OrderNO,0) as OrderNO FROM {0} WHERE ScoreID>{1} ORDER BY ScoreID", tableName, id));
+                        break;
+                }
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("GetList 查询列表失败   ID：{0}  异常：{1}", id, ex.Message);
+                return null;
+            }
+        }
+
+        public DataTable GetUpdateList(int MaxID, int NowID, string updateTime, int pageSize, string tableName)
+        {
+            try
+            {
+                StringBuilder sqlCommand = new StringBuilder(string.Format("SELECT TOP {0}", pageSize));
+                switch (tableName.ToLower())
+                {
+                    case "users":
+                        sqlCommand.Append("UID,UserName,'' AS Mobile,Password,GUID1,GUID2,ISNULL(LastLoginTime,CreateTime) AS LastLoginTime,ISNULL(SourceID,0) AS SourceID,LoginCount,ISNULL(TodayLoginCount,0) AS TodayLoginCount,Status,CreateTime,ISNULL(UpdateTime,CreateTime) AS UpdateTime,UnionIden");
+                        sqlCommand.Append(string.Format("  FROM {0} WHERE UID>{1} AND UID <= {2} ORDER BY UID", tableName, NowID, MaxID));
+                        break;
+                    case "usersbase":
+                        sqlCommand.Append("u.UID,'' AS NickName,'3bd9/5b8/e74a/e4da632e8_L.jpg' AS Avatar,ub.TrueName,ISNULL(ub.Sex,0) AS Sex,ISNULL(ub.Birth,'1980-01-01') AS Birth,ub.Mobile,u.CreateTime,ISNULL(u.UpdateTime,u.CreateTime) AS UpdateTime,0 AS [Rank],ISNULL(u.Score,0) AS Score,ISNULL(u.ConsumeTotal,0) AS ConsumeTotal,isnull(u.Remaining,0) AS Remaining,0 AS SafeLevel,RebateFee,u.IsClaim,ISNULL(u.EmployeeID,0) AS EmployeeID,ISNULL(u.PurchaseType,0) AS PurchaseType,ISNULL(u.AgeRange,0) AS AgeRange,0 AS IsUpdateAvatar");
+                        sqlCommand.Append(string.Format("  FROM dbo.Users AS u LEFT JOIN dbo.UsersBase AS ub ON ub.UID=u.UID WHERE u.UID>{0} AND u.UID <= {1} ORDER BY u.UID", NowID, MaxID));
+                        break;
+                    case "usersreceiver":
+                        sqlCommand.Append("ReceiverID,UID,TrueName,Province,City,County,Address,phone,Mobile,Postalcode,ISNULL(IsDefault,0) AS IsDefault,CreateTime,ISNULL(UpdateTime, CreateTime) AS UpdateTime,ISNULL(PaymentTypeID,0) AS PaymentTypeID,ISNULL(ShipTypeID,0) AS ShipTypeID,ISNULL(ShipTimeID,0) AS ShipTimeID,ISNULL(IsSplit,0) AS IsSplit");
+                        sqlCommand.Append(string.Format("  FROM {0} WHERE ReceiverID>{1} AND ReceiverID <= {2} ORDER BY ReceiverID", tableName, NowID, MaxID));
+                        break;
+                    case "usersaccount":
+                        sqlCommand.Append(string.Format("  * FROM {0} WHERE Ident > {1} AND Ident <= {2} ORDER BY Ident", tableName, NowID, MaxID));
+                        break;
+                    case "usersscore":
+                        sqlCommand.Append(string.Format("  * FROM {0} WHERE ScoreID > {1} AND ScoreID <= {2} ORDER BY ScoreID", tableName, NowID, MaxID));
+                        break;
+                    default:
+                        break;
+                }
+                var dbCommand = dbr.GetSqlStringCommand(sqlCommand.ToString());
+                DataSet  dSet = dbr.ExecuteDataSet(dbCommand);
+                return (dSet != null && dSet.Tables.Count > 0) ? dSet.Tables[0] : null;
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("GetUpdateList 查询需要更新的{0}表失败,ID:{0},异常信息:{1}", tableName, NowID, ex.Message);
+                return null;
+            }
+        }
+    }
+}

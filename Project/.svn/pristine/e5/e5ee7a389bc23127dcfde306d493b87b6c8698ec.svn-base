@@ -1,0 +1,242 @@
+﻿using JXProduct.AdminUI.Image;
+using JXProduct.AdminUI.Models.Audit;
+using JXProduct.Component.BLL;
+using JXProduct.Component.Model;
+using JXUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace JXProduct.AdminUI.Controllers
+{
+    public class AuditController : JXAdminAuthBase.BaseController
+    {
+
+        #region 商品资质审核
+
+        public ActionResult Edit(int productid)
+        {
+            var model = new AuditEditModel();
+            var productinfo = ProductBLL.Instance.Product_Get(productid);
+            var category = new List<QualificationInfo>();
+            var audit = ProductBLL.Instance.ProductAudit_Get(productid).FirstOrDefault(t => t.Type == (short)JXProduct.Component.Enums.Product.AuditType.商品资质) ?? new ProductAuditInfo();
+
+            model.audit = audit;
+            model.product = productinfo;
+
+            model.Manufacturer = QualificationBLL.Instance.Qualification_GetByMid(productinfo.ManufacturerID);
+            model.list1 = QualificationBLL.Instance.Qualification_GetByParaTypeID(0, 0, productinfo.ManufacturerID);
+            model.list2 = QualificationBLL.Instance.Qualification_GetByProductID(productinfo.ProductID, 0);
+
+            int recordCount = 0;
+            model.cfList = ClassificationBLL.Instance.Classification_GetList(1, 0, "", "", out recordCount);
+            model.productCF = ProductClassificationBLL.Instance.ProductClassification_GetList(productid);
+            model.instructions = ProductBLL.Instance.Product_GetInstructions(productid);
+
+            return View(model);
+        }
+        public PartialViewResult PartialEdit(int pid, int mid, int type, int qualid, int ischild = 0)
+        {
+            QualificationInfo qualinfo = null;
+
+            switch (type)
+            {
+                case 0:
+                    {
+                        qualinfo = QualificationBLL.Instance.Qualification_Get(qualid, mid: mid);
+                    } break;
+                case 1:
+                    {
+                        if (ischild == 0)
+                        {
+                            var list = QualificationBLL.Instance.Qualification_GetByParaTypeID(qualid, 0, mid);
+                            qualinfo = list.First();
+                            qualid = qualinfo.QualificationID;
+                            ViewBag.List = list;
+                        }
+                        else if (ischild == 1)
+                        {
+                            qualinfo = QualificationBLL.Instance.Qualification_Get(qualid, mid: mid);
+                            var list = QualificationBLL.Instance.Qualification_GetByParaTypeID(qualinfo.ParentID, 0, 0);
+                            ViewBag.List = list;
+                        }
+                    } break;
+                case 2:
+                    {
+                        qualinfo = QualificationBLL.Instance.Qualification_Get(qualid, productid: pid);
+                    } break;
+                default:
+                    qualinfo = new QualificationInfo();
+                    break;
+            }
+            ViewBag.Pid = pid;
+            ViewBag.Mid = mid;
+            ViewBag.Type = qualinfo.Type;
+            ViewBag.QualID = qualid;
+            ViewBag.Info = qualinfo;
+            return PartialView("_PartialEdit");
+        }
+        [HttpPost]
+        public JsonResult Insert(ProductQualificationInfo model)
+        {
+            var result = new JsonResultObject();
+            if (model.StartDate.Year < 2000 || model.EndDate.Year < 2000)
+            {
+                result.msg = "请输入有效期!";
+            }
+            else if (model.Number.Length < 3)
+            {
+                result.msg = "请输入证件号!";
+            }
+            else if (model.Image.Length < 3)
+            {
+                result.msg = "请上传图片!";
+            }
+            else
+            {
+                int pqid = QualificationBLL.Instance.ProductQualification_Insert(model);
+                result.status = pqid > 0;
+            }
+            return Json(result);
+        }
+
+        public JsonResult upload(int qid, int mid = 0, int productid = 0)
+        {
+            var file = HttpContext.Request.Files[0];
+            var result = ProductImage.Instance.OtherUpload(string.Format("{0}_{1}", mid > 0 ? "M_" + mid : "P_" + productid, qid), 0, file);
+            if (result.status)
+            {
+                var path = JXAPI.JXSdk.Utils.JsonHelper.ConvertToObj<List<JXAPI.JXSdk.Request.ImagePathRequest>>(result.data.ToString());
+                var p = path.First();
+                p.ImagePath = p.ImagePath.Replace("\\", "/").TrimStart('/');
+                result.data = p;
+                if (!result.status)
+                {
+                    result.msg = "更新信息失败!";
+                    result.data = "";
+                }
+            }
+            return Json(result);
+        }
+
+        public JsonResult EditClassification(int productid, string cfids)
+        {
+            var result = new JsonResultObject();
+            var cflist = cfids.Split(',').ToList().ConvertAll(t =>
+            {
+                int id = 0;
+                int.TryParse(t, out id);
+                return id;
+            }).Distinct().Where(t => t > 0).ToList();
+
+            result.status = ProductClassificationBLL.Instance.ProductClassification_Insert(productid, cflist);
+            return Json(result);
+        }
+
+        public ActionResult Preview(int productid)
+        {
+            var model = new AuditEditModel();
+            var productinfo = ProductBLL.Instance.Product_Get(productid);
+            var category = new List<QualificationInfo>();
+            var audit = ProductBLL.Instance.ProductAudit_Get(productid).FirstOrDefault(t => t.Type == (short)JXProduct.Component.Enums.Product.AuditType.商品资质) ?? new ProductAuditInfo();
+
+            model.audit = audit;
+            model.product = productinfo;
+
+            model.Manufacturer = QualificationBLL.Instance.Qualification_GetByMid(productinfo.ManufacturerID);
+            model.list1 = QualificationBLL.Instance.Qualification_GetAllParatype(productinfo.ManufacturerID);
+            model.list2 = QualificationBLL.Instance.Qualification_GetByProductID(productinfo.ProductID, 0);
+            int recordCount = 0;
+            model.cfList = ClassificationBLL.Instance.Classification_GetList(1, 0, "", "", out recordCount);
+            model.productCF = ProductClassificationBLL.Instance.ProductClassification_GetList(productid);
+            model.instructions = ProductBLL.Instance.Product_GetInstructions(productid);
+            return View(model);
+        }
+
+        #endregion
+
+        #region 商品审核
+
+        public PartialViewResult Get(int mid, int productid, int auditid)
+        {
+            return PartialView("_PartialAudit");
+        }
+
+        public ActionResult NotPass(int productid, int type)
+        {
+            if (productid > 0)
+            {
+                ViewBag.ProductID = productid;
+                ViewBag.Type = type;
+                return View();
+            }
+            return new EmptyResult();
+        }
+
+        [HttpPost]
+        public JsonResult Product(int productid, short type, short status, string remarks)
+        {
+            var result = new JsonResultObject();
+            var product = ProductBLL.Instance.Product_Get(productid);
+            if (productid > 0 && product != null)
+            {
+                if (status == (short)JXProduct.Component.Enums.Product.AuditStatus.未通过审核
+                    &&
+                    string.IsNullOrWhiteSpace(remarks))
+                {
+                    result.data = "需要填写未通过原因";
+                }
+                else
+                {
+                    var audit = new ProductAuditInfo();
+                    audit.ProductID = productid;
+                    audit.Type = type;
+                    audit.Status = status;
+                    audit.Remarks = remarks;
+                    audit.Creator = base.UNICKNAME;
+                    result.status = ProductBLL.Instance.ProductAudit_Save(audit);
+                }
+            }
+            return Json(result);
+        }
+
+        #endregion
+
+        #region 邮件
+
+        public ActionResult Email()
+        {
+            var list = AuditStuffEmailBLL.Instance.GetList();
+            ViewBag.List = list;
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult EmailEdit()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EmailEdit(AuditStuffEmailInfo model)
+        {
+            var result = new JsonResultObject();
+            model.Creator = base.UNICKNAME;
+            model = AuditStuffEmailBLL.Instance.Insert(model);
+            result.status = model.EmailID > 0;
+            return Json(result);
+        }
+
+
+        public ActionResult SendEmail()
+        {
+
+
+            return View();
+        }
+
+        #endregion
+    }
+}
