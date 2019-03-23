@@ -1,2 +1,6 @@
 # JXProduct
-金象管理后台项目 JXProduct管理后台  JXBigData大数据统计 JXAPI数据接口API
+###  [功能描述]：金象网后台管理系统 
+###  [开发环境]：Visual Studio 2012 Sql Server 2008 
+###  [项目结构]：多层 
+###  [其他框架]：SuperSocket,Protocol buffer
+###  [历史版本]：v 2.0.11.5
